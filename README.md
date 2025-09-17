@@ -19,4 +19,4 @@ En este repositorio encontrará tres carpetas:
   - Proyecto
  
 ## Proyecto actual: Parchate ![Badge en Desarollo](https://img.shields.io/badge/STATUS-EN%20DESAROLLO-green)
-Hola, acabas de conocer <b>Parchate</b> una aplicación que hace las veces de red social, calendario y gestor de tiempo para concretar encuentros, priorizar tareas, y cumplir con tus responsabilidades 😊.
+Hola, acabas de conocer <b>Parchate</b> una aplicación que hace las veces de red social, calendario y gestor de tiempo para concretar encuentros, priorizar tareas, y ayudarte a cumplir con tus responsabilidades 😊.
