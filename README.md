@@ -19,10 +19,12 @@ En este repositorio encontrará tres carpetas:
   - Proyecto
  
 ## Proyecto actual: Parchate ![Badge en Desarollo](https://img.shields.io/badge/STATUS-EN%20DESAROLLO-green)
+
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/1af47eb0-62ea-4676-ac47-b8bd36725887" />
+
 Hoy en día resulta complicado conocer personas con intereses similares y coordinar actividades como un partido de fútbol, una sesión de estudio o una caminata. Aunque se recurre a redes sociales y chats como WhatsApp, allí la información se dispersa, se pierde entre mensajes y la organización suele volverse lenta e ineficaz; y no solo la coordinación de actividades grupales es dificultosa sino también el organizar actividades y tareas individuales se vuelve más difícil para ciertas personas, pues existen herramientas con funcionalidades distintas de calendario, priorización y gestión de tareas, que no se integran para dar una experiencia completa a quienes buscan poner en orden su día resultando en la mala gestión del tiempo, notas deficientes e incluso el incumplimiento de responsabilidades de trabajo.
 
 Por eso, nosotros, Los sin P.A.P.A, proponemos crear una aplicación que funcione como una red social, calendario y gestor de tiempo para concretar encuentros, priorizar tareas, y cumplir con asignaciones: un usuario publica la actividad con su lugar, fecha y hora, y otras personas pueden unirse fácilmente, otro simplemente organiza las tareas pendientes de la semana, en ambos casos solo Parchate. 
 
 Adicionalmente Parchate se diferencia de otras aplicaciones pues no requiere demasiada antelación para planear las actividades y cada asistente puede indicar un rango de tiempo en el que estaría disponible, y no solo eso; <b>¡él mismo organiza el tiempo por ti!</b> haciendo que no solo los encuentros se den de manera más práctica y flexible, sino también tengas tiempo suficiente para ellos.
 
-<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/1af47eb0-62ea-4676-ac47-b8bd36725887" />
