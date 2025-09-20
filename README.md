@@ -24,3 +24,5 @@ Hoy en día resulta complicado conocer personas con intereses similares y coordi
 Por eso, nosotros, Los sin P.A.P.A, proponemos crear una aplicación que funcione como una red social, calendario y gestor de tiempo para concretar encuentros, priorizar tareas, y cumplir con asignaciones: un usuario publica la actividad con su lugar, fecha y hora, y otras personas pueden unirse fácilmente, otro simplemente organiza las tareas pendientes de la semana, en ambos casos solo Parchate. 
 
 Adicionalmente Parchate se diferencia de otras aplicaciones pues no requiere demasiada antelación para planear las actividades y cada asistente puede indicar un rango de tiempo en el que estaría disponible, y no solo eso; <b>¡él mismo organiza el tiempo por ti!</b> haciendo que no solo los encuentros se den de manera más práctica y flexible, sino también tengas tiempo suficiente para ellos.
+
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/1af47eb0-62ea-4676-ac47-b8bd36725887" />
