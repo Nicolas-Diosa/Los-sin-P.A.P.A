@@ -20,7 +20,9 @@ En este repositorio encontrará tres carpetas:
  
 ## Proyecto actual: Parchate ![Badge en Desarollo](https://img.shields.io/badge/STATUS-EN%20DESAROLLO-green)
 
-<img width="700" height="700" alt="image" src="https://github.com/user-attachments/assets/1aae74a3-81d0-4b80-9445-710927ecd6af" />
+<div style="text-align: center;">
+   <img width="700" height="700" alt="image" src="https://github.com/user-attachments/assets/1aae74a3-81d0-4b80-9445-710927ecd6af" />
+</div>
 
 Hoy en día resulta complicado conocer personas con intereses similares y coordinar actividades como un partido de fútbol, una sesión de estudio o una caminata. Aunque se recurre a redes sociales y chats como WhatsApp, allí la información se dispersa, se pierde entre mensajes y la organización suele volverse lenta e ineficaz; y no solo la coordinación de actividades grupales es dificultosa sino también el organizar actividades y tareas individuales se vuelve más difícil para ciertas personas, pues existen herramientas con funcionalidades distintas de calendario, priorización y gestión de tareas, que no se integran para dar una experiencia completa a quienes buscan poner en orden su día resultando en la mala gestión del tiempo, notas deficientes e incluso el incumplimiento de responsabilidades de trabajo.
 
