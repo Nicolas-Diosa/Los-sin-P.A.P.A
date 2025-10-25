@@ -1,1 +1,0 @@
-# Permite que Persistencia sea tratada como un paquete Python
