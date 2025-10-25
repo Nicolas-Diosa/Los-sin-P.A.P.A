@@ -2,6 +2,8 @@
 :: Titilo de la ventana
 title Django Project Setup Script
 
+:: TODO: Verificar si el .env ya existe, si no, crearlo.
+
 :: Print
 echo  Iniciando setup del proyecto...
 echo.
@@ -32,6 +34,8 @@ IF EXIST "Proyecto\Backend\cmd\bd\init.sql" (
 ) ELSE (
     echo No se encontró Proyecto\Backend\cmd\bd\init.sql
 )
+
+:: TODO: Descargar dependencias de Python
 
 echo.
 
