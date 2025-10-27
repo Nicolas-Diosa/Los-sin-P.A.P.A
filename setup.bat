@@ -2,11 +2,29 @@
 :: Titilo de la ventana
 title Django Project Setup Script
 
-:: TODO: Verificar si el .env ya existe, si no, crearlo.
-
 :: Print
 echo  Iniciando setup del proyecto...
 echo.
+
+IF NOT EXIST ".env" (
+    echo Creando archivo .env predeterminado...
+
+    (
+        echo # .env file
+        
+        echo POSTGRES_USER=usuario
+        echo POSTGRES_PASSWORD=passwordsegura
+        echo POSTGRES_DB=parchate
+        echo POSTGRES_CONTAINER_NAME=postgres_server
+        echo POSTGRES_PORT=0811
+    ) > ".env"
+
+    echo Archivo .env creado exitosamente.
+) ELSE (
+    echo Ya existe un archivo .env, no se realizaron cambios.
+)
+
+
 
 :: Levantamiento de la Base de Datos con Docker Compose
 echo Levantando PostgreSQL con Docker Compose...
