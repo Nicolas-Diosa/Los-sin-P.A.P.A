@@ -2,10 +2,10 @@
 :: Titilo de la ventana
 title Django Project Setup Script
 
-:: Print
 echo  Iniciando setup del proyecto...
 echo.
 
+:: Crear archivo .env
 IF NOT EXIST ".env" (
     echo Creando archivo .env predeterminado...
 
@@ -54,6 +54,29 @@ IF EXIST "Proyecto\Backend\cmd\bd\init.sql" (
 )
 
 :: TODO: Descargar dependencias de Python
+
+::Crear y activar entorno virtual
+
+        echo Creando/activando entorno virtual en Proyecto...
+        pushd "Proyecto"
+
+        IF NOT EXIST "venv" (
+            echo Creando venv con 'python -m venv venv'...
+            python -m venv venv
+            IF %ERRORLEVEL% NEQ 0 (
+                echo Error creando venv con 'python', intentando con 'py -3 -m venv venv'...
+                py -3 -m venv venv
+            )
+        ) ELSE (
+            echo Ya existe la carpeta venv, no se creará una nueva.
+        )
+
+        echo Activando entorno virtual...
+        call venv\Scripts\activate
+        call pip install django psycopg2-binary python-dotenv
+
+        popd
+
 
 echo.
 
