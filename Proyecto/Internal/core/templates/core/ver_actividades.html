@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parchate · Inicio</title>
+  <style>
+    @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+    :root{
+      --primary:#FCAF56; --secondary:#7795FC;
+      --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g400:#9ca3af; --g600:#4b5563; --g900:#111827;
+      --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 10px 24px rgba(0,0,0,.12);
+      --radius:16px; --touch:44px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .app{min-height:100dvh;display:grid;grid-template-columns:280px 1fr}
+    
+    /* Header fijo */
+    .header{
+      position:sticky;top:0;z-index:10;background:var(--g0);border-bottom:1px solid var(--g200);box-shadow:0 1px 2px rgba(0,0,0,.05)
+    }
+    .header-in{max-width:1100px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:12px;height:64px}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+    .title{font-weight:900;color:var(--secondary);letter-spacing:.3px}
+    .spacer{margin-left:auto}
+    .avatar{
+      width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#c7d2fe,#93c5fd);
+      display:grid;place-items:center;font-weight:900;color:#1f2937;border:1px solid var(--g200);cursor:pointer
+    }
+    .menu{
+      position:absolute;right:16px;top:64px;background:var(--g0);border:1px solid var(--g200);border-radius:14px;box-shadow:var(--shadow);
+      display:none;min-width:220px;padding:8px
+    }
+    .menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--g900)}
+    .menu a:hover,.menu a:focus-visible{background:var(--g100);outline:none;box-shadow:var(--ring)}
+    /* estilos del aside (barra lateral) */
+    aside{
+      position:sticky; top:0; align-self:start; height:100dvh;
+      background:var(--g0); border-right:1px solid var(--g200); padding:12px;
+    }
+    .brand{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px}
+    .appname{font-weight:900;color:var(--secondary)}
+    nav.sidebar-nav{margin-top:8px;display:grid;gap:6px}
+    .nav-btn{
+      display:flex;align-items:center;gap:10px;
+      min-height:var(--touch); padding:10px 12px; border-radius:12px;
+      background:transparent; border:1px solid transparent; text-decoration:none; color:var(--g900); font-weight:800;
+    }
+    .nav-btn:hover{background:var(--g100)}
+    .nav-btn:focus-visible{outline:none;box-shadow:var(--ring)}
+    .current{background:rgba(119,149,252,.12); border:1px solid rgba(119,149,252,.35); color:#1f2a6a}
+    .cta{background:var(--primary); color:#111; border:1px solid transparent}
+
+    /* overlay y botón hamburger (responsive) */
+    .overlay{position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; z-index:15}
+    .overlay.show{display:block}
+    .hamb{display:none; min-height:var(--touch); padding:8px 12px; border-radius:12px; border:1px solid var(--g300); background:var(--g0); cursor:pointer; font-weight:800}
+
+    @media (max-width:960px){
+      /* colapsar sidebar en móviles */
+      .app{grid-template-columns:1fr}
+      aside{position:fixed; inset:0 auto 0 0; width:280px; transform:translateX(-100%); transition:transform .2s ease; z-index:20}
+      aside.open{transform:none; box-shadow:var(--shadow)}
+      .hamb{display:inline-flex}
+      main{padding:16px 16px 90px}
+    }
+
+    /* contenido: contenedor y tarjetas (restaurado) */
+    .container{max-width:1100px;margin:auto;padding:16px}
+    .welcome{
+      background:var(--g0);border:1px solid var(--g200);border-radius:18px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.05);margin-bottom:12px
+    }
+    .feed{display:grid;gap:12px}
+    @media (min-width:760px){ .feed{grid-template-columns:repeat(3,1fr)} }
+    .card{
+      background:var(--g0);border:1px solid var(--g200);border-radius:16px;padding:14px;display:grid;gap:8px
+    }
+    .tag{
+      display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(119,149,252,.35);
+      background:rgba(119,149,252,.12);color:#1f2a6a;border-radius:999px;padding:6px 10px;font-weight:700
+    }
+    .meta{color:var(--g600);font-size:.95rem}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .btn{min-height:var(--touch);padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:800;cursor:pointer}
+    .btn-join{background:var(--primary);color:#111}
+    .btn-join:focus-visible{outline:none;box-shadow:var(--ring)}
+    .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Añadida: barra lateral -->
+    <aside id="sidebar" aria-label="Menú lateral de navegación">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="appname">Parchate</div>
+      </div>
+      <nav class="sidebar-nav" role="navigation" aria-label="Navegación principal">
+        <a class="nav-btn current" href="06_home_start.html" aria-current="page">Inicio / Actividades</a>
+        <a class="nav-btn cta" href="22_private_area.html" aria-label="Ir a área privada y gestión del tiempo">Área privada y gestión del tiempo</a>
+        <a class="nav-btn" href="19_profile.html">Perfil de usuario</a>
+        <button class="nav-btn" id="logout" type="button">Cerrar sesión</button>
+      </nav>
+    </aside>
+
+    <!-- overlay para móviles -->
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+    <!-- Contenido -->
+    <main class="container" role="main">
+      <!-- Header fijo (movido dentro del main para ocupar la columna de contenido) -->
+      <header class="header" role="banner">
+        <div class="header-in">
+          <!-- botón hamburguesa (visible en móvil) -->
+          <button id="btnHamb" class="hamb" aria-controls="sidebar" aria-expanded="false">☰ Menú</button>
+
+          <div class="logo" aria-hidden="true"></div>
+          <div class="title" aria-label="Parchate inicio">Parchate</div>
+          <div class="spacer"></div>
+          <!-- Indicador visible de sesión activa: avatar + nombre en menu -->
+          <button id="avatarBtn" class="avatar" aria-haspopup="menu" aria-expanded="false" aria-controls="menuUser" aria-label="Menú de cuenta">
+            {{ username|default:"U"|slice:":1"|upper }}
+          </button>
+          <nav id="menuUser" class="menu" role="menu" aria-label="Menú de cuenta">
+            <a href="#" role="menuitem" aria-label="Ver perfil">Perfil</a>
+            <a href="#" role="menuitem" aria-label="Ver mis actividades">Mis actividades</a>
+            <a href="05_login.html" role="menuitem" aria-label="Cerrar sesión">Cerrar sesión</a>
+          </nav>
+        </div>
+      </header>
+
+      <section class="welcome" aria-live="polite">
+        <h2 id="welcomeText">¡Hola, {{ username }}! Bienvenido a Parchate.</h2>
+        <p class="meta">Explora actividades cercanas o crea la tuya.</p>
+      </section>
+
+      <section aria-labelledby="feed-title">
+        <h3 id="feed-title" class="sr-only">Actividades recientes</h3>
+        <div class="feed" role="list">
+          {% if actividades %}
+            {% for a in actividades %}
+              <article class="card" role="listitem">
+                <div class="row">
+                  <strong>{{ a.nombre_actividad }}</strong>
+                  <span class="tag">{{ a.categoria|default:"General" }}</span>
+                </div>
+                <div class="meta">{{ a.fecha_hora_inicio|date:"d M Y - H:i" }} · {{ a.ubicacion|default:"Sin ubicación" }}</div>
+                <div class="meta">Participantes: {{ a.participantes_count }}{% if a.cupos %} / {{ a.cupos }}{% endif %}</div>
+                <button class="btn btn-join" aria-label="Unirme a {{ a.nombre_actividad }}">Unirme</button>
+              </article>
+            {% endfor %}
+          {% else %}
+            <div class="card" role="listitem"><strong>No hay actividades.</strong><p class="meta">Crea una nueva actividad para empezar.</p></div>
+          {% endif %}
+        </div>
+      </section>
+    </main>
+
+    <!-- footer eliminado según solicitud -->
+  </div>
+
+  <script>
+    // La plantilla ya renderiza el nombre de usuario y la inicial del avatar desde el servidor.
+
+    // Menú usuario accesible
+    const btn = document.getElementById('avatarBtn');
+    const menu = document.getElementById('menuUser');
+    function toggleMenu(show){
+      const visible = show ?? (menu.style.display !== 'block');
+      menu.style.display = visible ? 'block' : 'none';
+      btn.setAttribute('aria-expanded', String(visible));
+    }
+    btn.addEventListener('click', ()=>toggleMenu());
+    document.addEventListener('click', (e)=>{
+      if(!menu.contains(e.target) && e.target!==btn){ toggleMenu(false); }
+    });
+
+    // Cerrar sesión desde el menú (demo): redirigir a la página de login
+    Array.from(menu.querySelectorAll('a')).find(a=>a.textContent.includes('Cerrar'))?.addEventListener('click', ()=>{
+      window.location.href = '05_login.html';
+    });
+
+    // Toggle barra en móviles (sidebar + overlay)
+    const btnHamb = document.getElementById('btnHamb');
+    const sidebar = document.getElementById('sidebar');
+    const ov = document.getElementById('overlay');
+    function openSidebar(){ sidebar.classList.add('open'); ov.classList.add('show'); btnHamb.setAttribute('aria-expanded','true'); }
+    function closeSidebar(){ sidebar.classList.remove('open'); ov.classList.remove('show'); btnHamb.setAttribute('aria-expanded','false'); }
+    btnHamb?.addEventListener('click', ()=> sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+    ov?.addEventListener('click', closeSidebar);
+
+    // Cerrar sesión desde sidebar (demo)
+    document.getElementById('logout')?.addEventListener('click', ()=> {
+      // demo: redirigir a pantalla de bienvenida
+      location.href = '01_welcome.html';
+    });
+  </script>
+</body>
+</html>
