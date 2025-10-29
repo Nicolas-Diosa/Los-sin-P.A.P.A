@@ -147,7 +147,7 @@
                 </div>
                 <div class="meta">{{ a.fecha_hora_inicio|date:"d M Y - H:i" }} · {{ a.ubicacion|default:"Sin ubicación" }}</div>
                 <div class="meta">Participantes: {{ a.participantes_count }}{% if a.cupos %} / {{ a.cupos }}{% endif %}</div>
-                <button class="btn btn-join" aria-label="Unirme a {{ a.nombre_actividad }}">Unirme</button>
+                <button class="btn btn-join" aria-label="Ver detalles de {{ a.nombre_actividad }}">Ver detalles</button>
               </article>
             {% endfor %}
           {% else %}
@@ -161,7 +161,6 @@
   </div>
 
   <script>
-    // La plantilla ya renderiza el nombre de usuario y la inicial del avatar desde el servidor.
 
     // Menú usuario accesible
     const btn = document.getElementById('avatarBtn');
@@ -176,8 +175,10 @@
       if(!menu.contains(e.target) && e.target!==btn){ toggleMenu(false); }
     });
 
-    // Cerrar sesión desde el menú (demo): redirigir a la página de login
+    // Simular cierre de sesión
     Array.from(menu.querySelectorAll('a')).find(a=>a.textContent.includes('Cerrar'))?.addEventListener('click', ()=>{
+      localStorage.removeItem('parchate_user');
+      // Redirigir a login
       window.location.href = '05_login.html';
     });
 
@@ -192,6 +193,7 @@
 
     // Cerrar sesión desde sidebar (demo)
     document.getElementById('logout')?.addEventListener('click', ()=> {
+      localStorage.removeItem('parchate_user');
       // demo: redirigir a pantalla de bienvenida
       location.href = '01_welcome.html';
     });
