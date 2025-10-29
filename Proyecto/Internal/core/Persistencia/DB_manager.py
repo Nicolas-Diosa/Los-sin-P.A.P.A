@@ -40,6 +40,9 @@ class DB_Manager:
 
     def get_usuario_by_nombre_usuario(cls, nombre_usuario):
         return Usuario.objects.get(nombre_usuario=nombre_usuario)
+    
+    def get_usuario_by_email(cls, email):
+        return Usuario.objects.get(email=email)
 
 
     # -------------------- ACTIVIDADES --------------------

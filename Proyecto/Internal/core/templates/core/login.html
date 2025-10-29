@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parchate · Iniciar sesión</title>
+  <style>
+    @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+    :root{
+      --primary:#FCAF56; --secondary:#7795FC;
+      --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+      --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 10px 24px rgba(0,0,0,.12);
+      --radius:16px; --touch:44px; --error:#b42318;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .panel{width:min(520px,100%);background:var(--g0);border:1px solid var(--g200);border-radius:20px;padding:24px;box-shadow:var(--shadow)}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+    h1{margin:0 0 4px;font-size:1.6rem;color:var(--secondary)}
+    .helper{margin:0 0 16px;color:var(--g600)}
+    .field{margin:12px 0}
+    .label{display:block;font-weight:800;margin-bottom:6px}
+    .input{width:100%;min-height:var(--touch);padding:12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0)}
+    .input:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+    .ctrl{position:relative}
+    .toggle{
+      position:absolute;top:50%;right:10px;transform:translateY(-50%);
+      background:var(--g0);border:1px solid var(--g300);border-radius:10px;padding:6px 10px;cursor:pointer;font-weight:700
+    }
+    .toggle:focus-visible{outline:none;box-shadow:var(--ring)}
+    .err{color:var(--error);font-size:.9rem;margin-top:6px}
+    .input.error{border-color:var(--error)}
+    .actions{display:grid;gap:10px;margin-top:14px}
+    .btn{min-height:var(--touch);padding:12px 18px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer}
+    .btn-primary{background:var(--primary);color:#111}
+    .btn-primary:focus-visible{outline:none;box-shadow:var(--ring)}
+    .links{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
+    .link{color:var(--secondary);font-weight:700;text-decoration:none;padding:8px;border-radius:10px}
+    .link:focus-visible{outline:none;box-shadow:var(--ring)}
+    .banner{display:none}
+    .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel" aria-labelledby="title">
+      <header class="brand" role="banner">
+        <div class="logo" aria-hidden="true"></div>
+        <h1 id="title">Iniciar sesión</h1>
+      </header>
+      <p class="helper">Accede para ver y unirte a actividades cerca de ti.</p>
+
+      <form id="loginForm" method="post" aria-describedby="msgGlobal">
+        <div class="field">
+          <label class="label" for="user">Nombre de usuario</label>
+          <input id="user" class="input" type="text" autocomplete="username"
+                 placeholder="Ingresa tu nombre de usuario" aria-required="true" />
+          <div id="err-user" class="err" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div class="field ctrl">
+          <label class="label" for="pass">Contraseña</label>
+          <input id="pass" class="input" type="password" autocomplete="current-password"
+                 placeholder="Ingresa tu contraseña" aria-required="true" />
+          <button type="button" id="togglePass" class="toggle" aria-label="Mostrar u ocultar contraseña">Mostrar</button>
+          <div id="err-pass" class="err" role="alert" aria-live="polite"></div>
+        </div>
+
+        <!-- Mensaje global (aparece en el estado con error) -->
+        <div id="msgGlobal" class="banner sr-only" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" aria-label="Iniciar sesión">Iniciar sesión</button>
+          <div class="links" aria-label="Acciones secundarias">
+            <a class="link" href="#" aria-label="Recuperar contraseña">Recuperar contraseña</a>
+            <a class="link" href="/signup/" aria-label="Crear cuenta nueva">Crear cuenta</a>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    const $ = s=>document.querySelector(s);
+    const user=$('#user'), pass=$('#pass'), errU=$('#err-user'), errP=$('#err-pass');
+    const globalMsg=$('#msgGlobal');
+
+    function setErr(input, el, msg){
+      input.classList.toggle('error', !!msg);
+      el.textContent = msg || '';
+    }
+    function validate(){
+      let ok = true;
+      const u=user.value.trim();
+      const p=pass.value;
+      setErr(user, errU, u ? '' : 'Este campo es obligatorio.');
+      setErr(pass, errP, p ? '' : 'Este campo es obligatorio.');
+      ok = !!u && !!p;
+      return ok;
+    }
+    $('#loginForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      if(!validate()) return;
+      // Mock: éxito => ir al home
+      // En integración real, validar credenciales; si ok:
+      //window.location.href = '03_home_logged.html';
+    });
+    $('#togglePass').addEventListener('click', ()=>{
+      const isPass = pass.type === 'password';
+      pass.type = isPass ? 'text' : 'password';
+      $('#togglePass').textContent = isPass ? 'Ocultar' : 'Mostrar';
+      pass.focus();
+    });
+  </script>
+</body>
+</html>
