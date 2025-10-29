@@ -23,5 +23,6 @@ urlpatterns = [
     path ('', views.home, name='home'),
     path ('register/', views.view_register, name='register')
     ,
-    path ('actividades/', views.ver_actividades, name='ver_actividades')
+    path ('actividades/', views.ver_actividades, name='ver_actividades'),
+    path ('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad')
 ]
