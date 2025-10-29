@@ -1,5 +1,5 @@
 from core.Persistencia.DB_manager import DB_Manager
-from core.models import Actividad, Usuario
+from core.models import Actividad
 from django.db.models import Count
 
 
@@ -10,13 +10,17 @@ def listar_actividades_conteo():
     qs = qs.annotate(participantes_count=Count('participanteactividad__id_actividad'))
     return qs
 
+def obtener_detalle_actividad(actividad_id):
+    """Devuelve la actividad con id `actividad_id` anotada con participantes_count.
 
-def obtener_usuario_por_id(user_id):
-    """Intenta recuperar un Usuario por su id (UUID). Devuelve None si no existe."""
-    if not user_id:
+    Retorna None si no existe.
+    """
+    if not actividad_id:
         return None
     try:
         db = DB_Manager()
-        return db.read_all(Usuario).filter(id=user_id).first()
+        qs = db.read_all(Actividad).filter(id=actividad_id)
+        qs = qs.annotate(participantes_count=Count('participanteactividad__id_usuario'))
+        return qs.first()
     except Exception:
         return None
