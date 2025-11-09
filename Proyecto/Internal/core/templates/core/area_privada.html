@@ -117,7 +117,7 @@
         <a class="nav-btn" href="/actividades/">Inicio / Actividades</a>
         <a class="nav-btn current" href="/area_privada/" aria-current="page">Área privada y gestión del tiempo</a>
         <a class="nav-btn" href="19_profile.html">Perfil de usuario</a>
-        <button class="nav-btn" id="logout" type="button">Cerrar sesión</button>
+        <a class="nav-btn" href="/logout/">Cerrar sesión</a>
       </nav>
     </aside>
     <div class="overlay" id="overlay" aria-hidden="true"></div>
@@ -125,7 +125,6 @@
     <!-- Contenido -->
     <main role="main">
       <div class="topbar" style="display:none">
-        <h1 style="margin:0;color:#3b82f6">Área privada y gestión del tiempo</h1>
         <button id="btnHamb" class="hamb" aria-controls="sidebar" aria-expanded="false">☰ Menú</button>
       </div>
 
@@ -137,8 +136,8 @@
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
             <h2 id="cal-title" class="title" style="margin:0">Calendario</h2>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <a class="btn btn-primary" href="14_calendar_add.html">Añadir evento o tarea</a>
-              <a class="link" href="13_calendar.html">Ver en pantalla completa</a>
+              <a class="btn btn-primary" href="agregar_evento_tarea.html">Añadir evento o tarea</a>
+              <a class="link" href="calendario_pant_comp.html">Ver en pantalla completa</a>
             </div>
           </div>
 
@@ -184,7 +183,7 @@
   document.getElementById('logout')?.addEventListener('click', ()=>{
     localStorage.removeItem('parchate_user');
     alert('Sesión cerrada (demo).');
-    location.href='01_welcome.html';
+    location.href='home.html';
   });
 
   /* ---------- Calendario (cabecera + cuerpo con alturas iguales) ---------- */
@@ -218,7 +217,7 @@
     el.innerHTML = `
       <h4 title="${ev.name}">${ev.name}</h4>
       <div class="meta">${ev.start}–${ev.end}</div>
-      <div class="ev-actions"><a class="ev-btn" href="13_calendar.html">Abrir</a></div>
+      <div class="ev-actions"><a class="ev-btn" href="agregar_evento_tarea.html">Abrir</a></div>
     `;
     target.appendChild(el);
   }

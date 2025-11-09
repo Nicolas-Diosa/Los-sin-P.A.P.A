@@ -1,8 +1,97 @@
-<h1>HOME</h1>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parchate · Bienvenida</title>
+  <style>
+    @font-face{
+      font-family:"Tokyo";
+      src:url("Tokyo.ttf") format("truetype");
+      font-display:swap;
+    }
+    :root{
+      --primary:#FCAF56;  /* CTA principal */
+      --secondary:#7795FC;/* Marca / CTA secundario */
+      --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g600:#4b5563; --g900:#111827;
+      --radius:16px; --shadow:0 10px 24px rgba(0,0,0,.12); --ring:0 0 0 3px rgba(119,149,252,.35);
+      --touch:44px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:linear-gradient(180deg,var(--g50),var(--g100));
+      color:var(--g900); font:16px/1.5 "Tokyo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    .page{min-height:100dvh; display:grid; grid-template-rows:1fr auto; }
+    .hero{
+      display:grid; place-items:center; padding:28px 16px;
+    }
+    .card{
+      width:min(480px,100%); background:var(--g0); border:1px solid var(--g200);
+      border-radius:20px; padding:28px; box-shadow:var(--shadow);
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px; margin-bottom:8px;
+    }
+    .logo{
+      width:40px; height:40px; border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),var(--secondary));
+    }
+    h1{
+      margin:0; font-size:1.75rem; color:var(--secondary); letter-spacing:.3px;
+    }
+    p{margin:.25rem 0 1.25rem; color:var(--g600)}
+    .actions{display:grid; gap:10px}
+    .btn{
+      min-height:var(--touch); border:1px solid transparent; border-radius:14px;
+      padding:12px 18px; font-weight:700; cursor:pointer;
+    }
+    .btn:focus-visible{outline:none; box-shadow:var(--ring)}
+    .btn-primary{
+      background:var(--primary); color:#111; /* contraste AA sobre #FCAF56 */
+    }
+    .btn-secondary{
+      background:var(--secondary); color:#fff;
+    }
+    footer{
+      border-top:1px solid var(--g200); background:var(--g0);
+    }
+    .footer-in{
+      max-width:960px; margin:auto; padding:14px 16px; display:flex; gap:18px; justify-content:center;
+    }
+    .link{
+      color:var(--secondary); text-decoration:none; font-weight:600;
+      padding:8px; border-radius:10px; display:inline-block;
+    }
+    .link:focus-visible{outline:none; box-shadow:var(--ring)}
+    /* Tab order natural: brand -> Crear -> Iniciar -> Términos -> Privacidad */
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="hero" role="main">
+      <section class="card" aria-labelledby="welcome-title">
+        <div class="brand" tabindex="0" aria-label="Parchate inicio">
+          <div class="logo" aria-hidden="true"></div>
+          <h1 id="welcome-title">Parchate</h1>
+        </div>
 
-<form action="/signup/">
-    {% csrf_token %}
-    <button>
-        Register
-    </button>
-</form>
+        <p>Conecta, organiza y participa en actividades cerca de ti.</p>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="/signup/" aria-label="Crear cuenta en Parchate">Crear cuenta</a>
+          <a class="btn btn-secondary" href="/login/" aria-label="Ir a iniciar sesión">Iniciar sesión</a>
+        </div>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <nav class="footer-in" aria-label="Información legal">
+        <a class="link" href="#" aria-label="Leer Términos del servicio">Términos</a>
+        <a class="link" href="#" aria-label="Leer Política de privacidad">Privacidad</a>
+      </nav>
+    </footer>
+  </div>
+</body>
+</html>
