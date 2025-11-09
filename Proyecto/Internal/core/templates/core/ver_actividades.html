@@ -147,7 +147,7 @@
                 </div>
                 <div class="meta">{{ a.fecha_hora_inicio|date:"d M Y - H:i" }} · {{ a.ubicacion|default:"Sin ubicación" }}</div>
                 <div class="meta">Participantes: {{ a.participantes_count }}{% if a.cupos %} / {{ a.cupos }}{% endif %}</div>
-                <button class="btn btn-join" aria-label="Ver detalles de {{ a.nombre_actividad }}">Ver detalles</button>
+                <a class="btn btn-join" href="{% url 'detalles_actividad' a.id %}" aria-label="Ver detalles de {{ a.nombre_actividad }}">Ver detalles</a>
               </article>
             {% endfor %}
           {% else %}
