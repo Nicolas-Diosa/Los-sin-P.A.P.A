@@ -26,4 +26,5 @@ urlpatterns = [
     path ('signup/', views.signup, name='signup'),
     path ('login/', views.login, name='login'),
     path ('logout/', views.logout, name='logout'),
+    path ('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad')
 ]
