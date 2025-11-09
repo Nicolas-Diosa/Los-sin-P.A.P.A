@@ -72,38 +72,83 @@
         {% csrf_token %} <!-- Seguridad de tokens de django-->
         <!-- Usuario -->
         <div class="field">
-          <label class="label" for="user">Nombre de usuario </label>
-          <input class="input" id="user" name="user" required type="text"
-                 placeholder="Ingrese Nombre de usuario" aria-required="true" />
-          <div id="err-user" class="err" role="alert" aria-live="polite"></div>
+          <label class="label" for="user">Nombre de usuario</label>
+          <input 
+            class="input {% if errors.user %}error{% endif %}" 
+            id="user" 
+            name="user" 
+            required 
+            type="text"
+            placeholder="Ingrese Nombre de usuario"  
+            aria-required="true" 
+          />
+          <!-- Error si existe el usuario-->
+          <div id="err-user" class="err" role="alert">
+            {{ errors.user }}
+          </div>
         </div>
 
         <!-- Email -->
         <div class="field">
           <label class="label" for="email">Correo electrónico</label>
-          <input class="input" id="email" name="email" required type="text" inputmode="email"
-                 placeholder="Ingrese su correo electronico" aria-required="true" />
-          <div id="err-user" class="err" role="alert" aria-live="polite"></div>
+          <input 
+            class="input {% if errors.email %}error{% endif %}" 
+            id="email" 
+            name="email" 
+            required 
+            type="text" 
+            inputmode="email"
+            placeholder="Ingrese su correo electronico" 
+            aria-required="true" 
+          />
+          <!-- Errores de email -->
+          {% if errors.email %}
+            <div id="err-email" class="err">{{ errors.email }}</div>
+          {% endif %}
+          {% if errors.email_validity %}
+            <div id="err-email_val" class="err">{{ errors.email_validity }}</div>
+          {% endif %}
         </div>
-
 
         <!-- Contraseña -->
         <div class="field ctrl">
-          <label class="label" for="pass">Contraseña</label>
-          <input class="input" id="pass1" name="pass1" required type="password" placeholder="Mínimo 8 caracteres"
-                 aria-required="true" aria-describedby="policy"/>
-          <button type="button" class="toggle" aria-label="Mostrar u ocultar contraseña" id="togglePass">Mostrar</button>
-          <div id="err-pass" class="err" role="alert" aria-live="polite"></div>
+          <label class="label" for="pass1">Contraseña</label>
+          <input 
+            class="input {% if errors.password or errors.policy %}error{% endif %}" 
+            id="pass1" 
+            name="pass1" 
+            required 
+            type="password" 
+           placeholder="Mínimo 8 caracteres"
+            aria-required="true" 
+          />
+          <button type="button" class="toggle" id="togglePass">Mostrar</button>
+
+          <!-- Errores de contraseña -->
+          {% if errors.password %}
+            <div id="err-pass" class="err">{{ errors.password }}</div>
+          {% endif %}
+          {% if errors.policy %}
+            <div id="err-policy" class="err">{{ errors.policy }}</div>
+          {% endif %}
         </div>
 
         <!-- Confirmación -->
         <div class="field ctrl">
           <label class="label" for="pass2">Confirmar contraseña</label>
-          <input class="input" id="pass2" name="pass2" required type="password" placeholder="Repite tu contraseña"
-                 aria-required="true"/>
-          <button type="button" class="toggle" aria-label="Mostrar u ocultar confirmación" id="togglePass2">Mostrar</button>
-          <div id="err-pass2" class="err" role="alert" aria-live="polite"></div>
+          <input 
+            class="input {% if errors.password %}error{% endif %}" 
+            id="pass2" 
+            name="pass2" 
+            required 
+            type="password" 
+            placeholder="Repite tu contraseña"
+            aria-required="true"
+          />
+          <button type="button" class="toggle" id="togglePass2">Mostrar</button>
         </div>
+
+      
 
         <!-- Política contraseña -->
         <ul id="policy" class="policy" aria-live="polite">
@@ -132,79 +177,29 @@
   </div>
 
   <script>
-    // Accesibilidad y microvalidaciones no intrusivas (demo)
-    const $ = s => document.querySelector(s);
-    const user = $('#user'), pass = $('#pass'), pass2 = $('#pass2');
-    const pLen = $('#p-len'), pNum = $('#p-num'), pSym = $('#p-sym');
-    const errUser = $('#err-user'), errPass = $('#err-pass'), errPass2 = $('#err-pass2'), errPol = $('#err-policy');
-    const submitBtn = $('#submitBtn'), form = $('#formSignup');
+  document.addEventListener("DOMContentLoaded", function() {
 
-    function policy(passStr){
-      return {
-        len: passStr.length >= 8,
-        num: /\d/.test(passStr),
-        sym: /[^A-Za-z0-9]/.test(passStr)
-      };
-    }
-    function renderPolicy(p){
-      pLen.classList.toggle('pass', p.len);
-      pNum.classList.toggle('pass', p.num);
-      pSym.classList.toggle('pass', p.sym);
-    }
-    function setError(el, msgEl, msg){
-      el.classList.toggle('error', !!msg);
-      msgEl.textContent = msg || '';
-    }
+  // 🔹 Campo 1: Contraseña
+    const pass1 = document.getElementById("pass1");
+    const toggle1 = document.getElementById("togglePass");
+  
+    toggle1.addEventListener("click", function() {
+      const isPassword = pass1.type === "password";
+      pass1.type = isPassword ? "text" : "password";
+      toggle1.textContent = isPassword ? "Ocultar" : "Mostrar";
+    });
 
-    function validate(){
-      let ok = true;
-      // Usuario/Correo
-      const v = user.value.trim();
-      if(!v){ setError(user, errUser, "Este campo es obligatorio."); ok=false; }
-      else if(v.includes('@')){
-        // Quick email check
-        const emOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-        setError(user, errUser, emOk ? "" : "Ingresa un correo válido.");
-        ok = ok && emOk;
-      }else{
-        const uOk = /^[A-Za-z0-9_\.]{3,15}$/.test(v);
-        setError(user, errUser, uOk ? "" : "Usa 3–15 caracteres, sin espacios ni símbolos no permitidos.");
-        ok = ok && uOk;
-      }
+  // 🔹 Campo 2: Confirmar contraseña
+    const pass2 = document.getElementById("pass2");
+    const toggle2 = document.getElementById("togglePass2");
+  
+    toggle2.addEventListener("click", function() {
+      const isPassword = pass2.type === "password";
+      pass2.type = isPassword ? "text" : "password";
+    toggle2.textContent = isPassword ? "Ocultar" : "Mostrar";
+    });
 
-      // Contraseña
-      const pol = policy(pass.value);
-      renderPolicy(pol);
-      const passOk = pol.len && pol.num && pol.sym;
-      setError(pass, errPass, passOk ? "" : "Tu contraseña no cumple la política.");
-      ok = ok && passOk;
-
-      // Confirmación
-      const match = pass.value && pass.value === pass2.value;
-      setError(pass2, errPass2, match ? "" : "Las contraseñas no coinciden.");
-      ok = ok && match;
-
-      return ok;
-    }
-
-    pass.addEventListener('input', validate);
-    pass2.addEventListener('input', validate);
-    user.addEventListener('input', validate);
-
-    // Mostrar/ocultar
-    function toggleVis(id, btnId){
-      const input = document.getElementById(id);
-      const btn   = document.getElementById(btnId);
-      btn.addEventListener('click', ()=>{
-        const isPass = input.type === 'password';
-        input.type = isPass ? 'text' : 'password';
-        btn.textContent = isPass ? 'Ocultar' : 'Mostrar';
-        input.focus();
-      })
-    }
-    toggleVis('pass','togglePass');
-    toggleVis('pass2','togglePass2');
-
+  });
     // Enviar con Enter; ESC no borra datos (no añadimos handler para limpiar)
     form.addEventListener('submit', (e)=>{
       e.preventDefault();

@@ -1,46 +1,79 @@
 from core.Persistencia.DB_manager import DB_Manager
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+import re
 
-class auth:
-    def register(request):
-        db = DB_Manager()
-        if checkers.check_register_password(request) and checkers.check_register_user(request) and checkers.check_register_email(request):
-            db.create_usuario(request.POST.get('user'), request.POST.get('email'), request.POST.get('pass1'), None, None, None)
-            return 'core/signup_success.html'
-        return 'core/signup_conflict.html'
+class UserValidator:
     
-class checkers:
-        
-    def check_register_password(request):
-        if request.POST.get('pass1') == request.POST.get('pass2'):
-            return True
-        return False
-    
-    def check_register_user(request):
-        db = DB_Manager()
+
+    def __init__(self, db_manager: DB_Manager):
+        self.db = db_manager
+
+    def passwords_match(self, pass1, pass2):
+        return pass1 == pass2
+
+    def username_available(self, username):
         try:
-            db.get_usuario_by_nombre_usuario(request.POST.get('user'))
+            self.db.get_usuario_by_nombre_usuario(username)
             return False
-            
         except ObjectDoesNotExist:
             return True
 
-    def check_register_email(request):
-        db = DB_Manager()
+    def email_available(self, email):
         try:
-            db.get_usuario_by_email(request.POST.get('email'))
+            self.db.get_usuario_by_email(email)
             return False
-            
         except ObjectDoesNotExist:
             return True
         
-    def check_login(request):
-        db = DB_Manager()
-        try:
-            db.get_usuario_by_nombre_usuario(request.POST.get('user'))
-            return True
-            
-        except ObjectDoesNotExist:
-            return False
+    def is_valid_email(self, email):
+        return (
+            re.search(r'@', email)
+        )
+
+    def is_valid_password_policy(self, password):
         
+        return (
+            len(password) >= 8
+            and re.search(r'\d', password)
+            and re.search(r'[^A-Za-z0-9]', password)
+        )
+
+
+class Auth:
+    
+
+    def __init__(self, db_manager: DB_Manager):
+        self.db = db_manager
+        self.validator = UserValidator(db_manager)
+
+    def register_user(self, data: dict, request):
+        username = data.get('user')
+        email = data.get('email')
+        pass1 = data.get('pass1')
+        pass2 = data.get('pass2')
+
+        errors = {}
+
+        # Validaciones
+        if not self.validator.username_available(username):
+            errors['user'] = "El nombre de usuario ya está registrado."
+
+        if not self.validator.email_available(email):
+            errors['email'] = "El correo electrónico ya está registrado."
+        
+        if not self.validator.is_valid_email(email):
+            errors['email_validity'] = "El correo electrónico no es valido."
+
+        if not self.validator.passwords_match(pass1, pass2):
+            errors['password'] = "Las contraseñas no coinciden."
+
+        if not self.validator.is_valid_password_policy(pass1):
+            errors['policy'] = "La contraseña no cumple con la política (mínimo 8 caracteres, un número y un símbolo)."
+
+        if errors:
+            return False, errors
+
+        self.db.create_usuario(username, email, pass1, None, None, None)
+        request.session['inicio_sesion'] = True
+        request.session['username'] = request.POST.get('user')
+        return True, {}
