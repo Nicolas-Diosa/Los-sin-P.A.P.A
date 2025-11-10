@@ -53,23 +53,29 @@
       <p class="helper">Accede para ver y unirte a actividades cerca de ti.</p>
 
       <form id="loginForm" method="post" aria-describedby="msgGlobal">
+        {% csrf_token %}
         <div class="field">
           <label class="label" for="user">Nombre de usuario</label>
-          <input id="user" class="input" type="text" autocomplete="username"
-                 placeholder="Ingresa tu nombre de usuario" aria-required="true" />
-          <div id="err-user" class="err" role="alert" aria-live="polite"></div>
+          <input id="user" name="user" class="input {% if errors.user %}error{% endif %}" type="text" autocomplete="username" placeholder="Ingresa tu nombre de usuario" aria-required="true" />
+          {% if errors.user %}
+          <div id="err-user" class="err" role="alert">{{ errors.user }}</div>
+          {% endif %}
         </div>
 
         <div class="field ctrl">
           <label class="label" for="pass">Contraseña</label>
-          <input id="pass" class="input" type="password" autocomplete="current-password"
+          <input id="pass" name="password" class="input {% if errors.password %}error{% endif %}" type="password " autocomplete="current-password"
                  placeholder="Ingresa tu contraseña" aria-required="true" />
           <button type="button" id="togglePass" class="toggle" aria-label="Mostrar u ocultar contraseña">Mostrar</button>
-          <div id="err-pass" class="err" role="alert" aria-live="polite"></div>
+          {% if errors.password %}
+          <div id="err-pass" class="err" role="alert">{{ errors.password }}</div>
+          {% endif %}
         </div>
 
         <!-- Mensaje global (aparece en el estado con error) -->
-        <div id="msgGlobal" class="banner sr-only" aria-live="polite"></div>
+        {% if errors %}
+          <div id="msgGlobal" class="banner err" aria-live="polite">Por favor inténtalo de nuevo.</div>
+        {% endif %}
 
         <div class="actions">
           <button class="btn btn-primary" type="submit" aria-label="Iniciar sesión">Iniciar sesión</button>
@@ -100,13 +106,7 @@
       ok = !!u && !!p;
       return ok;
     }
-    $('#loginForm').addEventListener('submit', (e)=>{
-      e.preventDefault();
-      if(!validate()) return;
-      // Mock: éxito => ir al home
-      // En integración real, validar credenciales; si ok:
-      //window.location.href = '03_home_logged.html';
-    });
+    
     $('#togglePass').addEventListener('click', ()=>{
       const isPass = pass.type === 'password';
       pass.type = isPass ? 'text' : 'password';

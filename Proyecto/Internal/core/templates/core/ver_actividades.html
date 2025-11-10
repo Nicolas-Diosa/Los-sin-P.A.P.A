@@ -121,7 +121,7 @@
           <div class="spacer"></div>
           <!-- Indicador visible de sesión activa: avatar + nombre en menu -->
           <button id="avatarBtn" class="avatar" aria-haspopup="menu" aria-expanded="false" aria-controls="menuUser" aria-label="Menú de cuenta">
-            {{ username|default:"U"|slice:":1"|upper }}
+            {{ request.session.username|slice:":1"|upper }}
           </button>
           <nav id="menuUser" class="menu" role="menu" aria-label="Menú de cuenta">
             <a href="#" role="menuitem" aria-label="Ver perfil">Perfil</a>

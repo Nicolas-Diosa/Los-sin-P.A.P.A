@@ -37,6 +37,12 @@ class UserValidator:
             and re.search(r'\d', password)
             and re.search(r'[^A-Za-z0-9]', password)
         )
+    def incorrect_password(self, username, password):
+        try:
+            usuario = self.db.get_usuario_by_nombre_usuario(username)
+            return usuario.contrasena != password
+        except ObjectDoesNotExist:
+            return False
 
 
 class Auth:
@@ -76,4 +82,26 @@ class Auth:
         self.db.create_usuario(username, email, pass1, None, None, None)
         request.session['inicio_sesion'] = True
         request.session['username'] = request.POST.get('user')
+        return True, {}
+    
+    def login_user(self, data:dict, request):
+
+        request.session.flush()
+        username = data.get('user')
+        password = data.get('password')
+        errors = {}
+
+        # Validaciones
+        if self.validator.username_available(username):
+            errors['user'] = "El nombre de usuario no está registrado."
+
+        if self.validator.incorrect_password(username, password):
+            errors['password'] = "Contraseña incorrecta."
+
+        if errors:
+            return False, errors
+
+        request.session['inicio_sesion'] = True
+        request.session['username'] = data.get('user')
+
         return True, {}

@@ -1,12 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
 from core.Negocio.auth import *
 from core.Negocio.actividades import listar_actividades_conteo
-from .forms import CustomUserCreationForm
-from .models import Actividad, Usuario
 from django.db.models import Count
 from core.Persistencia.DB_manager import DB_Manager
-from django.shortcuts import redirect
 from core.Negocio.actividades import obtener_detalle_actividad
 from django.http import Http404
 
@@ -16,6 +12,14 @@ def home(request):
     return render(request, 'core/home.html')
 
 def login(request):
+    if request.method == 'POST':
+        auth_service = Auth(DB_Manager())
+        success, errors = auth_service.login_user(request.POST, request)
+
+        if success:
+            return render(request, 'core/ver_actividades.html')
+        else:
+            return render(request, 'core/login.html', {'errors': errors})
     return render(request, 'core/login.html')
 
 def signup(request):
