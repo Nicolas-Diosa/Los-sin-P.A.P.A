@@ -1,0 +1,66 @@
+<!-- core/templates/core/actividad_creada.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parchate · Actividad creada</title>
+  <style>
+    :root{
+      --primary:#FCAF56; --secondary:#7795FC;
+      --g0:#fff; --g50:#f9fafb; --g200:#e5e7eb; --g900:#111827;
+      --shadow:0 10px 24px rgba(0,0,0,.12); --radius:18px; --touch:44px;
+    }
+    body{
+      margin:0;
+      background:var(--g50);
+      color:var(--g900);
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      display:flex;align-items:center;justify-content:center;height:100vh;
+    }
+    .card{
+      background:var(--g0);
+      border:1px solid var(--g200);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      width:min(420px, 90%);
+      text-align:center;
+      padding:28px 20px;
+    }
+    .icon{
+      width:84px;height:84px;border-radius:50%;
+      display:grid;place-items:center;
+      background:rgba(119,149,252,.12);
+      color:var(--secondary);font-size:40px;
+      margin:0 auto 12px;
+    }
+    h1{margin:0 0 12px;font-size:1.4rem}
+    p{margin:0 0 20px;color:#444}
+    .btn{
+      min-height:var(--touch);
+      padding:12px 18px;
+      border-radius:14px;
+      border:1px solid transparent;
+      font-weight:700;
+      cursor:pointer;
+      background:var(--primary);
+      color:#111;
+    }
+    .btn:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(119,149,252,.35)}
+  </style>
+</head>
+<body>
+  <div class="card" role="alertdialog" aria-labelledby="title" aria-describedby="desc">
+    <div class="icon" aria-hidden="true">✓</div>
+    <h1 id="title">¡Actividad creada con éxito!</h1>
+    <p id="desc">Tu nueva actividad ha sido registrada correctamente en el sistema.</p>
+    <button class="btn" id="volverBtn">Volver al inicio</button>
+  </div>
+
+  <script>
+    document.getElementById('volverBtn').addEventListener('click', function() {
+      window.location.href = "{% url 'actividades' %}";
+    });
+  </script>
+</body>
+</html>

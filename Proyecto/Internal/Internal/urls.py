@@ -11,5 +11,7 @@ urlpatterns = [
     path ('signup/', views.signup, name='signup'),
     path ('login/', views.login, name='login'),
     path ('logout/', views.logout, name='logout'),
+    path('crear_actividad/', views.crear_actividad, name='crear_actividad'),
+    path('actividad_creada/', views.actividad_creada, name='actividad_creada'),
     path ('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad')
 ]

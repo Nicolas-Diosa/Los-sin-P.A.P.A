@@ -1,0 +1,124 @@
+<!-- core/templates/core/07_activity_create.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parchate · Crear actividad</title>
+  <style>
+    @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+    :root{
+      --primary:#FCAF56; --secondary:#7795FC;
+      --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+      --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 10px 24px rgba(0,0,0,.12);
+      --radius:16px; --touch:44px; --error:#b42318;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    header{position:sticky;top:0;z-index:10;background:var(--g0);border-bottom:1px solid var(--g200)}
+    .head{max-width:900px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:12px;height:64px}
+    .back{min-height:var(--touch);display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0);cursor:pointer}
+    .back:focus-visible{outline:none;box-shadow:var(--ring)}
+    h1{margin:0;font-size:1.25rem}
+    .container{max-width:900px;margin:auto;padding:16px}
+    .panel{background:var(--g0);border:1px solid var(--g200);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+    .grid{display:grid;gap:12px}
+    @media (min-width:760px){ .grid-2{grid-template-columns:1fr 1fr} }
+    .label{display:block;font-weight:800;margin-bottom:6px}
+    .req::after{content:" *"; color:#b42318; font-weight:900}
+    .input,.select,.area,.file{
+      width:100%;min-height:var(--touch);padding:12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0)
+    }
+    .area{min-height:120px;resize:vertical}
+    .input:focus,.select:focus,.area:focus,.file:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+    .err{color:var(--error);font-size:.9rem;margin-top:6px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{min-height:var(--touch);padding:12px 18px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer}
+    .btn-primary{background:var(--primary);color:#111}
+    .btn-secondary{background:var(--g0);border:1px solid var(--g300)}
+    .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+    .helper{color:var(--g600);font-size:.92rem}
+  </style>
+</head>
+<body>
+  <header role="banner">
+    <div class="head">
+      <button class="back" onclick="window.history.back()">← Volver</button>
+      <h1>Crear actividad</h1>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <section class="panel" aria-labelledby="form-title">
+      <h2 id="form-title" style="margin:0 0 10px">Completa los datos</h2>
+
+      {% if error %}
+        <p style="color:red; font-weight:600;">{{ error }}</p>
+      {% endif %}
+
+      <form method="POST" enctype="multipart/form-data" class="grid grid-2" novalidate>
+        {% csrf_token %}
+
+        <!-- Nombre -->
+        <div>
+          <label class="label req" for="nombre_actividad">Nombre de la actividad</label>
+          <input id="nombre_actividad" name="nombre_actividad" class="input" type="text" placeholder="Ej: Partido de fútbol" required>
+        </div>
+
+        <!-- Categoría -->
+        <div>
+          <label class="label req" for="categoria">Tipo de actividad</label>
+          <select id="categoria" name="categoria" class="select" required>
+            <option value="">Selecciona una opción</option>
+            <option value="Deporte">Deporte</option>
+            <option value="Estudio">Estudio</option>
+            <option value="Ocio">Ocio</option>
+          </select>
+        </div>
+
+        <!-- Ubicación -->
+        <div>
+          <label class="label req" for="ubicacion">Ubicación</label>
+          <input id="ubicacion" name="ubicacion" class="input" type="text" placeholder="Ej: Biblioteca Central" required>
+        </div>
+
+        <!-- Fecha inicio -->
+        <div>
+          <label class="label req" for="fecha_hora_inicio">Fecha y hora de inicio</label>
+          <input id="fecha_hora_inicio" name="fecha_hora_inicio" class="input" type="datetime-local" required>
+        </div>
+
+        <!-- Fecha fin -->
+        <div>
+          <label class="label" for="fecha_hora_fin">Fecha y hora de fin</label>
+          <input id="fecha_hora_fin" name="fecha_hora_fin" class="input" type="datetime-local">
+        </div>
+
+        <!-- Cupos -->
+        <div>
+          <label class="label req" for="cupos">Cupos</label>
+          <input id="cupos" name="cupos" class="input" type="number" min="1" placeholder="Ej: 10" required>
+        </div>
+
+        <!-- Descripción -->
+        <div class="grid" style="grid-column:1/-1">
+          <label class="label" for="descripcion">Descripción</label>
+          <textarea id="descripcion" name="descripcion" class="area" maxlength="300" placeholder="Cuenta de qué trata la actividad."></textarea>
+        </div>
+
+        <!-- Foto -->
+        <div>
+          <label class="label" for="foto_actividad">Foto (opcional)</label>
+          <input id="foto_actividad" name="foto_actividad" class="file" type="file" accept="image/*">
+        </div>
+
+        <!-- Botones -->
+        <div class="row" style="grid-column:1/-1;justify-content:flex-end;margin-top:8px">
+          <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear</button>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
