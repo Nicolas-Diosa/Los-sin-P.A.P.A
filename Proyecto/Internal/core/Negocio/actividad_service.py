@@ -2,7 +2,6 @@ import os
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from datetime import datetime
-
 from core.Persistencia.DB_manager import DB_Manager
 
 # core/Negocio/actividad_service.py
@@ -14,14 +13,16 @@ class ActividadService:
     Capa de negocio para manejar la lógica de actividades.
     """
 
-    def crear_actividad(self, datos, usuario, foto=None):
+    def crear_actividad( self, request, datos, foto=None):
         """
         Crea una nueva actividad validando los datos antes de guardarla.
         """
+        db = DB_Manager()
+
         # Buscar el usuario (creador)
         try:
-            creador = Usuario.objects.get(id=usuario.id)
-        except Usuario.DoesNotExist:
+            creador = db.get_usuario_by_nombre_usuario(request.session['username'])
+        except db.get_usuario_by_nombre_usuario(request.session['username']).DoesNotExist:
             raise ValueError("Usuario no encontrado en la base de datos.")
 
         # Validaciones
@@ -31,12 +32,14 @@ class ActividadService:
             raise ValueError("La fecha de inicio es obligatoria.")
 
         # Guardar actividad
-        actividad = Actividad.objects.create(
+        actividad = db.create_actividad(
             id_creador=creador,
             nombre_actividad=datos['nombre_actividad'],
             descripcion=datos.get('descripcion', ''),
             categoria=datos.get('categoria', ''),
             ubicacion=datos.get('ubicacion', ''),
+            lat=0,
+            lng=0,
             fecha_hora_inicio=datos['fecha_hora_inicio'],
             fecha_hora_fin=datos.get('fecha_hora_fin'),
             cupos=datos.get('cupos') or 0,
