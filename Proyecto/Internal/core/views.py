@@ -91,8 +91,7 @@ def crear_actividad(request):
 
         try:
             # ⚠️ Usa un usuario temporal si no hay sesión iniciada
-            usuario = request.user if request.user.is_authenticated else Usuario.objects.first()
-            service.crear_actividad(datos=datos, usuario=usuario, foto=foto)
+            service.crear_actividad(request, datos=datos,  foto=foto)
             return redirect('actividad_creada')
         except Exception as e:
             return render(request, 'core/crear_actividad.html', {'error': str(e)})
