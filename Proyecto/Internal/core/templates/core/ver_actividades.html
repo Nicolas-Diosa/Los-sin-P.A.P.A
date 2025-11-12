@@ -133,8 +133,18 @@
       
       <section class="welcome" aria-live="polite">
         <h2 id="welcomeText">¡Hola, {{ request.session.username }}! Bienvenido a Parchate.</h2>
-        <p class="meta">Explora actividades cercanas o crea la tuya.</p>
-      </section>
+       <p class="meta">Explora actividades cercanas o crea la tuya.</p>
+</section>
+
+<!-- Botón para crear nueva actividad -->
+<div style="text-align: right; margin-bottom: 20px; margin-bottom: 25px; margin-top: 30px;">
+  <a href="{% url 'crear_actividad' %}" 
+     class="btn" 
+     style="background: var(--primary); color: black; font-weight: 800; padding: 10px 18px; border-radius: 12px; text-decoration: none;">
+     ➕ Crear nueva actividad
+  </a>
+</div>
+
 
       <section aria-labelledby="feed-title">
         <h3 id="feed-title" class="sr-only">Actividades recientes</h3>

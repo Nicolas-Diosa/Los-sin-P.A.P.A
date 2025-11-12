@@ -5,6 +5,11 @@ from django.db.models import Count
 from core.Persistencia.DB_manager import DB_Manager
 from core.Negocio.actividades import obtener_detalle_actividad
 from django.http import Http404
+from django.utils import timezone
+from core.models import Usuario
+from core.Negocio.actividad_service import ActividadService
+from .forms import CustomUserCreationForm
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -12,16 +17,18 @@ def home(request):
     return render(request, 'core/home.html')
 
 def login(request):
+    if request.method == 'GET':
+        return render(request, 'core/login.html')
+
     if request.method == 'POST':
         auth_service = Auth(DB_Manager())
         success, errors = auth_service.login_user(request.POST, request)
 
         if success:
-            return render(request, 'core/ver_actividades.html')
+            return redirect('/actividades/')
         else:
-            return render(request, 'core/login.html', {'errors': errors})
-    return render(request, 'core/login.html')
-
+            return render(request, 'core/login.html',{'errors':errors})
+                                                       
 def signup(request):
     if request.method == 'GET':
         return render(request, 'core/signup.html')
@@ -66,3 +73,33 @@ def detalles_actividad(request, id):
         'actividad': actividad,
         'username': request.session.get('username') or request.session.get('nombre_usuario') or 'Invitado'
     })
+
+def crear_actividad(request):
+    service = ActividadService()
+
+    if request.method == "POST":
+        datos = {
+            'nombre_actividad': request.POST.get('nombre_actividad'),
+            'descripcion': request.POST.get('descripcion'),
+            'categoria': request.POST.get('categoria'),
+            'ubicacion': request.POST.get('ubicacion'),
+            'fecha_hora_inicio': request.POST.get('fecha_hora_inicio'),
+            'fecha_hora_fin': request.POST.get('fecha_hora_fin'),
+            'cupos': request.POST.get('cupos'),
+        }
+        foto = request.FILES.get('foto_actividad')
+
+        try:
+            # ⚠️ Usa un usuario temporal si no hay sesión iniciada
+            usuario = request.user if request.user.is_authenticated else Usuario.objects.first()
+            service.crear_actividad(datos=datos, usuario=usuario, foto=foto)
+            return redirect('actividad_creada')
+        except Exception as e:
+            return render(request, 'core/crear_actividad.html', {'error': str(e)})
+
+    return render(request, 'core/crear_actividad.html')
+
+
+
+def actividad_creada(request):
+    return render(request, 'core/actividad_creada.html')
