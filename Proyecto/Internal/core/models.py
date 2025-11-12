@@ -47,7 +47,7 @@ class Actividad(models.Model):
 #  MODELO: PARTICIPANTES ACTIVIDAD
 # ===========================
 class ParticipanteActividad(models.Model):
-    id_actividad = models.ForeignKey('Actividad', on_delete=models.CASCADE, db_column='id_actividad')
+    id_actividad = models.ForeignKey('Actividad', on_delete=models.CASCADE, db_column='id_actividad', primary_key=True)
     id_usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='id_usuario')
     hora_llegada = models.DateTimeField(blank=True, null=True)
     hora_salida = models.DateTimeField(blank=True, null=True)
@@ -57,7 +57,6 @@ class ParticipanteActividad(models.Model):
         managed = False
         db_table = 'participantes_actividad'
         unique_together = (('id_actividad', 'id_usuario'),)
-
 
 # ===========================
 #  MODELO: MATERIAS
