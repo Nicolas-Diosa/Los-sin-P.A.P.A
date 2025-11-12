@@ -63,6 +63,7 @@ def ver_area_priv(request):
 def logout(request):
     request.session.flush()
     return redirect('home')
+
 def detalles_actividad(request, id):
     """Vista de detalles de actividad. Usa la capa de negocio para obtener datos."""
     actividad = obtener_detalle_actividad(id)
@@ -91,13 +92,19 @@ def crear_actividad(request):
         foto = request.FILES.get('foto_actividad')
 
         try:
-            # ⚠️ Usa un usuario temporal si no hay sesión iniciada
-            usuario = request.user if request.user.is_authenticated else Usuario.objects.first()
+            username = request.session.get('username') or request.session.get('nombre_usuario')
+            if username:
+                try:
+                    usuario = Usuario.objects.get(nombre_usuario=username)
+                except Exception as e:
+                    usuario = Usuario(nombre='Invitado')  # temporal
+            else:
+                usuario = Usuario(nombre='Invitado')  # temporal
             service.crear_actividad(datos=datos, usuario=usuario, foto=foto)
             return redirect('actividad_creada')
         except Exception as e:
             return render(request, 'core/crear_actividad.html', {'error': str(e)})
-
+        
     return render(request, 'core/crear_actividad.html')
 
 
