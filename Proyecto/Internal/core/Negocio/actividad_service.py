@@ -1,5 +1,6 @@
 from datetime import datetime
 from core.Persistencia.DB_manager import DB_Manager
+import datetime
 
 
 class ActividadService:
