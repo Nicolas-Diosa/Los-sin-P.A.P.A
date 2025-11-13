@@ -14,4 +14,8 @@ urlpatterns = [
     path('crear_actividad/', views.crear_actividad, name='crear_actividad'),
     path('actividad_creada/', views.actividad_creada, name='actividad_creada'),
     path('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad')
+    path('actividad/<uuid:actividad_id>/asistencia/', views.registrar_asistencia, name='registrar_asistencia'),
+    path('actividad/<uuid:actividad_id>/asistencia/confirmacion/', views.asistencia_registrada, name='asistencia_registrada'),
+    path('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad')
 ]
+
