@@ -13,8 +13,10 @@ from django.http import HttpResponse
 
 # Create your views here.
 
+
 def home(request):
     return render(request, 'core/home.html')
+
 
 def login(request):
     if request.method == 'GET':
@@ -27,8 +29,9 @@ def login(request):
         if success:
             return redirect('/actividades/')
         else:
-            return render(request, 'core/login.html',{'errors':errors})
-                                                       
+            return render(request, 'core/login.html', {'errors': errors})
+
+
 def signup(request):
     if request.method == 'GET':
         return render(request, 'core/signup.html')
@@ -42,6 +45,7 @@ def signup(request):
         else:
             return render(request, 'core/signup.html', {'errors': errors})
 
+
 def ver_actividades(request):
     username = request.session.get('username', 'Invitado')
     actividades = listar_actividades_conteo()
@@ -50,6 +54,7 @@ def ver_actividades(request):
         'username': username,
         'actividades': actividades,
     })
+
 
 def ver_area_priv(request):
     username = request.session.get('username', 'Invitado')
@@ -60,9 +65,12 @@ def ver_area_priv(request):
         'actividades': actividades,
     })
 
+
 def logout(request):
     request.session.flush()
     return redirect('home')
+
+
 def detalles_actividad(request, id):
     """Vista de detalles de actividad. Usa la capa de negocio para obtener datos."""
     actividad = obtener_detalle_actividad(id)
@@ -73,6 +81,7 @@ def detalles_actividad(request, id):
         'actividad': actividad,
         'username': request.session.get('username') or request.session.get('nombre_usuario') or 'Invitado'
     })
+
 
 def crear_actividad(request):
     service = ActividadService()
@@ -97,7 +106,6 @@ def crear_actividad(request):
             return render(request, 'core/crear_actividad.html', {'error': str(e)})
 
     return render(request, 'core/crear_actividad.html')
-
 
 
 def actividad_creada(request):

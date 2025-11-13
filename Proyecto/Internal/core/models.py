@@ -4,6 +4,8 @@ import uuid
 # ===========================
 #  MODELO: USUARIOS
 # ===========================
+
+
 class Usuario(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombre_usuario = models.CharField(max_length=30, unique=True)
@@ -21,6 +23,8 @@ class Usuario(models.Model):
 # ===========================
 #  MODELO: ACTIVIDADES
 # ===========================
+
+
 class Actividad(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id_creador = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='id_creador')
@@ -46,6 +50,8 @@ class Actividad(models.Model):
 # ===========================
 #  MODELO: PARTICIPANTES ACTIVIDAD
 # ===========================
+
+
 class ParticipanteActividad(models.Model):
     id_actividad = models.ForeignKey('Actividad', on_delete=models.CASCADE, db_column='id_actividad')
     id_usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='id_usuario')
@@ -62,6 +68,8 @@ class ParticipanteActividad(models.Model):
 # ===========================
 #  MODELO: MATERIAS
 # ===========================
+
+
 class Materia(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id_usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='id_usuario')
@@ -79,6 +87,8 @@ class Materia(models.Model):
 # ===========================
 #  MODELO: EVENTOS CALENDARIO
 # ===========================
+
+
 class EventoCalendario(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id_usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='id_usuario')
@@ -96,6 +106,8 @@ class EventoCalendario(models.Model):
 # ===========================
 #  MODELO: TAREAS
 # ===========================
+
+
 class Tarea(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id_usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, db_column='id_usuario')
@@ -118,6 +130,8 @@ class Tarea(models.Model):
 # ===========================
 #  MODELO: CHATS
 # ===========================
+
+
 class Chat(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id_actividad = models.ForeignKey('Actividad', on_delete=models.CASCADE, db_column='id_actividad', unique=True)

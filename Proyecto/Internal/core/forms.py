@@ -6,12 +6,13 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class CustomUserCreationForm(UserCreationForm):
     # Agrega el campo email
     email = forms.EmailField(
         label="Correo Electrónico",
         max_length=254,
-        required=True, # Hazlo obligatorio
+        required=True,  # Hazlo obligatorio
         help_text='Obligatorio. Ingresa una dirección de correo válida.',
     )
 
