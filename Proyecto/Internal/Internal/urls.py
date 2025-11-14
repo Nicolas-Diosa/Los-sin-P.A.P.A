@@ -18,4 +18,3 @@ urlpatterns = [
     path('actividad/<uuid:actividad_id>/asistencia/confirmacion/', views.asistencia_registrada, name='asistencia_registrada'),
     path('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad')
 ]
-

@@ -100,7 +100,7 @@ def crear_actividad(request):
         foto = request.FILES.get('foto_actividad')
 
         try:
-            # ⚠️ Usa un usuario temporal si no hay sesión iniciada
+            # Usa un usuario temporal si no hay sesión iniciada
             service.crear_actividad(request, datos=datos,  foto=foto)
             return redirect('actividad_creada')
         except Exception as e:
@@ -112,6 +112,7 @@ def crear_actividad(request):
 def actividad_creada(request):
     return render(request, 'core/actividad_creada.html')
 
+
 def registrar_asistencia(request, actividad_id):
     db = DB_Manager()
     actividad = Actividad.objects.get(id=actividad_id)
@@ -121,7 +122,6 @@ def registrar_asistencia(request, actividad_id):
         hora_llegada = request.POST.get('hora_llegada')
         hora_salida = request.POST.get('hora_salida')
 
-        
         if not hora_llegada or not hora_salida:
             return render(request, 'core/registrar_asistencia.html', {
                 'actividad': actividad,
@@ -129,7 +129,7 @@ def registrar_asistencia(request, actividad_id):
             })
 
         try:
-            
+
             fecha_base = actividad.fecha_hora_inicio.date()
             hora_llegada_dt = timezone.make_aware(
                 datetime.combine(fecha_base, datetime.strptime(hora_llegada, '%H:%M').time()),
@@ -145,18 +145,15 @@ def registrar_asistencia(request, actividad_id):
                 'error': 'Formato de hora inválido. Use HH:MM.'
             })
 
-        
         if hora_llegada_dt >= hora_salida_dt:
             return render(request, 'core/registrar_asistencia.html', {
                 'actividad': actividad,
                 'error': 'La hora de salida debe ser posterior a la hora de llegada.'
             })
 
-        
         inicio_actividad = actividad.fecha_hora_inicio
         fin_actividad = actividad.fecha_hora_fin or actividad.fecha_hora_inicio.replace(hour=23, minute=59)
 
-        
         inicio_actividad = timezone.make_aware(inicio_actividad, timezone.get_current_timezone()) if timezone.is_naive(inicio_actividad) else inicio_actividad
         fin_actividad = timezone.make_aware(fin_actividad, timezone.get_current_timezone()) if timezone.is_naive(fin_actividad) else fin_actividad
 
@@ -166,7 +163,6 @@ def registrar_asistencia(request, actividad_id):
                 'error': f'El rango permitido es entre {inicio_actividad.strftime("%H:%M")} y {fin_actividad.strftime("%H:%M")}.'
             })
 
-        
         db.create_part_actividad(
             id_actividad=actividad,
             id_usuario=usuario,
@@ -175,13 +171,11 @@ def registrar_asistencia(request, actividad_id):
             estado_participante="Registrado"
         )
 
-        
         return render(request, 'core/asistencia_registrada.html', {'actividad': actividad})
 
-    
     return render(request, 'core/registrar_asistencia.html', {'actividad': actividad})
+
 
 def asistencia_registrada(request, actividad_id):
     actividad = get_object_or_404(Actividad, id=actividad_id)
     return render(request, 'core/asistencia_registrada.html', {'actividad': actividad})
-
