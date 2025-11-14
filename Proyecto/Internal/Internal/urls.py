@@ -1,25 +1,20 @@
-"""
-URL configuration for Internal project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
 from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path ('', views.home, name='home'),
-    path ('register/', views.view_register, name='register')
+    path('', views.home, name='home'),
+    path('actividades/', views.ver_actividades, name='actividades'),
+    path('area_privada/', views.ver_area_priv, name='area_privada'),
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.login, name='login'),
+    path('logout/', views.logout, name='logout'),
+    path('crear_actividad/', views.crear_actividad, name='crear_actividad'),
+    path('actividad_creada/', views.actividad_creada, name='actividad_creada'),
+    path('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad'),
+    path('actividad/<uuid:actividad_id>/asistencia/', views.registrar_asistencia, name='registrar_asistencia'),
+    path('actividad/<uuid:actividad_id>/asistencia/confirmacion/', views.asistencia_registrada, name='asistencia_registrada'),
+    path('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad')
 ]

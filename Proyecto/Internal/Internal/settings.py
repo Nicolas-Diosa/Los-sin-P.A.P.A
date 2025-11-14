@@ -17,9 +17,22 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / '.env')
+# Buscar .env hacia arriba desde la carpeta de este archivo y cargar el primero que exista
+env_path = None
+current = Path(__file__).resolve().parent
+for parent in [current] + list(current.parents):
+    candidate = parent / '.env'
+    if candidate.exists():
+        env_path = candidate
+        break
 
-print(BASE_DIR / '.env')
+if env_path:
+    load_dotenv(env_path)
+    print(f".env cargado desde: {env_path}")
+else:
+    # Si no se encontró, avisar para depuración (no lanzar excepción)
+    print("No se encontró .env en la jerarquía de carpetas. Verifique la ubicación de .env.")
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -42,7 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core' #Aplicacion añadida
+    'core'  # Aplicacion añadida
 ]
 
 MIDDLEWARE = [
@@ -88,9 +101,6 @@ DATABASES = {
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
-
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
