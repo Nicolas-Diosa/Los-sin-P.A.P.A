@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parchate · Registrar asistencia</title>
+  <style>
+    @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+    :root{
+      --primary:#FCAF56; --secondary:#7795FC;
+      --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+      --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 10px 24px rgba(0,0,0,.12);
+      --touch:44px; --error:#b42318;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .panel{width:min(560px,100%);background:var(--g0);border:1px solid var(--g200);border-radius:20px;box-shadow:var(--shadow);padding:18px}
+    header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+    h1{margin:0;font-size:1.25rem;color:var(--secondary)}
+    .subtitle{margin:0;color:var(--g600);font-size:.95rem}
+    .field{margin:12px 0}
+    .label{display:block;font-weight:900;margin-bottom:6px}
+    .input{width:100%;min-height:var(--touch);padding:12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0)}
+    .input:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+    .err{color:var(--error);font-size:.9rem;margin-top:6px}
+    .input.error{border-color:var(--error)}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+    .btn{min-height:var(--touch);padding:12px 18px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer}
+    .btn-primary{background:var(--primary);color:#111}
+    .btn-secondary{background:var(--g0);border:1px solid var(--g300)}
+    .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel">
+      <header>
+        <div class="logo"></div>
+        <h1>Registrar asistencia</h1>
+      </header>
+
+      <p class="subtitle">
+        Actividad: <strong>{{ actividad.nombre_actividad }}</strong><br>
+        Rango permitido: {{ actividad.fecha_hora_inicio|date:"H:i" }} – {{ actividad.fecha_hora_fin|date:"H:i" }}
+      </p>
+
+      {% if error %}
+      <div class="err" style="margin-bottom:10px;">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="{% url 'registrar_asistencia' actividad.id %}">
+        {% csrf_token %}
+        <div class="field">
+          <label class="label" for="start">Hora de llegada</label>
+          <input id="start" name="hora_llegada" class="input" type="time" required>
+        </div>
+
+        <div class="field">
+          <label class="label" for="end">Hora de salida</label>
+          <input id="end" name="hora_salida" class="input" type="time" required>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-secondary" id="cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Registrar asistencia</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('cancel').addEventListener('click', () => {
+      if (document.referrer) history.back();
+      else window.location.href = "{% url 'actividades' %}";
+    });
+  </script>
+</body>
+</html>

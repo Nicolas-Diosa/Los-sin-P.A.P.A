@@ -6,15 +6,18 @@ from core.Persistencia.DB_manager import DB_Manager
 from core.Negocio.actividades import obtener_detalle_actividad
 from django.http import Http404
 from django.utils import timezone
-from core.models import Usuario
+from core.models import Usuario, Actividad, ParticipanteActividad
 from core.Negocio.actividad_service import ActividadService
 from .forms import CustomUserCreationForm
 from django.http import HttpResponse
+from datetime import datetime, date
 
 # Create your views here.
 
+
 def home(request):
     return render(request, 'core/home.html')
+
 
 def login(request):
     if request.method == 'GET':
@@ -27,8 +30,9 @@ def login(request):
         if success:
             return redirect('/actividades/')
         else:
-            return render(request, 'core/login.html',{'errors':errors})
-                                                       
+            return render(request, 'core/login.html', {'errors': errors})
+
+
 def signup(request):
     if request.method == 'GET':
         return render(request, 'core/signup.html')
@@ -42,6 +46,7 @@ def signup(request):
         else:
             return render(request, 'core/signup.html', {'errors': errors})
 
+
 def ver_actividades(request):
     username = request.session.get('username', 'Invitado')
     actividades = listar_actividades_conteo()
@@ -50,6 +55,7 @@ def ver_actividades(request):
         'username': username,
         'actividades': actividades,
     })
+
 
 def ver_area_priv(request):
     username = request.session.get('username', 'Invitado')
@@ -60,9 +66,12 @@ def ver_area_priv(request):
         'actividades': actividades,
     })
 
+
 def logout(request):
     request.session.flush()
     return redirect('home')
+
+
 def detalles_actividad(request, id):
     """Vista de detalles de actividad. Usa la capa de negocio para obtener datos."""
     actividad = obtener_detalle_actividad(id)
@@ -73,6 +82,7 @@ def detalles_actividad(request, id):
         'actividad': actividad,
         'username': request.session.get('username') or request.session.get('nombre_usuario') or 'Invitado'
     })
+
 
 def crear_actividad(request):
     service = ActividadService()
@@ -90,7 +100,7 @@ def crear_actividad(request):
         foto = request.FILES.get('foto_actividad')
 
         try:
-            # ⚠️ Usa un usuario temporal si no hay sesión iniciada
+            # Usa un usuario temporal si no hay sesión iniciada
             service.crear_actividad(request, datos=datos,  foto=foto)
             return redirect('actividad_creada')
         except Exception as e:
@@ -99,6 +109,73 @@ def crear_actividad(request):
     return render(request, 'core/crear_actividad.html')
 
 
-
 def actividad_creada(request):
     return render(request, 'core/actividad_creada.html')
+
+
+def registrar_asistencia(request, actividad_id):
+    db = DB_Manager()
+    actividad = Actividad.objects.get(id=actividad_id)
+    usuario = db.get_usuario_by_nombre_usuario(request.session['username'])
+
+    if request.method == 'POST':
+        hora_llegada = request.POST.get('hora_llegada')
+        hora_salida = request.POST.get('hora_salida')
+
+        if not hora_llegada or not hora_salida:
+            return render(request, 'core/registrar_asistencia.html', {
+                'actividad': actividad,
+                'error': 'Debe ingresar ambas horas (llegada y salida).'
+            })
+
+        try:
+
+            fecha_base = actividad.fecha_hora_inicio.date()
+            hora_llegada_dt = timezone.make_aware(
+                datetime.combine(fecha_base, datetime.strptime(hora_llegada, '%H:%M').time()),
+                timezone.get_current_timezone()
+            )
+            hora_salida_dt = timezone.make_aware(
+                datetime.combine(fecha_base, datetime.strptime(hora_salida, '%H:%M').time()),
+                timezone.get_current_timezone()
+            )
+        except ValueError:
+            return render(request, 'core/registrar_asistencia.html', {
+                'actividad': actividad,
+                'error': 'Formato de hora inválido. Use HH:MM.'
+            })
+
+        if hora_llegada_dt >= hora_salida_dt:
+            return render(request, 'core/registrar_asistencia.html', {
+                'actividad': actividad,
+                'error': 'La hora de salida debe ser posterior a la hora de llegada.'
+            })
+
+        inicio_actividad = actividad.fecha_hora_inicio
+        fin_actividad = actividad.fecha_hora_fin or actividad.fecha_hora_inicio.replace(hour=23, minute=59)
+
+        inicio_actividad = timezone.make_aware(inicio_actividad, timezone.get_current_timezone()) if timezone.is_naive(inicio_actividad) else inicio_actividad
+        fin_actividad = timezone.make_aware(fin_actividad, timezone.get_current_timezone()) if timezone.is_naive(fin_actividad) else fin_actividad
+
+        if not (inicio_actividad <= hora_llegada_dt <= fin_actividad and inicio_actividad <= hora_salida_dt <= fin_actividad):
+            return render(request, 'core/registrar_asistencia.html', {
+                'actividad': actividad,
+                'error': f'El rango permitido es entre {inicio_actividad.strftime("%H:%M")} y {fin_actividad.strftime("%H:%M")}.'
+            })
+
+        db.create_part_actividad(
+            id_actividad=actividad,
+            id_usuario=usuario,
+            hora_llegada=hora_llegada_dt,
+            hora_salida=hora_salida_dt,
+            estado_participante="Registrado"
+        )
+
+        return render(request, 'core/asistencia_registrada.html', {'actividad': actividad})
+
+    return render(request, 'core/registrar_asistencia.html', {'actividad': actividad})
+
+
+def asistencia_registrada(request, actividad_id):
+    actividad = get_object_or_404(Actividad, id=actividad_id)
+    return render(request, 'core/asistencia_registrada.html', {'actividad': actividad})

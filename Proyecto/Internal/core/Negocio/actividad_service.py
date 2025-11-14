@@ -1,24 +1,13 @@
-import os
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 from datetime import datetime
 from core.Persistencia.DB_manager import DB_Manager
-
-# core/Negocio/actividad_service.py
 import datetime
-from core.models import Actividad, Usuario
+
 
 class ActividadService:
-    """
-    Capa de negocio para manejar la lógica de actividades.
-    """
-
-    def crear_actividad( self, request, datos, foto=None):
-        """
-        Crea una nueva actividad validando los datos antes de guardarla.
-        """
+    """Capa de negocio para manejar la lógica de actividades."""
+    def crear_actividad(self, request, datos, foto=None):
+        """Crea una nueva actividad validando los datos antes de guardarla."""
         db = DB_Manager()
-
         # Buscar el usuario (creador)
         try:
             creador = db.get_usuario_by_nombre_usuario(request.session['username'])
