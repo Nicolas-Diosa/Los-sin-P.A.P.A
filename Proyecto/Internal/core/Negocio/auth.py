@@ -2,8 +2,8 @@ from core.Persistencia.DB_manager import DB_Manager
 from django.core.exceptions import ObjectDoesNotExist
 import re
 
+
 class UserValidator:
-    
 
     def __init__(self, db_manager: DB_Manager):
         self.db = db_manager
@@ -24,20 +24,22 @@ class UserValidator:
             return False
         except ObjectDoesNotExist:
             return True
-        
+
     def is_valid_email(self, email):
         return (
             re.search(r'@', email)
         )
 
     def is_valid_password_policy(self, password):
-        
+
         return (
             len(password) >= 8
             and re.search(r'\d', password)
             and re.search(r'[^A-Za-z0-9]', password)
         )
+
     def incorrect_password(self, username, password):
+
         try:
             usuario = self.db.get_usuario_by_nombre_usuario(username)
             return usuario.contrasena != password
@@ -46,7 +48,6 @@ class UserValidator:
 
 
 class Auth:
-    
 
     def __init__(self, db_manager: DB_Manager):
         self.db = db_manager
@@ -66,7 +67,7 @@ class Auth:
 
         if not self.validator.email_available(email):
             errors['email'] = "El correo electrónico ya está registrado."
-        
+
         if not self.validator.is_valid_email(email):
             errors['email_validity'] = "El correo electrónico no es valido."
 
@@ -83,8 +84,8 @@ class Auth:
         request.session['inicio_sesion'] = True
         request.session['username'] = request.POST.get('user')
         return True, {}
-    
-    def login_user(self, data:dict, request):
+
+    def login_user(self, data: dict, request):
 
         request.session.flush()
         username = data.get('user')

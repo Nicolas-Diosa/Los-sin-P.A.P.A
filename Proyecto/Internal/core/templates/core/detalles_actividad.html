@@ -76,6 +76,15 @@
         else{ location.href = listUrl; }
       });
     })();
+
+    // Redirigir al formulario de asistencia
+    (function(){
+      const btnJoin = document.getElementById('btnJoin');
+      const asistenciaUrl = "{% url 'registrar_asistencia' actividad.id %}";
+      btnJoin.addEventListener('click', ()=>{
+        window.location.href = asistenciaUrl;
+      });
+    })();
   </script>
 </body>
 </html>

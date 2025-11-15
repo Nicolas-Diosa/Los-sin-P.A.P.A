@@ -28,9 +28,9 @@ def listar_actividades_conteo():
     qs = qs.annotate(participantes_count=Count('participanteactividad__id_actividad'))
     return qs
 
+
 def obtener_detalle_actividad(actividad_id):
     """Devuelve la actividad con id `actividad_id` anotada con participantes_count.
-
     Retorna None si no existe.
     """
     if not actividad_id:
