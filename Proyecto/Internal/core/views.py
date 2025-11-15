@@ -6,11 +6,11 @@ from core.Persistencia.DB_manager import DB_Manager
 from core.Negocio.actividades import obtener_detalle_actividad
 from django.http import Http404
 from django.utils import timezone
-from core.models import Usuario, Actividad, ParticipanteActividad
+from core.models import Usuario, Actividad
 from core.Negocio.actividad_service import ActividadService
-from .forms import CustomUserCreationForm
-from django.http import HttpResponse
-from datetime import datetime, date
+from datetime import datetime
+from core.Negocio.materias_eventos import AreaPrivada
+import json
 
 # Create your views here.
 
@@ -48,6 +48,9 @@ def signup(request):
 
 
 def ver_actividades(request):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+    
     username = request.session.get('username', 'Invitado')
     actividades = listar_actividades_conteo()
 
@@ -58,12 +61,19 @@ def ver_actividades(request):
 
 
 def ver_area_priv(request):
-    username = request.session.get('username', 'Invitado')
-    actividades = listar_actividades_conteo()
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = AreaPrivada(usuario)
+
+    data = service.get_calendar_data(usuario)
+    materias_data = data['materias']
+    eventos_data = data['eventos']
 
     return render(request, 'core/area_privada.html', {
-        'username': username,
-        'actividades': actividades,
+        'materias_json': json.dumps(materias_data),
+        'eventos_json': json.dumps(eventos_data),
     })
 
 
@@ -73,6 +83,9 @@ def logout(request):
 
 
 def detalles_actividad(request, id):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+    
     """Vista de detalles de actividad. Usa la capa de negocio para obtener datos."""
     actividad = obtener_detalle_actividad(id)
     if not actividad:
@@ -85,6 +98,9 @@ def detalles_actividad(request, id):
 
 
 def crear_actividad(request):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+    
     service = ActividadService()
 
     if request.method == "POST":
@@ -110,10 +126,16 @@ def crear_actividad(request):
 
 
 def actividad_creada(request):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+    
     return render(request, 'core/actividad_creada.html')
 
 
 def registrar_asistencia(request, actividad_id):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+    
     db = DB_Manager()
     actividad = Actividad.objects.get(id=actividad_id)
     usuario = db.get_usuario_by_nombre_usuario(request.session['username'])
@@ -177,5 +199,34 @@ def registrar_asistencia(request, actividad_id):
 
 
 def asistencia_registrada(request, actividad_id):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+    
     actividad = get_object_or_404(Actividad, id=actividad_id)
     return render(request, 'core/asistencia_registrada.html', {'actividad': actividad})
+
+def agregar_evento(request):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = AreaPrivada(usuario) 
+
+    if request.method == 'POST':
+        service.crear_evento(request.POST)
+        return redirect('/area_privada/')
+
+    return render(request, 'core/agregar_evento.html')
+
+def agregar_materia(request):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = AreaPrivada(usuario)
+
+    if request.method == 'POST':
+        service.crear_materia(request.POST)
+        return redirect('/area_privada/')
+
+    return render(request, 'core/agregar_materia.html')

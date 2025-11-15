@@ -45,52 +45,60 @@ class DB_Manager:
 
     def get_usuario_by_email(cls, email):
         return Usuario.objects.get(email=email)
+    
+    def get_usuario_by_id(self, id_usuario):
+        return Usuario.objects.get(id=id_usuario)
+
+    # -------------------- ACTIVIDADES --------------------
+
+    def get_actividad_by_nombre_actividad(cls, nombre_actividad):
+        return Actividad.objects.get(nombre_actividad=nombre_actividad)
 
 
-# -------------------- ACTIVIDADES --------------------
+    # -------------------- PARTICIPANTES ACTIVIDAD --------------------
 
-def get_actividad_by_nombre_actividad(cls, nombre_actividad):
-    return Actividad.objects.get(nombre_actividad=nombre_actividad)
-
-
-# -------------------- PARTICIPANTES ACTIVIDAD --------------------
-
-def get_participante_actividad(cls, id_actividad, id_usuario):
-    return ParticipanteActividad.objects.get(id_actividad=id_actividad, id_usuario=id_usuario)
+    def get_participante_actividad(cls, id_actividad, id_usuario):
+        return ParticipanteActividad.objects.get(id_actividad=id_actividad, id_usuario=id_usuario)
 
 
-# -------------------- MATERIAS --------------------
+    # -------------------- MATERIAS --------------------
 
-def get_materia_by_nombre_materia(cls, nombre_materia):
-    return Materia.objects.get(nombre_materia=nombre_materia)
+    def get_materia_by_nombre_materia(cls, nombre_materia):
+        return Materia.objects.get(nombre_materia=nombre_materia)
 
-
-# -------------------- EVENTOS CALENDARIO --------------------
-
-def get_evento_calendario_by_nombre_evento(cls, nombre_evento):
-    return EventoCalendario.objects.get(nombre_evento=nombre_evento)
+    def get_materias_by_usuario(self, id_usuario):
+        return Materia.objects.filter(id_usuario=id_usuario)
 
 
-# -------------------- TAREAS --------------------
+    # -------------------- EVENTOS CALENDARIO --------------------
 
-def get_tarea_by_nombre_tarea(cls, nombre_tarea):
-    return Tarea.objects.get(nombre_tarea=nombre_tarea)
+    def get_evento_calendario_by_nombre_evento(cls, nombre_evento):
+        return EventoCalendario.objects.get(nombre_evento=nombre_evento)
 
-
-# -------------------- CHATS --------------------
-def get_chat_by_id_actividad(cls, id_actividad):
-    return Chat.objects.get(id_actividad=id_actividad)
+    def get_eventos_by_usuario(self, id_usuario):
+        return EventoCalendario.objects.filter(id_usuario=id_usuario)
 
 
-'''INICIO UPDATE'''
+    # -------------------- TAREAS --------------------
+
+    def get_tarea_by_nombre_tarea(cls, nombre_tarea):
+        return Tarea.objects.get(nombre_tarea=nombre_tarea)
 
 
-def update(cls, tabla: Model, campo, valor, **kwargs):
-    tabla.objects.filter(**{campo: valor}).update(**kwargs)
+    # -------------------- CHATS --------------------
+    def get_chat_by_id_actividad(cls, id_actividad):
+        return Chat.objects.get(id_actividad=id_actividad)
 
 
-'''INICIO DELETE'''
+    '''INICIO UPDATE'''
 
 
-def delete(cls, tabla: Model, campo, valor):
-    tabla.objects.filter(**{campo: valor}).delete()
+    def update(cls, tabla: Model, campo, valor, **kwargs):
+        tabla.objects.filter(**{campo: valor}).update(**kwargs)
+
+
+    '''INICIO DELETE'''
+
+
+    def delete(cls, tabla: Model, campo, valor):
+        tabla.objects.filter(**{campo: valor}).delete()

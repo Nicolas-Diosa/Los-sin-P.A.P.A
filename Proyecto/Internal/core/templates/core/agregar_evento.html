@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parchate · Añadir evento </title>
+<style>
+  @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+  :root{
+    --primary:#FCAF56; --secondary:#7795FC;
+    --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+    --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 8px 18px rgba(0,0,0,.12);
+    --touch:44px; --radius:14px; --error:#b42318;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{position:sticky;top:0;z-index:10;background:var(--g0);border-bottom:1px solid var(--g200)}
+  .head{max-width:900px;margin:auto;padding:10px 16px;height:64px;display:flex;align-items:center;gap:12px}
+  .back{min-height:var(--touch);display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0);cursor:pointer}
+  .back:focus-visible{outline:none;box-shadow:var(--ring)}
+  h1{margin:0;font-size:1.25rem}
+  .container{max-width:900px;margin:auto;padding:16px}
+  .panel{background:var(--g0);border:1px solid var(--g200);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+  .grid{display:grid;gap:12px}
+  @media (min-width:760px){ .grid-2{grid-template-columns:1fr 1fr} }
+  .label{display:block;font-weight:900;margin-bottom:6px}
+  .req::after{content:" *";color:var(--error)}
+  .input,.select{width:100%;min-height:var(--touch);padding:12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0)}
+  .input:focus,.select:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+  .err{color:var(--error);font-size:.9rem;margin-top:6px}
+  .btn{min-height:var(--touch);padding:12px 18px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#111}
+  .btn-secondary{background:var(--g0);border:1px solid var(--g300)}
+  .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+  /* Modal base */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px}
+  .modal{width:min(560px,100%);background:var(--g0);border:1px solid var(--g200);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+  .modal h2{margin:0 0 8px}
+  .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .details{background:var(--g100);border:1px solid var(--g200);border-radius:12px;padding:10px}
+</style>
+</head>
+<body>
+<header role="banner">
+  <div class="head">
+    <button class="back" id="btnBack" aria-label="Volver al area privada">← Volver</button>
+    <h1>Añadir evento</h1>
+  </div>
+</header>
+
+<main class="container" role="main">
+  <section class="panel" aria-labelledby="form-title">
+    <h2 id="form-title" style="margin:0 0 10px">Completa los campos</h2>
+
+    <form id="form" class="grid grid-2" method="POST" action="{% url 'agregar_evento' %}" novalidate>
+      {% csrf_token %}
+      <div>
+        <label class="label req" for="name">Nombre del evento</label>
+        <input id="name" class="input" name="nombre_evento" type="text" placeholder="Ej: Cena familiar" aria-required="true"/>
+        <div id="err-name" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div>
+        <label class="label req" for="priority">Prioridad</label>
+        <select id="priority" name="prioridad" class="select" required>
+          <option value="">Selecciona</option>
+          <option value="3">Alta</option>
+          <option value="2">Media</option>
+          <option value="1">Baja</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label req" for="start">Fecha y hora de inicio</label>
+        <input id="fecha_hora_inicio" name="fecha_hora_inicio" class="input" type="datetime-local" required>
+        <div id="err-start" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div>
+        <label class="label req" for="end">Fecha y hora de fin</label>
+        <input id="fecha_hora_fin" name="fecha_hora_fin" class="input" type="datetime-local" required>
+        <div id="err-end" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div style="grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="btn btn-secondary" id="cancel" aria-label="Cancelar">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="save" aria-label="Guardar">Guardar</button>
+      </div>
+      <div id="form-status" class="sr-only" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+
+<!-- Modal error (duplicado / validación) -->
+<div id="overlayError" class="overlay" role="dialog" aria-modal="true" aria-labelledby="err-title" aria-hidden="true">
+  <div class="modal">
+    <h2 id="err-title">No se pudo guardar</h2>
+    <p id="err-text">Faltan campos obligatorios.</p>
+    <div id="dup-details" class="details" style="display:none"></div>
+    <div class="row" style="margin-top:8px">
+      <button id="err-close" class="btn btn-secondary" aria-label="Aceptar">Aceptar</button>
+      <button id="err-view" class="btn" aria-label="Ver detalles" style="display:none">Ver detalles</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal éxito -->
+<div id="overlayOk" class="overlay" role="dialog" aria-modal="true" aria-labelledby="ok-title" aria-hidden="true">
+  <div class="modal" style="text-align:center">
+    <h2 id="ok-title">Evento/materia añadida exitosamente al calendario.</h2>
+    <div class="row" style="justify-content:center;margin-top:8px">
+      <button id="ok-close" class="btn btn-primary" aria-label="Aceptar">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+  document.getElementById("btnBack").onclick = () => location.href = "/area_privada/";
+  document.getElementById("cancel").onclick = () => location.href = "/area_privada/";
+
+</script>
+</body>
+</html>
