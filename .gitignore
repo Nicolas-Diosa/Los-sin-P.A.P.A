@@ -12,3 +12,7 @@ Config.toml
 
 
 .env
+
+
+
+*.pyc
