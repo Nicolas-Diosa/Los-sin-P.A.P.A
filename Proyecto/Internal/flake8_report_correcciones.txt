@@ -1,0 +1,17 @@
+[1mcore/Persistencia\DB_manager.py[m[36m:[m18[36m:[m151[36m:[m [1m[31mE501[m line too long (218 > 150 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m19[36m:[m151[36m:[m [1m[31mE501[m line too long (394 > 150 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m22[36m:[m151[36m:[m [1m[31mE501[m line too long (187 > 150 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m25[36m:[m151[36m:[m [1m[31mE501[m line too long (188 > 150 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m28[36m:[m151[36m:[m [1m[31mE501[m line too long (203 > 150 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m30[36m:[m151[36m:[m [1m[31mE501[m line too long (186 > 150 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m31[36m:[m151[36m:[m [1m[31mE501[m line too long (337 > 150 characters)
+[1mcore/tests.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mF401[m 'django.test.TestCase' imported but unused
+[1mcore/views.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mF401[m 'django.shortcuts.get_object_or_404' imported but unused
+[1mcore/views.py[m[36m:[m2[36m:[m1[36m:[m [1m[31mF403[m 'from core.Negocio.auth import *' used; unable to detect undefined names
+[1mcore/views.py[m[36m:[m4[36m:[m1[36m:[m [1m[31mF401[m 'django.db.models.Count' imported but unused
+[1mcore/views.py[m[36m:[m8[36m:[m1[36m:[m [1m[31mF401[m 'django.utils.timezone' imported but unused
+[1mcore/views.py[m[36m:[m9[36m:[m1[36m:[m [1m[31mF401[m 'core.models.Usuario' imported but unused
+[1mcore/views.py[m[36m:[m11[36m:[m1[36m:[m [1m[31mF401[m '.forms.CustomUserCreationForm' imported but unused
+[1mcore/views.py[m[36m:[m12[36m:[m1[36m:[m [1m[31mF401[m 'django.http.HttpResponse' imported but unused
+[1mcore/views.py[m[36m:[m26[36m:[m24[36m:[m [1m[31mF405[m 'Auth' may be undefined, or defined from star imports: core.Negocio.auth
+[1mcore/views.py[m[36m:[m40[36m:[m24[36m:[m [1m[31mF405[m 'Auth' may be undefined, or defined from star imports: core.Negocio.auth

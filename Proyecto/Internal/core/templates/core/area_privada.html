@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parchate · Área privada y gestión del tiempo</title>
+<style>
+  @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+  :root{
+    --primary:#FCAF56; --secondary:#7795FC;
+    --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+    --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 10px 24px rgba(0,0,0,.12);
+    --radius:16px; --touch:44px;
+    --p-alta:#FCA5A5; --p-media:#FCD34D; --p-baja:#A7F3D0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+
+  /* ====== LAYOUT ====== */
+  .page{min-height:100dvh;display:grid;grid-template-columns:280px 1fr}
+  aside{
+    position:sticky; top:0; align-self:start; height:100dvh;
+    background:var(--g0); border-right:1px solid var(--g200); padding:12px; z-index:10;
+  }
+  main{padding:16px; display:grid; gap:16px; min-width:0}
+  .grid{display:grid;gap:16px}
+  @media (min-width:1100px){ .grid{grid-template-columns:1.2fr 1fr} }
+
+  /* ====== NAV LATERAL ====== */
+  .brand{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px}
+  .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+  .appname{font-weight:900;color:var(--secondary)}
+  nav{margin-top:8px;display:grid;gap:6px}
+  .nav-btn{display:flex;align-items:center;gap:10px;min-height:var(--touch);padding:10px 12px;border-radius:12px;background:transparent;border:1px solid transparent;text-decoration:none;color:var(--g900);font-weight:800}
+  .nav-btn:hover{background:var(--g100)}
+  .nav-btn:focus-visible{outline:none;box-shadow:var(--ring)}
+  .current{background:rgba(119,149,252,.12); border:1px solid rgba(119,149,252,.35); color:#1f2a6a}
+
+  /* ====== ELEMENTOS ====== */
+  .title{margin:0 0 8px;color:#3b82f6}
+  .panel{background:var(--g0);border:1px solid var(--g200);border-radius:var(--radius);box-shadow:0 1px 2px rgba(0,0,0,.05);padding:14px}
+  .btn{min-height:var(--touch);padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:800;cursor:pointer}
+  .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+  .btn-primary{background:var(--primary);color:#111}
+  .link{color:var(--secondary);font-weight:800;text-decoration:none;padding:6px 8px;border-radius:10px}
+  .link:focus-visible{outline:none;box-shadow:var(--ring)}
+
+  /* ====== CALENDARIO COMPACTO (cabecera + cuerpo) ====== */
+  .calendar-wrap{display:grid;grid-template-rows:auto 1fr;gap:0}
+  .grid-head{
+    display:grid;grid-template-columns:64px repeat(7,1fr);
+    background:var(--g100);border:1px solid var(--g200);border-bottom:none;
+    border-top-left-radius:12px;border-top-right-radius:12px;
+  }
+  .colhead{padding:6px;font-weight:900;text-align:center;border-right:1px solid var(--g200)}
+  .colhead:first-child{text-align:right;padding-right:10px}
+  .colhead:last-child{border-right:none}
+
+  .grid-body{
+    display:grid;grid-template-columns:64px repeat(7,1fr);
+    grid-auto-rows:1fr; /* 13 filas = alturas iguales */
+    height:480px;       /* <<< altura fija desktop */
+    border:1px solid var(--g200);
+    border-bottom-left-radius:12px;border-bottom-right-radius:12px;
+    background:var(--g0);overflow:hidden;
+  }
+  @media (max-width:960px){ .grid-body{height:420px} } /* altura móvil */
+
+  .time{padding:6px;border-right:1px solid var(--g200);text-align:right;color:var(--g600);border-top:1px solid var(--g200)}
+  .slot{position:relative;border-right:1px solid var(--g200);border-top:1px solid var(--g200)}
+  .slot:last-child{border-right:none}
+
+  .event{
+    position:absolute; inset:3px; border-radius:10px; padding:6px 8px;
+    border:1px solid rgba(0,0,0,.06); box-shadow:0 1px 2px rgba(0,0,0,.12);
+    display:flex; flex-direction:column; gap:2px; overflow:hidden;
+  }
+  .alta{background:var(--p-alta)} .media{background:var(--p-media)} .baja{background:var(--p-baja)}
+  .event h4{margin:0;font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .event .meta{font-size:.85rem;color:#1f2937; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .ev-actions{margin-top:auto; display:flex; gap:6px}
+  .ev-btn{min-height:32px;padding:4px 8px;border-radius:8px;border:1px solid var(--g300);background:var(--g0);font-weight:800;cursor:pointer;text-decoration:none;color:inherit}
+  .ev-btn:focus-visible{outline:none;box-shadow:var(--ring)}
+
+  /* ====== TAREAS ====== */
+  .list{display:grid;gap:10px}
+  .item{background:var(--g0);border:1px solid var(--g200);border-radius:12px;padding:10px;display:grid;gap:6px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .meta{color:var(--g600)}
+  .chip{padding:6px 10px;border-radius:999px;border:1px solid rgba(119,149,252,.35);background:rgba(119,149,252,.12);color:#1f2a6a;font-weight:800}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .act{min-height:36px;padding:6px 10px;border-radius:10px;border:1px solid var(--g300);background:var(--g0);cursor:pointer;font-weight:800}
+  .danger{border-color:#fecaca;background:#fee2e2;color:#7f1d1d}
+
+  /* ====== RESPONSIVE SIDEBAR ====== */
+  .overlay{display:none}
+  @media (max-width:960px){
+    .page{grid-template-columns:1fr}
+    aside{position:fixed; inset:0 auto 0 0; width:280px; transform:translateX(-100%); transition:transform .2s ease; z-index:20}
+    aside.open{transform:none; box-shadow:var(--shadow)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .hamb{min-height:var(--touch); padding:8px 12px; border-radius:12px; border:1px solid var(--g300); background:var(--g0); cursor:pointer; font-weight:800}
+    .overlay{position:fixed; inset:0; background:rgba(0,0,0,.35)}
+    .overlay.show{display:block}
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <!-- Sidebar -->
+    <aside id="sidebar" aria-label="Menú lateral">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="appname">Parchate</div>
+      </div>
+      <nav>
+        <a class="nav-btn" href="/actividades/">Inicio / Actividades</a>
+        <a class="nav-btn current" href="/area_privada/" aria-current="page">Área privada y gestión del tiempo</a>
+        <a class="nav-btn" href="19_profile.html">Perfil de usuario</a>
+        <a class="nav-btn" href="/logout/">Cerrar sesión</a>
+      </nav>
+    </aside>
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+    <!-- Contenido -->
+    <main role="main">
+      <div class="topbar" style="display:none">
+        <button id="btnHamb" class="hamb" aria-controls="sidebar" aria-expanded="false">☰ Menú</button>
+      </div>
+
+      <h1 class="title">Área privada y gestión del tiempo</h1>
+
+      <div class="grid">
+        <!-- Calendario -->
+        <section class="panel" aria-labelledby="cal-title">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+            <h2 id="cal-title" class="title" style="margin:0">Calendario</h2>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <a class="btn btn-primary" href="agregar_evento_tarea.html">Añadir evento o tarea</a>
+              <a class="link" href="calendario_pant_comp.html">Ver en pantalla completa</a>
+            </div>
+          </div>
+
+          <div class="calendar-wrap">
+            <div class="grid-head" role="row">
+              <div class="colhead">Hora</div>
+              <div class="colhead">Lun</div><div class="colhead">Mar</div><div class="colhead">Mié</div>
+              <div class="colhead">Jue</div><div class="colhead">Vie</div><div class="colhead">Sáb</div><div class="colhead">Dom</div>
+            </div>
+            <div id="grid" class="grid-body" role="grid" aria-label="Calendario semanal (compacto)"></div>
+          </div>
+        </section>
+
+        <!-- Tareas -->
+        <section class="panel" aria-labelledby="tasks-title">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+            <h2 id="tasks-title" class="title" style="margin:0">Lista de tareas</h2>
+            <div>
+              <a class="link" href="11_tasks_completed.html">Ver realizadas</a>
+              <a class="link" href="08_tasks_list.html">Abrir gestión</a>
+            </div>
+          </div>
+          <div id="taskList" class="list" role="list"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+<script>
+  /* ---------- Sidebar responsive ---------- */
+  const btn=document.getElementById('btnHamb');
+  const sidebar=document.getElementById('sidebar');
+  const ov=document.getElementById('overlay');
+  function open(){ sidebar.classList.add('open'); ov.classList.add('show'); btn?.setAttribute('aria-expanded','true'); }
+  function close(){ sidebar.classList.remove('open'); ov.classList.remove('show'); btn?.setAttribute('aria-expanded','false'); }
+  btn?.addEventListener('click', ()=> sidebar.classList.contains('open') ? close() : open());
+  ov?.addEventListener('click', close);
+
+  const mq = window.matchMedia('(max-width: 960px)');
+  function applyMQ(){ const tb=document.querySelector('.topbar'); if(tb){ tb.style.display = mq.matches ? 'flex':'none'; } }
+  mq.addEventListener('change', applyMQ); applyMQ();
+
+  document.getElementById('logout')?.addEventListener('click', ()=>{
+    localStorage.removeItem('parchate_user');
+    alert('Sesión cerrada (demo).');
+    location.href='home.html';
+  });
+
+  /* ---------- Calendario (cabecera + cuerpo con alturas iguales) ---------- */
+  const CAL='parchate_calendar';
+  const grid = document.getElementById('grid');
+
+  // Construir filas 08:00–20:00
+  for(let h=8; h<=20; h++){
+    const timeCell = document.createElement('div');
+    timeCell.className='time';
+    timeCell.textContent = String(h).padStart(2,'0') + ':00';
+    grid.appendChild(timeCell);
+    for(let day=0; day<7; day++){
+      const slot = document.createElement('div');
+      slot.className='slot';
+      slot.dataset.day = String(day);
+      slot.dataset.hr  = String(h);
+      grid.appendChild(slot);
+    }
+  }
+
+  function getCal(){ try{ return JSON.parse(localStorage.getItem(CAL))||[] }catch{ return [] } }
+
+  function placeEvent(ev){
+    const hour = parseInt(ev.start,10);
+    const target = document.querySelector(`.slot[data-day="${ev.dayIndex}"][data-hr="${hour}"]`);
+    if(!target) return;
+
+    const el = document.createElement('div');
+    el.className = `event ${ev.priority}`;
+    el.innerHTML = `
+      <h4 title="${ev.name}">${ev.name}</h4>
+      <div class="meta">${ev.start}–${ev.end}</div>
+      <div class="ev-actions"><a class="ev-btn" href="agregar_evento_tarea.html">Abrir</a></div>
+    `;
+    target.appendChild(el);
+  }
+
+  if(!localStorage.getItem(CAL)){
+    localStorage.setItem(CAL, JSON.stringify([
+      {id:'e1', name:'Clase Cálculo', priority:'media', dayIndex:0, start:'09:00', end:'10:00'},
+      {id:'e2', name:'Entrenamiento fútbol', priority:'alta', dayIndex:2, start:'18:00', end:'19:00'}
+    ]));
+  }
+  getCal().forEach(placeEvent);
+
+  /* ---------- Tareas (pendientes) ---------- */
+  const TASK='parchate_tasks';
+  function getTasks(){ try{ return JSON.parse(localStorage.getItem(TASK))||[] }catch{ return [] } }
+  function setTasks(v){ localStorage.setItem(TASK, JSON.stringify(v)); }
+  if(!localStorage.getItem(TASK)){
+    localStorage.setItem(TASK, JSON.stringify([
+      {id:'t1', name:'Comprar hidratación', due:'2025-10-10', cat:'Personal', done:false, priority:2},
+      {id:'t2', name:'Confirmar reserva',   due:'2025-10-11', cat:'Deporte',  done:false, priority:3}
+    ]));
+  }
+  const list=document.getElementById('taskList');
+  function renderTasks(){
+    list.innerHTML='';
+    const items=getTasks().filter(t=>!t.done);
+    if(!items.length){
+      list.innerHTML = `<div class="item" role="listitem"><strong>No hay tareas pendientes.</strong>
+        <div class="meta">Usa “Añadir evento o tarea” en el calendario o abre la gestión.</div></div>`;
+      return;
+    }
+    items.forEach(t=>{
+      const el=document.createElement('article');
+      el.className='item'; el.setAttribute('role','listitem');
+      el.innerHTML = `
+        <div class="row">
+          <strong>${t.name}</strong>
+          <span class="chip">P${t.priority||3}</span>
+        </div>
+        <div class="meta">Fecha límite: ${t.due||'No definida'}</div>
+        <div class="actions">
+          <a class="act" href="09_task_detail.html?id=${t.id}">Ver</a>
+          <button class="act" data-act="done" data-id="${t.id}">Realizada</button>
+          <button class="act danger" data-act="del" data-id="${t.id}">Eliminar</button>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+  }
+  list.addEventListener('click',(e)=>{
+    const btn=e.target.closest('button.act'); if(!btn) return;
+    const id=btn.dataset.id; const act=btn.dataset.act;
+    const all=getTasks(); const ix=all.findIndex(t=>t.id===id); if(ix<0) return;
+    if(act==='done'){
+      if(confirm('¿Marcar como realizada?')){ all[ix].done=true; all[ix].doneAt=new Date().toISOString().slice(0,10); setTasks(all); renderTasks(); }
+    }else if(act==='del'){
+      if(confirm('¿Eliminar esta tarea?')){ all.splice(ix,1); setTasks(all); renderTasks(); }
+    }
+  });
+  renderTasks();
+</script>
+</body>
+</html>

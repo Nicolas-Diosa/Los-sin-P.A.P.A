@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parchate · Crear cuenta</title>
+  <style>
+    @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+    :root{
+      --primary:#FCAF56; --secondary:#7795FC;
+      --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+      --error:#b42318; --ok:#047857; --ring:0 0 0 3px rgba(119,149,252,.35);
+      --radius:14px; --shadow:0 10px 24px rgba(0,0,0,.12); --touch:44px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .panel{width:min(560px,100%);background:var(--g0);border:1px solid var(--g200);border-radius:20px;padding:24px 22px;box-shadow:var(--shadow)}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+    h1{margin:0 0 4px;font-size:1.6rem}
+    .helper{color:var(--g600);margin:0 0 14px}
+
+    .field{margin:12px 0}
+    .label{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:6px}
+    .input{
+      width:100%;min-height:var(--touch);padding:12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0);
+    }
+    .input:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+    .ctrl{position:relative}
+    .toggle{
+      position:absolute;top:50%;right:10px;transform:translateY(-50%);
+      background:var(--g0);border:1px solid var(--g300);border-radius:10px;padding:6px 10px;cursor:pointer;font-weight:700
+    }
+    .toggle:focus-visible{outline:none;box-shadow:var(--ring)}
+    .err{color:var(--error);font-size:.9rem;margin-top:6px}
+    .ok{color:var(--ok);font-size:.9rem;margin-top:6px}
+
+    .policy{display:grid;gap:6px;margin:10px 0 2px}
+    .policy li{display:flex;align-items:center;gap:8px}
+    .dot{width:10px;height:10px;border-radius:999px;background:#d1d5db;border:1px solid #bbb}
+    .dot.pass{background:#A7F3D0;border-color:#34D399}
+
+    .row{display:flex;gap:10px;align-items:center;margin:12px 0}
+    .checkbox{width:20px;height:20px}
+    .btn{
+      width:100%;min-height:var(--touch);border-radius:14px;border:1px solid transparent;padding:12px 18px;
+      font-weight:800;cursor:pointer;background:var(--primary);color:#111;
+    }
+    .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+    .btn:disabled{filter:grayscale(.3);opacity:.6;cursor:not-allowed}
+    .alt{margin-top:10px}
+    .alt a{color:var(--secondary);font-weight:700;text-decoration:none}
+    .alt a:focus-visible{outline:none;box-shadow:var(--ring)}
+
+    /* accesibilidad visual de errores */
+    .input.error{border-color:var(--error)}
+    .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0;white-space:nowrap}
+    form{margin:0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel" aria-labelledby="title">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <h1 id="title">Crea tu cuenta</h1>
+      </div>
+      <p class="helper">Regístrate con usuario o correo y establece tu contraseña.</p>
+
+      <form id="formSignup" method="post" aria-describedby="form-status">
+        {% csrf_token %} <!-- Seguridad de tokens de django-->
+        <!-- Usuario -->
+        <div class="field">
+          <label class="label" for="user">Nombre de usuario</label>
+          <input 
+            class="input {% if errors.user %}error{% endif %}" 
+            id="user" 
+            name="user" 
+            required 
+            type="text"
+            placeholder="Ingrese Nombre de usuario"  
+            aria-required="true" 
+          />
+          <!-- Error si existe el usuario-->
+          <div id="err-user" class="err" role="alert">
+            {{ errors.user }}
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label class="label" for="email">Correo electrónico</label>
+          <input 
+            class="input {% if errors.email %}error{% endif %}" 
+            id="email" 
+            name="email" 
+            required 
+            type="text" 
+            inputmode="email"
+            placeholder="Ingrese su correo electronico" 
+            aria-required="true" 
+          />
+          <!-- Errores de email -->
+          {% if errors.email %}
+            <div id="err-email" class="err">{{ errors.email }}</div>
+          {% endif %}
+          {% if errors.email_validity %}
+            <div id="err-email_val" class="err">{{ errors.email_validity }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Contraseña -->
+        <div class="field ctrl">
+          <label class="label" for="pass1">Contraseña</label>
+          <input 
+            class="input {% if errors.password or errors.policy %}error{% endif %}" 
+            id="pass1" 
+            name="pass1" 
+            required 
+            type="password" 
+           placeholder="Mínimo 8 caracteres"
+            aria-required="true" 
+          />
+          <button type="button" class="toggle" id="togglePass">Mostrar</button>
+
+          <!-- Errores de contraseña -->
+          {% if errors.password %}
+            <div id="err-pass" class="err">{{ errors.password }}</div>
+          {% endif %}
+          {% if errors.policy %}
+            <div id="err-policy" class="err">{{ errors.policy }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Confirmación -->
+        <div class="field ctrl">
+          <label class="label" for="pass2">Confirmar contraseña</label>
+          <input 
+            class="input {% if errors.password %}error{% endif %}" 
+            id="pass2" 
+            name="pass2" 
+            required 
+            type="password" 
+            placeholder="Repite tu contraseña"
+            aria-required="true"
+          />
+          <button type="button" class="toggle" id="togglePass2">Mostrar</button>
+        </div>
+
+      
+
+        <!-- Política contraseña -->
+        <ul id="policy" class="policy" aria-live="polite">
+          <li><span id="p-len" class="dot" aria-hidden="true"></span> Mín. 8 caracteres</li>
+          <li><span id="p-num" class="dot" aria-hidden="true"></span> Incluir al menos un número</li>
+          <li><span id="p-sym" class="dot" aria-hidden="true"></span> Incluir al menos un símbolo</li>
+        </ul>
+        <div id="err-policy" class="err" role="alert" aria-live="polite"></div>
+
+        <!-- Términos -->
+        <div class="row" role="group" aria-label="Aceptación de términos">
+          <input id="terms" class="checkbox" type="checkbox" aria-describedby="terms-help"/>
+          <label for="terms">Acepto <a href="#" target="_blank" rel="noopener">Términos</a> y <a href="#" target="_blank" rel="noopener">Privacidad</a></label>
+        </div>
+        <p id="terms-help" class="helper">Puedes registrarte sin marcar esta casilla.</p>
+
+        <!-- CTA -->
+        <button id="submitBtn" class="btn" type="submit" aria-label="Registrarme en Parchate">Registrarme</button>
+
+        <p class="alt">¿Ya tienes cuenta? <a href="/login/" aria-label="Ir a iniciar sesión">Inicia sesión</a></p>
+
+        <!-- Estado de validación global -->
+        <div id="form-status" class="visually-hidden" aria-live="polite"></div>
+      </form>
+    </section>
+  </div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+
+  // 🔹 Campo 1: Contraseña
+    const pass1 = document.getElementById("pass1");
+    const toggle1 = document.getElementById("togglePass");
+  
+    toggle1.addEventListener("click", function() {
+      const isPassword = pass1.type === "password";
+      pass1.type = isPassword ? "text" : "password";
+      toggle1.textContent = isPassword ? "Ocultar" : "Mostrar";
+    });
+
+  // 🔹 Campo 2: Confirmar contraseña
+    const pass2 = document.getElementById("pass2");
+    const toggle2 = document.getElementById("togglePass2");
+  
+    toggle2.addEventListener("click", function() {
+      const isPassword = pass2.type === "password";
+      pass2.type = isPassword ? "text" : "password";
+    toggle2.textContent = isPassword ? "Ocultar" : "Mostrar";
+    });
+
+  });
+    // Enviar con Enter; ESC no borra datos (no añadimos handler para limpiar)
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const ok = validate();
+      document.getElementById('form-status').textContent = ok ? 'Formulario válido' : 'Hay errores en el formulario';
+      if(ok){
+        // Redir de mockup
+        //window.location.href = '04_signup_success.html';
+      }
+    });
+  </script>
+</body>
+</html>

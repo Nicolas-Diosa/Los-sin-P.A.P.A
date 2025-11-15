@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parchate · ¡Cuenta creada!</title>
+  <style>
+    @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+    :root{
+      --primary:#FCAF56; --secondary:#7795FC;
+      --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g600:#4b5563; --g900:#111827;
+      --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 10px 24px rgba(0,0,0,.12);
+      --radius:18px; --touch:44px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .panel{width:min(520px,100%);background:var(--g0);border:1px solid var(--g200);border-radius:22px;padding:28px;text-align:center;box-shadow:var(--shadow)}
+    .icon{
+      width:72px;height:72px;margin:6px auto 12px;border-radius:50%;
+      display:grid;place-items:center;background:rgba(119,149,252,.12); border:1px solid rgba(119,149,252,.35);
+      color:var(--secondary); font-size:34px; font-weight:900;
+    }
+    h1{margin:.25rem 0 4px;font-size:1.6rem}
+    p{margin:0 0 14px;color:var(--g600)}
+    .actions{display:grid;gap:10px;margin-top:10px}
+    .btn{min-height:var(--touch);padding:12px 18px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer}
+    .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+    .btn-primary{background:var(--secondary);color:#fff}
+    .btn-secondary{background:var(--primary);color:#111}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel" aria-labelledby="title">
+      <div class="icon" aria-hidden="true">✓</div>
+      <h1 id="title">¡Listo! Tu cuenta fue creada.</h1>
+      <p>Empieza a descubrir actividades cerca de ti o completa tu perfil para mejores recomendaciones.</p>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="/actividades/" aria-label="Descubrir actividades">Descubrir actividades</a>
+        <a class="btn btn-secondary" href="#" aria-label="Completar mi perfil">Completar mi perfil</a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
