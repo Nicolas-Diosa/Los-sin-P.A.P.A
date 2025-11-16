@@ -81,8 +81,9 @@ class Auth:
             return False, errors
 
         self.db.create_usuario(username, email, pass1, None, None, None)
-        request.session['inicio_sesion'] = True
-        request.session['username'] = request.POST.get('user')
+
+        self.login_user({'user': username, 'password': pass1}, request)
+
         return True, {}
 
     def login_user(self, data: dict, request):
@@ -102,7 +103,16 @@ class Auth:
         if errors:
             return False, errors
 
+        usuario = self.db.get_usuario_by_nombre_usuario(username)
         request.session['inicio_sesion'] = True
-        request.session['username'] = data.get('user')
+        request.session['username'] = usuario.nombre_usuario
+        request.session['id_usuario'] = str(usuario.id)
 
         return True, {}
+    
+    def obtener_usuario_desde_sesion(request):
+        usuario_id = request.session.get('id_usuario')
+        if usuario_id:
+              db= DB_Manager()
+              return db.get_usuario_by_id(usuario_id)
+        return None
