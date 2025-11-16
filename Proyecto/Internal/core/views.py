@@ -104,13 +104,14 @@ def crear_actividad(request):
     service = ActividadService()
 
     if request.method == "POST":
+        fin_raw = (request.POST.get('fecha_hora_fin') or '').strip()
         datos = {
             'nombre_actividad': request.POST.get('nombre_actividad'),
             'descripcion': request.POST.get('descripcion'),
             'categoria': request.POST.get('categoria'),
             'ubicacion': request.POST.get('ubicacion'),
             'fecha_hora_inicio': request.POST.get('fecha_hora_inicio'),
-            'fecha_hora_fin': request.POST.get('fecha_hora_fin'),
+            'fecha_hora_fin': fin_raw or None,
             'cupos': request.POST.get('cupos'),
         }
         foto = request.FILES.get('foto_actividad')
@@ -121,7 +122,7 @@ def crear_actividad(request):
             return redirect('actividad_creada')
         except Exception as e:
             return render(request, 'core/crear_actividad.html', {'error': str(e)})
-
+        
     return render(request, 'core/crear_actividad.html')
 
 
