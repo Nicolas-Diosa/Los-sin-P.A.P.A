@@ -39,9 +39,10 @@
   /* ====== ELEMENTOS ====== */
   .title{margin:0 0 8px;color:#3b82f6}
   .panel{background:var(--g0);border:1px solid var(--g200);border-radius:var(--radius);box-shadow:0 1px 2px rgba(0,0,0,.05);padding:14px}
-  .btn{min-height:var(--touch);padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:800;cursor:pointer}
+  .btn{min-height:var(--touch);padding:8px 10px;border-radius:12px;border:1px solid transparent;font-weight:800;cursor:pointer;text-decoration:none;}
   .btn:focus-visible{outline:none;box-shadow:var(--ring)}
-  .btn-primary{background:var(--primary);color:#111}
+  .btn-primary-M{background:#2563eb; color:black}
+  .btn-primary-E{background:#059669; color:black}
   .link{color:var(--secondary);font-weight:800;text-decoration:none;padding:6px 8px;border-radius:10px}
   .link:focus-visible{outline:none;box-shadow:var(--ring)}
 
@@ -69,13 +70,11 @@
   .time{padding:6px;border-right:1px solid var(--g200);text-align:right;color:var(--g600);border-top:1px solid var(--g200)}
   .slot{position:relative;border-right:1px solid var(--g200);border-top:1px solid var(--g200)}
   .slot:last-child{border-right:none}
-
   .event{
     position:absolute; inset:3px; border-radius:10px; padding:6px 8px;
     border:1px solid rgba(0,0,0,.06); box-shadow:0 1px 2px rgba(0,0,0,.12);
     display:flex; flex-direction:column; gap:2px; overflow:hidden;
   }
-  .alta{background:var(--p-alta)} .media{background:var(--p-media)} .baja{background:var(--p-baja)}
   .event h4{margin:0;font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .event .meta{font-size:.85rem;color:#1f2937; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .ev-actions{margin-top:auto; display:flex; gap:6px}
@@ -102,6 +101,76 @@
     .hamb{min-height:var(--touch); padding:8px 12px; border-radius:12px; border:1px solid var(--g300); background:var(--g0); cursor:pointer; font-weight:800}
     .overlay{position:fixed; inset:0; background:rgba(0,0,0,.35)}
     .overlay.show{display:block}
+  }
+  .event.materia {
+    border-left: 10px solid #2563eb; /* azul */
+  }
+  .event.evento {
+    border-left: 10px solid #059669; /* verde */
+  }
+  .event {
+    color: #1f2937;
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+  }
+  .event.materia::before {
+    content: "📘";
+    margin-right: 4px;
+    font-size: 12px;
+  }
+  .event.evento::before {
+    content: "📅";
+    margin-right: 4px;
+    font-size: 12px;
+  }
+  .event {
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .event:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  }
+  .priority-alta {
+    background: var(--p-alta);
+  }
+  .priority-media {
+    background: var(--p-media);
+  }
+  .priority-baja {
+    background: var(--p-baja);
+  }
+  .event {
+    position: relative;
+  }
+  .event::after {
+    content: attr(data-tip);
+    position: absolute;
+    top: -35px;
+    left: 0;
+    background: #626ad5;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: pre-line;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease;
+    z-index: 9999;
+  }
+  .event:hover::after {
+    opacity: 1;
+  }
+  .event {
+  overflow: visible !important;
+  position: relative !important;
   }
 </style>
 </head>
@@ -136,7 +205,8 @@
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
             <h2 id="cal-title" class="title" style="margin:0">Calendario</h2>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <a class="btn btn-primary" href="agregar_evento_tarea.html">Añadir evento o tarea</a>
+              <a class="btn btn-primary-M" href="{% url 'agregar_materia' %}">Añadir materia📘</a>
+              <a class="btn btn-primary-E" href="/agregar_evento/">Añadir evento📅</a>
               <a class="link" href="calendario_pant_comp.html">Ver en pantalla completa</a>
             </div>
           </div>
@@ -180,15 +250,14 @@
   function applyMQ(){ const tb=document.querySelector('.topbar'); if(tb){ tb.style.display = mq.matches ? 'flex':'none'; } }
   mq.addEventListener('change', applyMQ); applyMQ();
 
-  document.getElementById('logout')?.addEventListener('click', ()=>{
-    localStorage.removeItem('parchate_user');
-    alert('Sesión cerrada (demo).');
-    location.href='home.html';
-  });
-
   /* ---------- Calendario (cabecera + cuerpo con alturas iguales) ---------- */
-  const CAL='parchate_calendar';
   const grid = document.getElementById('grid');
+
+  // Mapeo de días español a índice (0-6)
+  const daysMap = {
+    'Lunes': 0, 'Martes': 1, 'Miércoles': 2,
+    'Jueves': 3, 'Viernes': 4, 'Sábado': 5, 'Domingo': 6
+  };
 
   // Construir filas 08:00–20:00
   for(let h=8; h<=20; h++){
@@ -205,30 +274,81 @@
     }
   }
 
-  function getCal(){ try{ return JSON.parse(localStorage.getItem(CAL))||[] }catch{ return [] } }
+  // Obtener datos desde el backend
+  const materias = JSON.parse('{{ materias_json|escapejs }}');
+  const eventos = JSON.parse('{{ eventos_json|escapejs }}');
 
-  function placeEvent(ev){
-    const hour = parseInt(ev.start,10);
-    const target = document.querySelector(`.slot[data-day="${ev.dayIndex}"][data-hr="${hour}"]`);
+  // Renderizar materias
+  function placeMateriaEvent(mat){
+    // Parsear horario
+    const parts = mat.horario.split(' ');
+    if(parts.length < 2) return;
+    
+    const dia = parts[0];
+    const horas = parts[1].split('-');
+    const dayIndex = daysMap[dia];
+    const startHour = parseInt(horas[0].split(':')[0], 10);
+    
+    if(dayIndex === undefined) return;
+
+    const target = document.querySelector(`.slot[data-day="${dayIndex}"][data-hr="${startHour}"]`);
     if(!target) return;
 
-    const el = document.createElement('div');
-    el.className = `event ${ev.priority}`;
-    el.innerHTML = `
-      <h4 title="${ev.name}">${ev.name}</h4>
-      <div class="meta">${ev.start}–${ev.end}</div>
-      <div class="ev-actions"><a class="ev-btn" href="agregar_evento_tarea.html">Abrir</a></div>
-    `;
-    target.appendChild(el);
-  }
+    const el = document.createElement("div");
+    const prioridadNombres = {1: 'Baja', 2: 'Media', 3: 'Alta'};
+    const prioridadClases  = {1: 'priority-baja', 2: 'priority-media', 3: 'priority-alta'};
 
-  if(!localStorage.getItem(CAL)){
-    localStorage.setItem(CAL, JSON.stringify([
-      {id:'e1', name:'Clase Cálculo', priority:'media', dayIndex:0, start:'09:00', end:'10:00'},
-      {id:'e2', name:'Entrenamiento fútbol', priority:'alta', dayIndex:2, start:'18:00', end:'19:00'}
-    ]));
-  }
-  getCal().forEach(placeEvent);
+    const priorityClass = prioridadClases[mat.prioridad];
+
+    el.className = `event materia ${priorityClass}`;
+
+    // Tooltip
+    el.setAttribute("data-tip", `${mat.name}`);
+
+    target.appendChild(el);
+}
+
+  // Renderizar eventos
+  function placeEventoCalendario(evt){
+
+    function parseLocalDatetime(dtString) {
+      const [datePart, timePart] = dtString.split('T');
+      const [y, m, d] = datePart.split('-').map(Number);
+      const [h, min] = timePart.split(':').map(Number);
+      return new Date(y, m - 1, d, h, min);
+    }
+
+    const start = parseLocalDatetime(evt.start);
+    const end   = parseLocalDatetime(evt.end);
+
+    // Convertir correctamente: getDay() 0=Dom, 1=Lun... → dayIndex 0=Lun, 6=Dom
+    let dayIndex = start.getDay() - 1;
+    if(dayIndex === -1) dayIndex = 6; // Si es domingo (0), pasar a 6
+    
+    const startHour = start.getHours();
+    
+    const target = document.querySelector(`.slot[data-day="${dayIndex}"][data-hr="${startHour}"]`);
+    if(!target) {
+      console.warn(`No se encontró slot para evento: ${evt.name}, día ${dayIndex}, hora ${startHour}`);
+      return;
+    }
+    
+    const el = document.createElement("div");
+    const prioridadNombres = {1: 'Baja', 2: 'Media', 3: 'Alta'};
+    const prioridadClases  = {1: 'priority-baja', 2: 'priority-media', 3: 'priority-alta'};
+    const priorityClass = prioridadClases[evt.prioridad];
+    
+    el.className = `event evento ${priorityClass}`;
+
+     // Tooltip
+    el.setAttribute("data-tip", `${evt.name}`);
+
+    target.appendChild(el);
+}
+
+  // Renderizar todos
+  materias.forEach(placeMateriaEvent);
+  eventos.forEach(placeEventoCalendario);
 
   /* ---------- Tareas (pendientes) ---------- */
   const TASK='parchate_tasks';
@@ -246,7 +366,7 @@
     const items=getTasks().filter(t=>!t.done);
     if(!items.length){
       list.innerHTML = `<div class="item" role="listitem"><strong>No hay tareas pendientes.</strong>
-        <div class="meta">Usa “Añadir evento o tarea” en el calendario o abre la gestión.</div></div>`;
+        <div class="meta">Usa "Añadir evento o tarea" en el calendario o abre la gestión.</div></div>`;
       return;
     }
     items.forEach(t=>{
