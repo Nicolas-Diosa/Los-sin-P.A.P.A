@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from core.Negocio.auth import *
 from core.Negocio.actividades import listar_actividades_conteo
 from django.db.models import Count
-from core.Persistencia.DB_manager import DB_Manager
 from core.Negocio.actividades import obtener_detalle_actividad
 from django.http import Http404
 from django.utils import timezone
@@ -24,7 +23,7 @@ def login(request):
         return render(request, 'core/login.html')
 
     if request.method == 'POST':
-        auth_service = Auth(DB_Manager())
+        auth_service = Auth()
         success, errors = auth_service.login_user(request.POST, request)
 
         if success:
@@ -38,7 +37,7 @@ def signup(request):
         return render(request, 'core/signup.html')
 
     if request.method == 'POST':
-        auth_service = Auth(DB_Manager())
+        auth_service = Auth()
         success, errors = auth_service.register_user(request.POST, request)
 
         if success:
