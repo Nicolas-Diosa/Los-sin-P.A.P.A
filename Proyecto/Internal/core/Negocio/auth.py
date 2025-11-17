@@ -5,8 +5,8 @@ import re
 
 class UserValidator:
 
-    def __init__(self, db_manager: DB_Manager):
-        self.db = db_manager
+    def __init__(self):
+        self.db = DB_Manager()
 
     def passwords_match(self, pass1, pass2):
         return pass1 == pass2
@@ -26,9 +26,11 @@ class UserValidator:
             return True
 
     def is_valid_email(self, email):
-        return (
-            re.search(r'@', email)
-        )
+        patron_email = r'^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$'
+        if re.fullmatch(patron_email, email):
+            return True
+        else:
+            return False
 
     def is_valid_password_policy(self, password):
 
@@ -49,9 +51,9 @@ class UserValidator:
 
 class Auth:
 
-    def __init__(self, db_manager: DB_Manager):
-        self.db = db_manager
-        self.validator = UserValidator(db_manager)
+    def __init__(self):
+        self.db = DB_Manager()
+        self.validator = UserValidator()
 
     def register_user(self, data: dict, request):
         username = data.get('user')
