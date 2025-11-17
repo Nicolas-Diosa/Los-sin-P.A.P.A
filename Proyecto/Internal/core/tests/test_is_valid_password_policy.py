@@ -19,15 +19,12 @@ Caso 2: La contraseña no cumple con las 3 condiciones (false):
 
 
 import unittest
-from unittest.mock import MagicMock
 from core.Negocio.auth import UserValidator
 
 class Test_is_valid_password_policy(unittest.TestCase):
 
     def setUp(self):
-        # Mock del DB_Manager
-        self.mock_db = MagicMock()
-        self.validator = UserValidator(self.mock_db)
+        self.validator = UserValidator()
 
     def test_is_valid_password_policy(self):
         casos = [

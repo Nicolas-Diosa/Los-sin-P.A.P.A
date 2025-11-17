@@ -13,15 +13,12 @@ Caso 2: Las contraseñas no coinciden (false)
 
 
 import unittest
-from unittest.mock import MagicMock
 from core.Negocio.auth import UserValidator
 
 
 class Test_password_match(unittest.TestCase):
     def setUp(self):
-        # Mock del DB_Manager
-        self.mock_db = MagicMock()
-        self.validator = UserValidator(self.mock_db)
+        self.validator = UserValidator()
 
     def test_passwords_match(self):
         casos = [
