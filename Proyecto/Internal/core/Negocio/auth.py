@@ -38,6 +38,8 @@ class UserValidator:
             len(password) >= 8
             and re.search(r'\d', password)
             and re.search(r'[^A-Za-z0-9]', password)
+            and bool(re.search(r'\d', password))
+            and bool(re.search(r'[^A-Za-z0-9]', password))
         )
 
     def incorrect_password(self, username, password):
