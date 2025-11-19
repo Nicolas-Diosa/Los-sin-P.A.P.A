@@ -19,4 +19,7 @@ urlpatterns = [
     path('actividades/<uuid:id>/', views.detalles_actividad, name='detalles_actividad'),
     path('agregar_evento/', views.agregar_evento, name='agregar_evento'),
     path('agregar_materia/', views.agregar_materia, name='agregar_materia'),
+    path('perfil/', views.ver_perfil, name='perfil'),
+    path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
+    path('perfil/actualizado/', views.perfil_actualizado, name='perfil_actualizado')
 ]

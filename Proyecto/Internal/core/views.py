@@ -3,6 +3,8 @@ from core.Negocio.auth import *
 from core.Negocio.actividades import listar_actividades_conteo
 from django.db.models import Count
 from core.Negocio.actividades import obtener_detalle_actividad
+from core.Negocio.perfil_service import PerfilService
+from django.contrib import messages
 from django.http import Http404
 from django.utils import timezone
 from core.models import Usuario, Actividad
@@ -230,3 +232,73 @@ def agregar_materia(request):
         return redirect('/area_privada/')
 
     return render(request, 'core/agregar_materia.html')
+
+def ver_perfil(request):
+    """Muestra la vista de perfil (solo lectura)."""
+    service = PerfilService()
+    username = request.session.get('username')
+    if not username:
+        # no logueado -> redirigir a login
+        messages.error(request, "Debe iniciar sesión.")
+        return redirect('/login/')
+
+    usuario = service.obtener_usuario(username)
+    if not usuario:
+        messages.error(request, "Usuario no encontrado.")
+        return redirect('/login/')
+
+    return render(request, 'core/perfil.html', {
+        'usuario': usuario
+    })
+
+def editar_perfil(request):
+    """GET: mostrar formulario con datos. POST: validar y guardar."""
+    service = PerfilService()
+    username = request.session.get('username')
+    if not username:
+        messages.error(request, "Debe iniciar sesión.")
+        return redirect('/login/')
+
+    usuario = service.obtener_usuario(username)
+    if not usuario:
+        messages.error(request, "Usuario no encontrado.")
+        return redirect('/login/')
+
+    if request.method == 'GET':
+        return render(request, 'core/editar_perfil.html', {
+            'nombre_usuario': usuario.nombre_usuario,
+            'bio': usuario.bio or ''
+        })
+
+    # POST -> procesar
+    nuevo_nombre = request.POST.get('nombre_usuario', '').strip()
+    nueva_bio = request.POST.get('bio', '').strip()
+
+    try:
+        service.editar_perfil(username, {
+            'nombre_usuario': nuevo_nombre,
+            'bio': nueva_bio
+        })
+    except Exception as e:
+        # Mostrar error en el formulario
+        return render(request, 'core/editar_perfil.html', {
+            'nombre_usuario': nuevo_nombre,
+            'bio': nueva_bio,
+            'error': str(e)
+        })
+
+    # si cambió el username, actualizar la sesión
+    request.session['username'] = nuevo_nombre
+    return redirect('perfil_actualizado')
+
+def perfil_actualizado(request):
+    """Página de confirmación después de editar perfil."""
+    username = request.session.get('username')
+    if not username:
+        return redirect('/login/')
+
+    service = PerfilService()
+    usuario = service.obtener_usuario(username)
+    return render(request, 'core/perfil_actualizado.html', {
+        'usuario': usuario
+    })
