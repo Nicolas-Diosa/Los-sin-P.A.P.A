@@ -51,7 +51,7 @@ def signup(request):
 def ver_actividades(request):
     if not request.session.get('inicio_sesion'):
         return redirect('login')
-    
+
     username = request.session.get('username', 'Invitado')
     actividades = listar_actividades_conteo()
 
@@ -86,7 +86,7 @@ def logout(request):
 def detalles_actividad(request, id):
     if not request.session.get('inicio_sesion'):
         return redirect('login')
-    
+
     """Vista de detalles de actividad. Usa la capa de negocio para obtener datos."""
     actividad = obtener_detalle_actividad(id)
     if not actividad:
@@ -101,7 +101,7 @@ def detalles_actividad(request, id):
 def crear_actividad(request):
     if not request.session.get('inicio_sesion'):
         return redirect('login')
-    
+
     service = ActividadService()
 
     if request.method == "POST":
@@ -123,14 +123,14 @@ def crear_actividad(request):
             return redirect('actividad_creada')
         except Exception as e:
             return render(request, 'core/crear_actividad.html', {'error': str(e)})
-        
+
     return render(request, 'core/crear_actividad.html')
 
 
 def actividad_creada(request):
     if not request.session.get('inicio_sesion'):
         return redirect('login')
-    
+  
     return render(request, 'core/actividad_creada.html')
 
 
@@ -233,6 +233,7 @@ def agregar_materia(request):
 
     return render(request, 'core/agregar_materia.html')
 
+
 def ver_perfil(request):
     """Muestra la vista de perfil (solo lectura)."""
     service = PerfilService()
@@ -250,6 +251,7 @@ def ver_perfil(request):
     return render(request, 'core/perfil.html', {
         'usuario': usuario
     })
+
 
 def editar_perfil(request):
     """GET: mostrar formulario con datos. POST: validar y guardar."""
@@ -290,6 +292,7 @@ def editar_perfil(request):
     # si cambió el username, actualizar la sesión
     request.session['username'] = nuevo_nombre
     return redirect('perfil_actualizado')
+
 
 def perfil_actualizado(request):
     """Página de confirmación después de editar perfil."""
