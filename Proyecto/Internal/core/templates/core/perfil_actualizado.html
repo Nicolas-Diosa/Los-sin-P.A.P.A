@@ -11,7 +11,8 @@
     --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
     --ring:0 0 0 3px rgba(119,149,252,.35);
     --shadow:0 10px 24px rgba(0,0,0,.12);
-    --radius:18px; --touch:44px;
+    --radius:20px; /* Aumentado */
+    --touch:44px;
     --success-bg:#ecfdf5; --success-border:#a7f3d0; --success-text:#065f46;
   }
   *{box-sizing:border-box}
@@ -44,7 +45,7 @@
     position:sticky;top:0;z-index:10;background:var(--g0);border-bottom:1px solid var(--g200);box-shadow:0 1px 2px rgba(0,0,0,.05);
     height:64px;
   }
-  .head{max-width:900px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:12px;height:100%}
+  .head{max-width:960px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:12px;height:100%}
   .title{font-weight:900;color:var(--secondary)}
   .spacer{margin-left:auto}
   .avatar-header{
@@ -53,35 +54,48 @@
   }
 
   /* Contenido principal */
-  .container{max-width:900px;margin:auto;padding:16px}
-  
-  /* Estilos de la tarjeta de perfil */
-  .card{background:var(--g0);border:1px solid var(--g200);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:grid;gap:12px}
-  .row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-  .avatar{
-    width:96px;height:96px;border-radius:50%;border:3px solid #eef2ff;display:grid;place-items:center;
-    background:linear-gradient(135deg,#c7d2fe,#93c5fd);color:#1f2a6a;font-weight:900;font-size:28px;overflow:hidden
+  .container{
+    max-width:960px; /* Aumentado */
+    margin:auto;
+    padding:30px 16px; /* Aumentado el padding vertical */
   }
-  .name{font-size:1.25rem;font-weight:900}
-  .bio{color:var(--g600)}
   
   /* Estilos del aviso de éxito (notice) */
   .notice{
     background:var(--success-bg);
     border:1px solid var(--success-border);
     color:var(--success-text);
-    border-radius:14px; /* Mayor radio */
+    border-radius:14px;
     padding:12px 16px;
     margin-bottom:16px;
-    font-weight:800; /* Más peso */
+    font-weight:800;
+    font-size: 1.1rem; /* Ligeramente más grande */
   }
 
+  /* Estilos de la tarjeta de perfil */
+  .card{
+    background:var(--g0);border:1px solid var(--g200);border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:30px; /* Aumentado para que sea más grande */
+    display:grid;gap:20px;
+  }
+  .row{display:flex;gap:24px;align-items:center;flex-wrap:wrap} /* Aumentado el gap */
+  .avatar{
+    width:120px; /* Aumentado de 96px a 120px */
+    height:120px; /* Aumentado de 96px a 120px */
+    border-radius:50%;border:4px solid #eef2ff;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,#c7d2fe,#93c5fd);color:#1f2a6a;
+    font-weight:900;font-size:36px; /* Texto más grande */
+    overflow:hidden
+  }
+  .name{font-size:1.5rem;font-weight:900} /* Fuente más grande */
+  .bio{color:var(--g600); font-size:1.1rem;} /* Fuente más grande */
+  
   /* Acciones y botones */
-  .actions{display:flex;gap:10px;margin-top:16px}
-  .btn{min-height:var(--touch);padding:12px 18px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer}
+  .actions{display:flex;gap:12px;margin-top:20px}
+  .btn{min-height:var(--touch);padding:14px 22px;border-radius:16px;border:1px solid transparent;font-weight:800;cursor:pointer}
   .btn-primary{background:var(--primary);color:#111}
-  .btn-light{background:var(--g0);border:1px solid var(--g300)}
-  .btn:focus-visible{outline:none;box-shadow:var(--ring)}
   a.link{color:var(--secondary);font-weight:800;text-decoration:none;padding:8px;border-radius:10px}
   a.link:focus-visible{outline:none;box-shadow:var(--ring)}
   .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0}
@@ -90,6 +104,7 @@
     .app{grid-template-columns:1fr}
     aside{display:none} 
     .head .logo, .head .title { display: none; }
+    .container{padding:16px}
   }
 </style>
 </head>
@@ -122,7 +137,7 @@
       <div class="container">
         
         <div class="notice" role="alert">
-          ¡🎉 **Su información ha sido actualizada correctamente!**
+          ¡🎉 Su información ha sido actualizada correctamente!
         </div>
 
         <section class="card" aria-labelledby="p-title">
@@ -139,7 +154,6 @@
 
           <div class="actions">
             <a class="btn btn-primary" href="{% url 'perfil' %}">Aceptar</a>
-            <a class="link" href="{% url 'actividades' %}">Ir a actividades</a>
           </div>
         </section>
       </div>
