@@ -103,7 +103,6 @@
     <main role="main">
       <header class="header" role="banner">
         <div class="head">
-          <div class="title">Editar Perfil</div>
         </div>
       </header>
 
@@ -118,12 +117,9 @@
           <form method="post" novalidate class="grid">
             {% csrf_token %}
             <div>
-              <label class="label" for="nombre_usuario">Nombre de usuario</label>
+              <label class="label" for="nombre_usuario">Nuevo nombre de usuario</label>
               <input id="nombre_usuario" name="nombre_usuario" class="input" type="text" required value="{{ nombre_usuario|default:'' }}" aria-required="true">
             </div>
-            
-            {# NOTA: Aquí iría el campo de subida de imagen si lo manejas en esta vista #}
-
             <div>
               <label class="label" for="bio">Biografía (máx. 280 caracteres)</label>
               <textarea id="bio" name="bio" class="area" maxlength="280" placeholder="Cuéntanos sobre ti">{{ bio|default:'' }}</textarea>
