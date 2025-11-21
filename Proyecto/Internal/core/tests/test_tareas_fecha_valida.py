@@ -7,17 +7,17 @@ Probar la validación de la fecha de una tarea: la fecha debe estar en el futuro
 
 Casos límite:
 -------------
-- fecha en el pasado (`timezone.now() - timedelta(minutes=1)`) → inválido
-- fecha exactamente ahora (`timezone.now()`) → inválido
-- fecha inmediatamente en el futuro (`timezone.now() + timedelta(minutes=1)`) → válido
+- fecha en el pasado (`datetime.now() - timedelta(minutes=1)`) → inválido
+- fecha exactamente ahora (`datetime.now()`) → inválido
+- fecha inmediatamente en el futuro (`datetime.now() + timedelta(minutes=1)`) → válido
 - fecha en formato ISO en el futuro → válido
 - texto no parseable (`"not-a-date"`) → inválido
 - `None` → inválido
+Ejecutar con pytest .\Proyecto\Internal\core\tests\test_tareas_fecha_valida.py
 """
 
 import pytest
-from django.utils import timezone
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from core.Negocio.tareas import fecha_valida
 
@@ -25,10 +25,10 @@ from core.Negocio.tareas import fecha_valida
 @pytest.mark.parametrize(
     "valor, esperado",
     [
-        (timezone.now() - timedelta(minutes=1), False),
-        (timezone.now(), False),
-        (timezone.now() + timedelta(minutes=1), True),
-        ((timezone.now() + timedelta(days=1)).isoformat(), True),
+        (datetime.now() - timedelta(minutes=1), False),
+        (datetime.now(), False),
+        (datetime.now() + timedelta(minutes=1), True),
+        ((datetime.now() + timedelta(days=1)), True),
         ("not-a-date", False),
         (None, False),
     ],

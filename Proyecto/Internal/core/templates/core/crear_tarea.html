@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parchate · Crear tarea</title>
+<style>
+  :root{
+    --primary:#FCAF56; --secondary:#7795FC;
+    --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+    --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 8px 18px rgba(0,0,0,.12);
+    --touch:44px; --radius:14px; --error:#b42318;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{position:sticky;top:0;z-index:10;background:var(--g0);border-bottom:1px solid var(--g200)}
+  .head{max-width:900px;margin:auto;padding:10px 16px;height:64px;display:flex;align-items:center;gap:12px}
+  .back{min-height:var(--touch);display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0);cursor:pointer}
+  .back:focus-visible{outline:none;box-shadow:var(--ring)}
+  h1{margin:0;font-size:1.25rem}
+  .container{max-width:900px;margin:auto;padding:16px}
+  .panel{background:var(--g0);border:1px solid var(--g200);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+  .grid{display:grid;gap:12px}
+  @media (min-width:760px){ .grid-2{grid-template-columns:1fr 1fr} }
+  .label{display:block;font-weight:900;margin-bottom:6px}
+  .req::after{content:" *";color:var(--error)}
+  .input,.select,.textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0)}
+  .input,.select{min-height:var(--touch)}
+  .textarea{min-height:100px;resize:vertical;font-family:inherit}
+  .input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+  .err{color:var(--error);font-size:.9rem;margin-top:6px}
+  .btn{min-height:var(--touch);padding:12px 18px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#111}
+  .btn-secondary{background:var(--g0);border:1px solid var(--g300)}
+  .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+  .checkbox-wrapper{display:flex;align-items:center;gap:8px;min-height:var(--touch)}
+  .checkbox{width:20px;height:20px;cursor:pointer}
+  .hint{font-size:.85rem;color:var(--g600);margin-top:4px}
+  /* Modal base */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px}
+  .modal{width:min(560px,100%);background:var(--g0);border:1px solid var(--g200);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+  .modal h2{margin:0 0 8px}
+  .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  .details{background:var(--g100);border:1px solid var(--g200);border-radius:12px;padding:10px}
+</style>
+</head>
+<body>
+<header role="banner">
+  <div class="head">
+    <button class="back" id="btnBack" aria-label="Volver al area privada">← Volver</button>
+    <h1>Crear tarea</h1>
+  </div>
+</header>
+
+<main class="container" role="main">
+  <section class="panel" aria-labelledby="form-title">
+    <h2 id="form-title" style="margin:0 0 10px">Completa los campos</h2>
+
+    <form id="form" class="grid grid-2" method="POST" action="{% url 'crear_tarea' %}" novalidate>
+      {% csrf_token %}
+      
+      <div style="grid-column:1/-1">
+        <label class="label req" for="nombre">Nombre de la tarea</label>
+        <input id="nombre" name="nombre_tarea" class="input" type="text" placeholder="Ej: Estudiar para el examen" aria-required="true"/>
+        <div id="err-nombre" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div style="grid-column:1/-1">
+        <label class="label" for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion_tarea" class="textarea" placeholder="Descripción de la tarea (opcional, máximo 280 caracteres)" maxlength="280"></textarea>
+        <div id="err-descripcion" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div>
+        <label class="label req" for="prioridad">Prioridad</label>
+        <select id="prioridad" name="prioridad" class="select" required>
+          <option value="">Selecciona</option>
+          <option value="3">Alta</option>
+          <option value="2">Media</option>
+          <option value="1">Baja</option>
+        </select>
+        <div id="err-prioridad" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div>
+        <label class="label req" for="fecha">Fecha de vencimiento</label>
+        <input id="fecha" name="fecha_vencimiento" class="input" type="datetime-local" aria-required="true"/>
+        <div id="err-fecha" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div>
+        <label class="label req" for="estado">Estado</label>
+        <select id="estado" name="estado_tarea" class="select" required>
+          <option value="">Selecciona</option>
+          <option value="Por realizar" selected>Por realizar</option>
+          <option value="Realizando">Realizando</option>
+          <option value="Realizada">Realizada</option>
+        </select>
+        <div id="err-estado" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div>
+        <label class="label" for="materia">Materia (opcional)</label>
+        <select id="materia" name="nombre_materia" class="select">
+          <option value="">Sin materia</option>
+          {% for materia in materias %}
+          <option value="{{ materia.nombre_materia }}">{{ materia.nombre_materia }}</option>
+          {% endfor %}
+        </select>
+        <div class="hint">Vincular tarea a una materia existente</div>
+      </div>
+
+      <div style="grid-column:1/-1">
+        <div class="checkbox-wrapper">
+          <input id="recurrente" name="es_recurrente" class="checkbox" type="checkbox"/>
+          <label for="recurrente" class="label" style="margin:0;cursor:pointer">¿Es una tarea recurrente?</label>
+        </div>
+      </div>
+
+      <div id="recurrencia-field" style="grid-column:1/-1;display:none">
+        <label class="label req" for="recurrencia">Patrón de recurrencia</label>
+        <input id="recurrencia" name="recurrencia" class="input" type="text" placeholder="Ej: FREQ=DAILY;INTERVAL=1 o FREQ=WEEKLY;BYDAY=MO,WE"/>
+        <div class="hint">Formato iCalendar RRULE (FREQ=DAILY|WEEKLY|MONTHLY|YEARLY)</div>
+        <div id="err-recurrencia" class="err" role="alert" aria-live="polite"></div>
+      </div>
+
+      <div style="grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" class="btn btn-secondary" id="cancel" aria-label="Cancelar">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="save" aria-label="Guardar">Guardar</button>
+      </div>
+      <div id="form-status" class="sr-only" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+
+<!-- Modal error (validación) -->
+<div id="overlayError" class="overlay" role="dialog" aria-modal="true" aria-labelledby="err-title" aria-hidden="true">
+  <div class="modal">
+    <h2 id="err-title">No se pudo guardar</h2>
+    <p id="err-text">Faltan campos obligatorios.</p>
+    <div id="dup-details" class="details" style="display:none"></div>
+    <div class="row" style="margin-top:8px">
+      <button id="err-close" class="btn btn-secondary" aria-label="Aceptar">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal éxito -->
+<div id="overlayOk" class="overlay" role="dialog" aria-modal="true" aria-labelledby="ok-title" aria-hidden="true">
+  <div class="modal" style="text-align:center">
+    <h2 id="ok-title">Tarea creada exitosamente.</h2>
+    <div class="row" style="justify-content:center;margin-top:8px">
+      <button id="ok-close" class="btn btn-primary" aria-label="Aceptar">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Navegación
+  document.getElementById("btnBack").onclick = () => location.href = "/area_privada/";
+  document.getElementById("cancel").onclick = () => location.href = "/area_privada/";
+
+  // Mostrar/ocultar campo de recurrencia
+  const recurrenteCheck = document.getElementById("recurrente");
+  const recurrenciaField = document.getElementById("recurrencia-field");
+  
+  recurrenteCheck.addEventListener("change", function() {
+    if (this.checked) {
+      recurrenciaField.style.display = "block";
+    } else {
+      recurrenciaField.style.display = "none";
+      document.getElementById("recurrencia").value = "";
+    }
+  });
+
+  // Contador de caracteres para descripción
+  const descripcionTextarea = document.getElementById("descripcion");
+  const hint = document.querySelector(".hint");
+  
+  descripcionTextarea.addEventListener("input", function() {
+    const count = this.value.length;
+    hint.textContent = `${count}/280 caracteres`;
+  });
+
+  // Cerrar modales
+  document.getElementById("err-close").onclick = () => {
+    document.getElementById("overlayError").style.display = "none";
+  };
+  
+  document.getElementById("ok-close").onclick = () => {
+    location.href = "/area_privada/";
+  };
+</script>
+</body>
+</html>

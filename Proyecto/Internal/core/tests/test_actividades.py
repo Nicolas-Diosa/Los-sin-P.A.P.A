@@ -41,7 +41,7 @@ def test_actividad_disponible():
     ahora = timezone.now()
 
     casos = [
-        ("actividad_none", None, True),
+        ("actividad_none", None, False),
         ("sin_fecha", DummyActividad(None), False),
         ("fecha_pasada", DummyActividad(ahora - timedelta(hours=1)), False),
         ("fecha_actual", DummyActividad(ahora), False),

@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Parchate · Área privada y gestión del tiempo</title>
 <style>
-  @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
   :root{
     --primary:#FCAF56; --secondary:#7795FC;
     --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
@@ -224,10 +223,10 @@
         <!-- Tareas -->
         <section class="panel" aria-labelledby="tasks-title">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-            <h2 id="tasks-title" class="title" style="margin:0">Lista de tareas</h2>
+            <h2 id="tasks-title" class="title" style="margin:0">Tareas</h2>
             <div>
               <a class="link" href="11_tasks_completed.html">Ver realizadas</a>
-              <a class="link" href="08_tasks_list.html">Abrir gestión</a>
+              <a class="link" href="{% url 'crear_tarea' %}">Agregar tarea</a>
             </div>
           </div>
           <div id="taskList" class="list" role="list"></div>

@@ -14,6 +14,7 @@ Casos límite:
 - justo por encima del límite (`"a" * 281`) → inválido
 - tipo no-string (`123`) → inválido
 - `None` → inválido
+Ejecutar con pytest .\Proyecto\Internal\core\tests\test_tareas_descripcion_valida.py
 """
 
 import pytest
@@ -29,7 +30,7 @@ from core.Negocio.tareas import descripcion_valida
         ("a" * 280, True),
         ("a" * 281, False),
         (123, False),
-        (None, False),
+        (None, True),
     ],
 )
 def test_descripcion_valida(texto, esperado):

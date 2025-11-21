@@ -10,6 +10,8 @@ from core.Negocio.actividad_service import ActividadService
 from datetime import datetime
 from core.Negocio.materias_eventos import AreaPrivada
 import json
+from core.Negocio.tareas import TareasService
+
 
 # Create your views here.
 
@@ -230,3 +232,21 @@ def agregar_materia(request):
         return redirect('/area_privada/')
 
     return render(request, 'core/agregar_materia.html')
+
+
+def crear_tarea(request):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+
+    if request.method == 'POST':
+        TareasService(usuario).crear_tarea(request.POST)
+        return redirect('/area_privada/')
+
+    materias = TareasService(usuario).obtener_materias_usuario()
+    return render(request, 'core/crear_tarea.html', {
+        'materias': materias
+    })
+
+
