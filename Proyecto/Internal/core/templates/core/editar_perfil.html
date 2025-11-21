@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parchate · Editar perfil</title>
+<style>
+  @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+  :root{
+    --primary:#FCAF56; --secondary:#7795FC;
+    --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+    --ring:0 0 0 3px rgba(119,149,252,.35);
+    --shadow:0 10px 24px rgba(0,0,0,.12);
+    --radius:20px; /* Aumentado */
+    --touch:44px; --error:#b42318;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+
+  /* Nuevo Layout: Sidebar + Contenido */
+  .app{min-height:100dvh;display:grid;grid-template-columns:280px 1fr}
+
+  /* Estilos de Sidebar */
+  aside{
+    position:sticky; top:0; align-self:start; height:100dvh;
+    background:var(--g0); border-right:1px solid var(--g200); padding:12px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px}
+  .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+  .appname{font-weight:900;color:var(--secondary)}
+  nav.sidebar-nav{margin-top:8px;display:grid;gap:6px}
+  .nav-btn{
+    display:flex;align-items:center;gap:10px;
+    min-height:var(--touch); padding:10px 12px; border-radius:12px;
+    background:transparent; border:1px solid transparent; text-decoration:none; color:var(--g900); font-weight:800;
+  }
+  .nav-btn:hover{background:var(--g100)}
+  .nav-btn:focus-visible{outline:none;box-shadow:var(--ring)}
+  /* Clase 'current' para el enlace activo */
+  .current{background:rgba(119,149,252,.12); border:1px solid rgba(119,149,252,.35); color:#1f2a6a}
+  .cta{background:var(--primary); color:#111; border:1px solid transparent}
+
+  /* Estilos de Header */
+  .header{
+    position:sticky;top:0;z-index:10;background:var(--g0);border-bottom:1px solid var(--g200);box-shadow:0 1px 2px rgba(0,0,0,.05);
+    height:64px;
+  }
+  .head{max-width:840px; /* Aumentado */ margin:auto;padding:10px 16px;display:flex;align-items:center;gap:12px;height:100%}
+  .title{font-weight:900;color:var(--secondary)}
+  .spacer{margin-left:auto}
+  
+  /* Contenido principal */
+  .container{
+    max-width:840px; /* Aumentado de 720px a 840px para más espacio */
+    margin:auto;
+    padding:30px 16px; /* Aumentado el padding vertical */
+  }
+  .card{
+    background:var(--g0);border:1px solid var(--g200);border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:30px; /* Aumentado de 16px a 30px para que sea más grande */
+    display:grid;gap:16px; /* Ajustado el gap */
+  }
+
+  /* Estilos de formulario */
+  .grid{display:grid;gap:16px; /* Aumentado el gap entre campos */}
+  .label{display:block;font-weight:900;margin-bottom:6px}
+  .input,.area{width:100%;min-height:calc(var(--touch) + 4px); /* Ligeramente más altos */ padding:14px; border-radius:14px; border:1px solid var(--g300);background:var(--g0)}
+  .area{min-height:140px; /* Más alto */ resize:vertical}
+  .input:focus,.area:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+  .row-end{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
+  .btn{min-height:calc(var(--touch) + 4px); /* Ligeramente más altos */ padding:14px 22px; border-radius:16px; border:1px solid transparent;font-weight:800;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#111}
+  .btn-secondary{background:var(--secondary);color:#fff}
+  .btn-light{background:var(--g0);border:1px solid var(--g300)}
+  .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+  .err{color:var(--error);font-size:.9rem;margin-top:6px}
+  .banner{display:block;margin-bottom:16px;padding:12px 16px;border-radius:14px;background:#FEE2E2;color:#7F1D1D;border:1px solid #FCA5A5}
+
+  @media (max-width:960px){
+    .app{grid-template-columns:1fr}
+    aside{display:none} 
+    .head .logo, .head .title { display: none; }
+    .container{padding:16px}
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <aside id="sidebar" aria-label="Menú lateral de navegación">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="appname">Parchate</div>
+      </div>
+      <nav class="sidebar-nav" role="navigation" aria-label="Navegación principal">
+        <a class="nav-btn" href="{% url 'actividades' %}">Inicio / Actividades</a>
+        <a class="nav-btn cta" href="{% url 'area_privada' %}" aria-label="Ir a área privada y gestión del tiempo">Área privada y gestión del tiempo</a>
+        <a class="nav-btn current" href="{% url 'perfil' %}" aria-current="page">Perfil de usuario</a>
+        <a class="nav-btn" href="/logout/">Cerrar sesión</a>
+      </nav>
+    </aside>
+
+    <main role="main">
+      <header class="header" role="banner">
+        <div class="head">
+        </div>
+      </header>
+
+      <div class="container">
+        <section class="card" aria-labelledby="form-title">
+          <h1 id="form-title" style="margin:0 0 16px; font-size:1.5rem;">Editar perfil</h1>
+
+          {% if error %}
+            <div class="banner" role="alert">{{ error }}</div>
+          {% endif %}
+
+          <form method="post" novalidate class="grid">
+            {% csrf_token %}
+            <div>
+              <label class="label" for="nombre_usuario">Nuevo nombre de usuario</label>
+              <input id="nombre_usuario" name="nombre_usuario" class="input" type="text" required value="{{ nombre_usuario|default:'' }}" aria-required="true">
+            </div>
+            <div>
+              <label class="label" for="bio">Biografía (máx. 280 caracteres)</label>
+              <textarea id="bio" name="bio" class="area" maxlength="280" placeholder="Cuéntanos sobre ti">{{ bio|default:'' }}</textarea>
+            </div>
+
+            <div class="row-end">
+              <a class="btn btn-light" href="{% url 'perfil' %}" aria-label="Cancelar y volver al perfil">Cancelar</a>
+              <button type="submit" class="btn btn-secondary">Confirmar cambios</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

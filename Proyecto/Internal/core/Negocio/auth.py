@@ -111,10 +111,10 @@ class Auth:
         request.session['id_usuario'] = str(usuario.id)
 
         return True, {}
-    
+
     def obtener_usuario_desde_sesion(request):
         usuario_id = request.session.get('id_usuario')
         if usuario_id:
-              db= DB_Manager()
-              return db.get_usuario_by_id(usuario_id)
+            db = DB_Manager()
+            return db.get_usuario_by_id(usuario_id)
         return None

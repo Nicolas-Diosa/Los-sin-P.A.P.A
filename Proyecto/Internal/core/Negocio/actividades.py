@@ -42,5 +42,3 @@ def obtener_detalle_actividad(actividad_id):
         return qs.first()
     except Exception:
         return None
-    
-
