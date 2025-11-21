@@ -183,14 +183,6 @@
     }
   });
 
-  // Contador de caracteres para descripción
-  const descripcionTextarea = document.getElementById("descripcion");
-  const hint = document.querySelector(".hint");
-  
-  descripcionTextarea.addEventListener("input", function() {
-    const count = this.value.length;
-    hint.textContent = `${count}/280 caracteres`;
-  });
 
   // Cerrar modales
   document.getElementById("err-close").onclick = () => {
