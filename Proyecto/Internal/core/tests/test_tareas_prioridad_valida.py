@@ -12,6 +12,7 @@ Casos límite:
 - `0`, `4`, `-1` → inválidos
 - valores no enteros (`"1"`, `1.0`) → inválidos
 - `None` → inválido
+Ejecutar con pytest .\Proyecto\Internal\core\tests\test_tareas_prioridad_valida.py
 """
 
 import pytest

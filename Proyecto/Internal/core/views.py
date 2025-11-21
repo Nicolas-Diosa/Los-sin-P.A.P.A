@@ -12,6 +12,8 @@ from core.Negocio.actividad_service import ActividadService
 from datetime import datetime
 from core.Negocio.materias_eventos import AreaPrivada
 import json
+from core.Negocio.tareas import TareasService
+
 
 # Create your views here.
 
@@ -130,14 +132,14 @@ def crear_actividad(request):
 def actividad_creada(request):
     if not request.session.get('inicio_sesion'):
         return redirect('login')
-  
+
     return render(request, 'core/actividad_creada.html')
 
 
 def registrar_asistencia(request, actividad_id):
     if not request.session.get('inicio_sesion'):
         return redirect('login')
-    
+
     db = DB_Manager()
     actividad = Actividad.objects.get(id=actividad_id)
     usuario = db.get_usuario_by_nombre_usuario(request.session['username'])
@@ -203,9 +205,10 @@ def registrar_asistencia(request, actividad_id):
 def asistencia_registrada(request, actividad_id):
     if not request.session.get('inicio_sesion'):
         return redirect('login')
-    
+
     actividad = get_object_or_404(Actividad, id=actividad_id)
     return render(request, 'core/asistencia_registrada.html', {'actividad': actividad})
+
 
 def agregar_evento(request):
     if not request.session.get('inicio_sesion'):
@@ -304,4 +307,28 @@ def perfil_actualizado(request):
     usuario = service.obtener_usuario(username)
     return render(request, 'core/perfil_actualizado.html', {
         'usuario': usuario
+    })
+
+
+def crear_tarea(request):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+
+    if request.method == 'POST':
+        success, errors = TareasService(usuario).crear_tarea(request.POST)
+
+        if success:
+            return redirect('/area_privada/')
+        else:
+            materias = TareasService(usuario).obtener_materias_usuario()
+            return render(request, 'core/crear_tarea.html', {
+                'materias': materias,
+                'errors': errors
+            })
+
+    materias = TareasService(usuario).obtener_materias_usuario()
+    return render(request, 'core/crear_tarea.html', {
+        'materias': materias
     })

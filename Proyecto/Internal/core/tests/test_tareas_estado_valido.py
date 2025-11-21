@@ -12,6 +12,7 @@ Casos límite:
 - mismo texto en distinto case (`por realizar`) → inválido
 - valores en otro idioma (`Completed`) → inválido
 - `None` → inválido
+Ejecutar con pytest .\Proyecto\Internal\core\tests\test_tareas_estado_valido.py
 """
 
 import pytest

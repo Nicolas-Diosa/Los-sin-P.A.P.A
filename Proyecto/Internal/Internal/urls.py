@@ -21,5 +21,6 @@ urlpatterns = [
     path('agregar_materia/', views.agregar_materia, name='agregar_materia'),
     path('perfil/', views.ver_perfil, name='perfil'),
     path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
-    path('perfil/actualizado/', views.perfil_actualizado, name='perfil_actualizado')
+    path('perfil/actualizado/', views.perfil_actualizado, name='perfil_actualizado'),
+    path('crear_tarea/', views.crear_tarea, name='crear_tarea')
 ]
