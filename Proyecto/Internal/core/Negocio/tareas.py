@@ -3,8 +3,6 @@ from datetime import datetime
 import re
 
 
-# ========== FUNCIONES DE VALIDACIÓN ==========
-
 def descripcion_valida(descripcion):
     """Valida que la descripción tenga entre 0 y 280 caracteres."""
     if descripcion is None:
@@ -52,32 +50,34 @@ def prioridad_valida(prioridad):
 def validar_datos_tarea(usuario, nombre, descripcion, prioridad, fecha_vencimiento, es_recurrente, recurrencia, estado):
     """
     Valida todos los datos necesarios para crear una tarea.
-    Lanza ValueError si alguna validación falla.
+    Retorna un diccionario de errores. Si está vacío, no hay errores.
     """
+    errors = {}
+    
     if not usuario:
-        raise ValueError("El usuario es obligatorio.")
+        errors['usuario'] = "El usuario es obligatorio."
     
     if not nombre:
-        raise ValueError("El nombre de la tarea es obligatorio.")
+        errors['nombre_tarea'] = "El nombre de la tarea es obligatorio."
     
     if not descripcion_valida(descripcion):
-        raise ValueError("Descripción inválida (máximo 280 caracteres).")
+        errors['descripcion_tarea'] = "Descripción inválida (máximo 280 caracteres)."
     
     if not prioridad_valida(prioridad):
-        raise ValueError("Prioridad debe ser 1, 2 o 3.")
+        errors['prioridad'] = "Prioridad debe ser 1, 2 o 3."
     
     if not fecha_valida(fecha_vencimiento):
-        raise ValueError("La fecha de vencimiento debe ser futura.")
+        errors['fecha_vencimiento'] = "La fecha de vencimiento debe ser futura."
     
     if es_recurrente:
         if not icalendar_valido(recurrencia):
-            raise ValueError("Formato de recurrencia iCalendar inválido (ej: FREQ=DAILY;INTERVAL=1).")
+            errors['recurrencia'] = "Formato de recurrencia iCalendar inválido (ej: FREQ=DAILY;INTERVAL=1)."
     
     if not estado_valido(estado):
-        raise ValueError("Estado debe ser: 'Por realizar', 'Realizando' o 'Realizada'.")
+        errors['estado_tarea'] = "Estado debe ser: 'Por realizar', 'Realizando' o 'Realizada'."
+    
+    return errors
 
-
-# ========== CLASE DE SERVICIO ==========
 
 class TareasService:
     def __init__(self, usuario):
@@ -95,17 +95,31 @@ class TareasService:
         """
         Crea una tarea validando datos mínimos.
         datos: QueryDict del request.POST
+        Retorna (success: bool, errors: dict)
         """
+        errors = {}
+        
         nombre = datos.get("nombre_tarea", "").strip()
         descripcion = datos.get("descripcion_tarea")
-        prioridad = int(datos.get("prioridad"))
-        fecha_vencimiento = datetime.fromisoformat(datos.get("fecha_vencimiento"))
+        try:
+            prioridad = int(datos.get("prioridad"))
+        except (TypeError, ValueError):
+            prioridad = None
+            errors['prioridad'] = "La prioridad debe ser un número válido."
+        
+        try:
+            fecha_vencimiento = datetime.fromisoformat(datos.get("fecha_vencimiento"))
+        except (TypeError, ValueError):
+            fecha_vencimiento = None
+            errors['fecha_vencimiento'] = "La fecha de vencimiento no es válida."
+        
         es_recurrente = datos.get("es_recurrente") == "on"
         recurrencia = datos.get("recurrencia", "") if es_recurrente else None
         estado = datos.get("estado_tarea")
         
-        validar_datos_tarea(self.usuario, nombre, descripcion, prioridad, 
+        validation_errors = validar_datos_tarea(self.usuario, nombre, descripcion, prioridad, 
                             fecha_vencimiento, es_recurrente, recurrencia, estado)
+        errors.update(validation_errors)
 
         materia_ref = None
         nombre_materia = datos.get("nombre_materia")
@@ -113,9 +127,12 @@ class TareasService:
             try:
                 materia_ref = self.db.get_materia_by_nombre_materia(nombre_materia)
                 if not materia_ref:
-                    raise ValueError(f"Materia '{nombre_materia}' no encontrada.")
+                    errors['nombre_materia'] = f"Materia '{nombre_materia}' no encontrada."
             except Exception as e:
-                raise ValueError(f"Error al buscar materia: {str(e)}")
+                errors['nombre_materia'] = f"Error al buscar materia: {str(e)}"
+        
+        if errors:
+            return False, errors
 
         self.db.create_tarea(
             id_usuario=self.usuario,
@@ -130,4 +147,6 @@ class TareasService:
             creacion_tarea=datetime.now(),
             completada_en=None
         )
+        
+        return True, {}
     
