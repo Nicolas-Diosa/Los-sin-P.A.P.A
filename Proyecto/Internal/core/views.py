@@ -332,3 +332,6 @@ def crear_tarea(request):
     return render(request, 'core/crear_tarea.html', {
         'materias': materias
     })
+
+def tarea_realizada(request):
+    return render(request, 'core/tarea_realizada.html')
