@@ -335,3 +335,6 @@ def crear_tarea(request):
 
 def tarea_realizada(request):
     return render(request, 'core/tarea_realizada.html')
+
+def calendario(request):
+    return render(request, 'core/calendario.html')

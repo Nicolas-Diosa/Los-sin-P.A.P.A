@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parchate · Calendario</title>
+<style>
+  @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+  :root{
+    --primary:#FCAF56; --secondary:#7795FC;
+    --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+    --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 8px 18px rgba(0,0,0,.12);
+    --touch:44px; --radius:14px;
+
+    /* Colores por prioridad */
+    --p-alta:#FCA5A5;   /* rojo suave */
+    --p-media:#FCD34D;  /* amarillo */
+    --p-baja:#A7F3D0;   /* verde menta */
+
+    /* Alturas de layout (coinciden con el UI actual) */
+    --h-header:64px;
+    --h-footer:60px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--g50);color:var(--g900);
+    font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  }
+
+  .app{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:10;background:var(--g0);border-bottom:1px solid var(--g200)}
+  .head{max-width:1100px;margin:auto;padding:10px 16px;height:var(--h-header);display:flex;align-items:center;gap:12px}
+  .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
+  .title{font-weight:900;color:var(--secondary)}
+  .spacer{margin-left:auto}
+  .btn{min-height:var(--touch);padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:800;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#111}
+  .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+
+  /* Contenido */
+  .container{
+    max-width:1100px;margin:auto;padding:16px;
+    display:flex;flex-direction:column;
+    height:calc(100dvh - var(--h-header) - var(--h-footer)); /* ocupa el alto disponible sin scroll */
+    min-height:0;
+  }
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .legend{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--g0);border:1px solid var(--g200);font-weight:800}
+  .dot{width:10px;height:10px;border-radius:999px;display:inline-block}
+
+  /* Calendario: cabecera + cuerpo con alturas proporcionadas */
+  .calendar-wrap{flex:1;min-height:0;display:grid;grid-template-rows:auto 1fr}
+  .grid-head{
+    display:grid;grid-template-columns:80px repeat(7,1fr);
+    background:var(--g100);border:1px solid var(--g200);border-bottom:none;border-top-left-radius:12px;border-top-right-radius:12px;
+  }
+  .colhead{padding:8px;font-weight:900;text-align:center;border-right:1px solid var(--g200)}
+  .colhead:first-child{text-align:right;padding-right:12px}
+  .colhead:last-child{border-right:none}
+
+  .grid-body{
+    display:grid;grid-template-columns:80px repeat(7,1fr);
+    grid-auto-rows:1fr;           /* 13 filas de igual altura -> todo cabe sin scroll */
+    border:1px solid var(--g200);
+    border-bottom-left-radius:12px;border-bottom-right-radius:12px;
+    background:var(--g0);overflow:hidden; /* sin scroll vertical */
+  }
+  .time{
+    padding:8px;border-right:1px solid var(--g200);text-align:right;color:var(--g600);
+    border-top:1px solid var(--g200);
+  }
+  .slot{
+    position:relative;border-right:1px solid var(--g200);border-top:1px solid var(--g200);
+    /* sin min-height fija: la altura la reparte la grilla */
+  }
+  .slot:last-child{border-right:none}
+
+  .event{
+    position:absolute;left:6px;right:6px;top:4px;bottom:4px;   /* llena la fila visualmente */
+    border-radius:10px;padding:8px 10px;box-shadow:var(--shadow);
+    border:1px solid rgba(0,0,0,.06);display:grid;gap:4px
+  }
+  .alta{background:var(--p-alta)} .media{background:var(--p-media)} .baja{background:var(--p-baja)}
+  .event h4{margin:0;font-size:1rem}
+  .event .meta{font-size:.9rem;color:#1f2937}
+  .ev-actions{display:flex;gap:6px;margin-top:4px}
+  .ev-btn{min-height:36px;padding:6px 10px;border-radius:8px;border:1px solid var(--g300);background:var(--g0);font-weight:800;cursor:pointer}
+  .ev-btn:focus-visible{outline:none;box-shadow:var(--ring)}
+
+  /* Footer nav */
+  footer{position:sticky;bottom:0;background:var(--g0);border-top:1px solid var(--g200)}
+  .nav{max-width:1100px;margin:auto;height:var(--h-footer);display:flex;align-items:center;justify-content:space-around}
+  .nav a{padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--g900);font-weight:800}
+  .nav a.primary{background:var(--secondary);color:#fff}
+  .nav a:focus-visible{outline:none;box-shadow:var(--ring)}
+
+  .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0}
+</style>
+</head>
+<body>
+  <div class="app">
+    <header role="banner">
+      <div class="head">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="title" aria-label="Calendario del usuario">Calendario</div>
+        <div class="spacer"></div>
+        <a class="btn btn-primary" href="{% url 'agregar_materia' %}" aria-label="Añadir evento o materia">Añadir evento o materia</a>
+      </div>
+    </header>
+
+    <main class="container" role="main">
+      <section class="toolbar" aria-label="Leyenda">
+        <div class="legend">
+          <span class="chip"><span class="dot" style="background:var(--p-alta)"></span> Prioridad alta</span>
+          <span class="chip"><span class="dot" style="background:var(--p-media)"></span> Prioridad media</span>
+          <span class="chip"><span class="dot" style="background:var(--p-baja)"></span> Prioridad baja</span>
+        </div>
+      </section>
+
+      <section class="calendar-wrap" aria-labelledby="cal-title">
+        <h2 id="cal-title" class="sr-only">Vista semanal</h2>
+
+        <!-- Cabecera de columnas -->
+        <div class="grid-head" role="row">
+          <div class="colhead">Hora</div>
+          <div class="colhead">Lun</div><div class="colhead">Mar</div><div class="colhead">Mié</div>
+          <div class="colhead">Jue</div><div class="colhead">Vie</div><div class="colhead">Sáb</div><div class="colhead">Dom</div>
+        </div>
+
+        <!-- Cuerpo (13 filas = 08:00…20:00) -->
+        <div id="grid" class="grid-body" role="grid" aria-label="Calendario semanal"></div>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="/actividades/">Inicio</a>
+        <a href="08_tasks_list.html">Tareas</a>
+        <a class="primary" href="13_calendar.html" aria-current="page">Calendario</a>
+      </nav>
+    </footer>
+  </div>
+
+<script>
+  const KEY='parchate_calendar';
+  const $=s=>document.querySelector(s);
+
+  // Construye 13 filas (08:00 a 20:00) dentro de .grid-body, repartidas a la misma altura
+  const grid = $('#grid');
+  for(let h=8; h<=20; h++){
+    const timeCell = document.createElement('div');
+    timeCell.className='time';
+    timeCell.textContent = String(h).padStart(2,'0') + ':00';
+    grid.appendChild(timeCell);
+
+    for(let day=0; day<7; day++){
+      const slot = document.createElement('div');
+      slot.className='slot';
+      slot.dataset.day = String(day);
+      slot.dataset.hr  = String(h);
+      grid.appendChild(slot);
+    }
+  }
+
+  function getEvents(){
+    try{ return JSON.parse(localStorage.getItem(KEY))||[] }catch{ return [] }
+  }
+  function setEvents(v){ localStorage.setItem(KEY, JSON.stringify(v)); }
+
+  function placeEvent(ev){
+    const target = document.querySelector(`.slot[data-day="${ev.dayIndex}"][data-hr="${parseInt(ev.start,10)}"]`);
+    if(!target) return;
+    const el = document.createElement('div');
+    el.className = `event ${ev.priority}`;
+    el.innerHTML = `
+      <h4>${ev.name}</h4>
+      <div class="meta">${ev.start}–${ev.end}</div>
+      <div class="ev-actions" aria-label="Acciones de evento">
+        <button class="ev-btn" data-act="edit" data-id="${ev.id}" aria-label="Editar ${ev.name}">Editar</button>
+        <button class="ev-btn" data-act="del" data-id="${ev.id}" aria-label="Eliminar ${ev.name}">Eliminar</button>
+      </div>
+    `;
+    target.appendChild(el);
+  }
+
+  function render(){
+    document.querySelectorAll('.slot').forEach(s=>s.innerHTML='');
+    getEvents().forEach(placeEvent);
+  }
+
+  document.addEventListener('click',(e)=>{
+    const btn = e.target.closest('.ev-btn'); if(!btn) return;
+    const id = btn.dataset.id; const act = btn.dataset.act;
+    const evs = getEvents();
+    const ix = evs.findIndex(x=>x.id===id); if(ix<0) return;
+    if(act==='edit'){
+      const name = prompt('Editar nombre del evento:', evs[ix].name);
+      if(name){ evs[ix].name = name.trim(); setEvents(evs); render(); }
+    }else if(act==='del'){
+      if(confirm('¿Eliminar este evento?')){ evs.splice(ix,1); setEvents(evs); render(); }
+    }
+  });
+
+  // Semilla mínima si no hay eventos
+  if(!localStorage.getItem(KEY)){
+    const seed=[
+      {id:'e1', name:'Clase Cálculo', priority:'media', dayIndex:0, start:'09:00', end:'10:00'},
+      {id:'e2', name:'Entrenamiento fútbol', priority:'alta', dayIndex:2, start:'18:00', end:'19:00'},
+      {id:'e3', name:'Lectura libre', priority:'baja', dayIndex:4, start:'11:00', end:'12:00'}
+    ];
+    setEvents(seed);
+  }
+  render();
+</script>
+</body>
+</html>

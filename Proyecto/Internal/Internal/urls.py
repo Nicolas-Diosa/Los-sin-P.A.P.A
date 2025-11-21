@@ -23,5 +23,6 @@ urlpatterns = [
     path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
     path('perfil/actualizado/', views.perfil_actualizado, name='perfil_actualizado'),
     path('tareas_realizadas/', views.tarea_realizada, name='tarea_realizada'),
+    path('calendario/', views.calendario, name='calendario'),
     path('crear_tarea/', views.crear_tarea, name='crear_tarea')
 ]
