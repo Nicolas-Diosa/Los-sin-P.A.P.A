@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Parchate · Área privada y gestión del tiempo</title>
 <style>
-  @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
   :root{
     --primary:#FCAF56; --secondary:#7795FC;
     --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
@@ -185,7 +184,7 @@
       <nav>
         <a class="nav-btn" href="/actividades/">Inicio / Actividades</a>
         <a class="nav-btn current" href="/area_privada/" aria-current="page">Área privada y gestión del tiempo</a>
-        <a class="nav-btn" href="19_profile.html">Perfil de usuario</a>
+        <a class="nav-btn" href="/perfil/">Perfil de usuario</a>
         <a class="nav-btn" href="/logout/">Cerrar sesión</a>
       </nav>
     </aside>
@@ -207,7 +206,7 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <a class="btn btn-primary-M" href="{% url 'agregar_materia' %}">Añadir materia📘</a>
               <a class="btn btn-primary-E" href="/agregar_evento/">Añadir evento📅</a>
-              <a class="link" href="calendario_pant_comp.html">Ver en pantalla completa</a>
+              <a class="link" href="/calendario/">Ver en pantalla completa</a>
             </div>
           </div>
 
@@ -224,10 +223,10 @@
         <!-- Tareas -->
         <section class="panel" aria-labelledby="tasks-title">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-            <h2 id="tasks-title" class="title" style="margin:0">Lista de tareas</h2>
+            <h2 id="tasks-title" class="title" style="margin:0">Tareas</h2>
             <div>
-              <a class="link" href="11_tasks_completed.html">Ver realizadas</a>
-              <a class="link" href="08_tasks_list.html">Abrir gestión</a>
+              <a class="link" href="/tareas_realizadas/">Ver realizadas</a>
+              <a class="link" href="{% url 'crear_tarea' %}">Agregar Tarea</a>
             </div>
           </div>
           <div id="taskList" class="list" role="list"></div>
