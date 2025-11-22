@@ -69,6 +69,7 @@ def ver_area_priv(request):
         return redirect('login')
 
     usuario = Auth.obtener_usuario_desde_sesion(request)
+    tareas = TareasService(usuario).obtener_tareas_ordenadas_por_realizar()
     service = AreaPrivada(usuario)
 
     data = service.get_calendar_data(usuario)
@@ -78,6 +79,7 @@ def ver_area_priv(request):
     return render(request, 'core/area_privada.html', {
         'materias_json': json.dumps(materias_data),
         'eventos_json': json.dumps(eventos_data),
+        "tareas": tareas,
     })
 
 
@@ -305,8 +307,20 @@ def crear_tarea(request):
         'materias': materias
     })
 
-def tarea_realizada(request):
+def tareas_realizadas(request):
     return render(request, 'core/tarea_realizada.html')
 
 def calendario(request):
     return render(request, 'core/calendario.html')
+
+def marcar_tarea(request):
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+
+    if request.method == "POST":
+        nombre_tarea = request.POST.get('nombre_tarea')
+        success = TareasService(usuario).marcar_tarea_como_realizada(nombre_tarea)
+        
+        if success:
+            return redirect('/area_privada/')
+
+    return redirect('area_privada')

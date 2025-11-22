@@ -36,7 +36,7 @@
   .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary))}
   .title{font-weight:900;color:var(--secondary)}
   .spacer{margin-left:auto}
-  .btn{min-height:var(--touch);padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:800;cursor:pointer}
+  .btn{min-height:var(--touch);padding:10px 14px;border-radius:12px;border:1px solid transparent;font-weight:800;cursor:pointer;text-decoration:none;}
   .btn-primary{background:var(--primary);color:#111}
   .btn:focus-visible{outline:none;box-shadow:var(--ring)}
 
@@ -108,7 +108,7 @@
         <div class="logo" aria-hidden="true"></div>
         <div class="title" aria-label="Calendario del usuario">Calendario</div>
         <div class="spacer"></div>
-        <a class="btn btn-primary" href="{% url 'agregar_materia' %}" aria-label="Añadir evento o materia">Añadir evento o materia</a>
+        <a class="btn btn-primary" href="{% url 'agregar_materia' %}" aria-label="Añadir materia">Añadir materia</a>
       </div>
     </header>
 
@@ -127,8 +127,8 @@
         <!-- Cabecera de columnas -->
         <div class="grid-head" role="row">
           <div class="colhead">Hora</div>
-          <div class="colhead">Lun</div><div class="colhead">Mar</div><div class="colhead">Mié</div>
-          <div class="colhead">Jue</div><div class="colhead">Vie</div><div class="colhead">Sáb</div><div class="colhead">Dom</div>
+          <div class="colhead">Lunes</div><div class="colhead">Martes</div><div class="colhead">Miércoles</div>
+          <div class="colhead">Jueves</div><div class="colhead">Viernes</div><div class="colhead">Sábado</div><div class="colhead">Domingo</div>
         </div>
 
         <!-- Cuerpo (13 filas = 08:00…20:00) -->
