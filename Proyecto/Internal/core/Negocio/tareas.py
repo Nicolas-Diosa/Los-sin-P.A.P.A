@@ -149,8 +149,6 @@ class TareasService:
         )
        
         return True, {}
-<<<<<<< Updated upstream
-=======
     
     def obtener_tareas_ordenadas_por_realizar(self):
 
@@ -175,4 +173,3 @@ class TareasService:
         except Exception as e:
             print(f"Error al marcar tarea: {e}")
             return False
->>>>>>> Stashed changes
