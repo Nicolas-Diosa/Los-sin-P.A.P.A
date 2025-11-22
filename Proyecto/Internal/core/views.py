@@ -192,8 +192,13 @@ def agregar_evento(request):
     service = AreaPrivada(usuario) 
 
     if request.method == 'POST':
-        service.crear_evento(request.POST)
-        return redirect('/area_privada/')
+        success, errors = service.crear_evento(request.POST)
+        if success:
+            return redirect('/area_privada/')
+        else:
+            return render(request, 'core/agregar_evento.html', {
+                'errors': errors
+            })
 
     return render(request, 'core/agregar_evento.html')
 
@@ -205,8 +210,14 @@ def agregar_materia(request):
     service = AreaPrivada(usuario)
 
     if request.method == 'POST':
-        service.crear_materia(request.POST)
-        return redirect('/area_privada/')
+        success, errors = service.crear_materia(request.POST)
+
+        if success:
+            return redirect('/area_privada/')
+        else:
+            return render(request, 'core/agregar_materia.html', {
+                'errors': errors
+            })
 
     return render(request, 'core/agregar_materia.html')
 

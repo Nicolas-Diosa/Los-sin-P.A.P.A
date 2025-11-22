@@ -56,30 +56,37 @@
       {% csrf_token %}
       <div>
         <label class="label req" for="name">Nombre del evento</label>
-        <input id="name" class="input" name="nombre_evento" type="text" placeholder="Ej: Cena familiar" aria-required="true"/>
-        <div id="err-name" class="err" role="alert" aria-live="polite"></div>
+        <input class="input {% if errors.nombre_evento %}error{% endif %}" id="name" name="nombre_evento" class="input" type="text" placeholder="Ej: Cena familiar" aria-required="true"/>
+        <div id="err-name" class="err" role="alert">
+          {{ errors.nombre_evento }}
+        </div>
       </div>
 
       <div>
         <label class="label req" for="priority">Prioridad</label>
-        <select id="priority" name="prioridad" class="select" required>
-          <option value="">Selecciona</option>
+        <select id="priority" name="prioridad" class="select {% if errors.prioridad %}error{% endif %}" required>
+          <option value="">Selecciona una prioridad</option>
           <option value="3">Alta</option>
           <option value="2">Media</option>
           <option value="1">Baja</option>
         </select>
+        <div id="err-semestre" class="err" role="alert">
+          {{ errors.prioridad }}
+        </div>
       </div>
 
       <div>
         <label class="label req" for="start">Fecha y hora de inicio</label>
-        <input id="fecha_hora_inicio" name="fecha_hora_inicio" class="input" type="datetime-local" required>
-        <div id="err-start" class="err" role="alert" aria-live="polite"></div>
+        <input id="fecha_hora_inicio" name="fecha_hora_inicio" class="input {% if errors.time_fecha %}error{% endif %}" type="datetime-local" required>
+        <div id="err-start" class="err" role="alert">
+          {{ errors.time_fecha }}
+        </div>
       </div>
 
       <div>
         <label class="label req" for="end">Fecha y hora de fin</label>
         <input id="fecha_hora_fin" name="fecha_hora_fin" class="input" type="datetime-local" required>
-        <div id="err-end" class="err" role="alert" aria-live="polite"></div>
+        <div id="err-end" class="err" role="alert"></div>
       </div>
 
       <div style="grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end">
