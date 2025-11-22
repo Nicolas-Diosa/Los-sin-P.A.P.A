@@ -99,25 +99,13 @@
       </div>
 
       <div>
-        <label class="label req" for="estado">Estado</label>
-        <select id="estado" name="estado_tarea" class="select" required>
-          <option value="">Selecciona</option>
-          <option value="Por realizar" selected>Por realizar</option>
-          <option value="Realizando">Realizando</option>
-          <option value="Realizada">Realizada</option>
-        </select>
-        <div id="err-estado" class="err" role="alert" aria-live="polite"></div>
-      </div>
-
-      <div>
         <label class="label" for="materia">Materia (opcional)</label>
-        <select id="materia" name="nombre_materia" class="select">
+        <select id="materia" name="id_materia" class="select">
           <option value="">Sin materia</option>
           {% for materia in materias %}
-          <option value="{{ materia.nombre_materia }}">{{ materia.nombre_materia }}</option>
+          <option value="{{ materia.id }}">{{ materia.nombre_materia }}</option>
           {% endfor %}
         </select>
-        <div class="hint">Vincular tarea a una materia existente</div>
       </div>
 
       <div style="grid-column:1/-1">

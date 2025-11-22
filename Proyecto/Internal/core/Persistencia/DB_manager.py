@@ -68,6 +68,9 @@ class DB_Manager:
 
     def get_materias_by_usuario(self, id_usuario):
         return Materia.objects.filter(id_usuario=id_usuario)
+    
+    def get_materia_by_id(self, id_materia):
+        return Materia.objects.get(id=id_materia)
 
 
     # -------------------- EVENTOS CALENDARIO --------------------

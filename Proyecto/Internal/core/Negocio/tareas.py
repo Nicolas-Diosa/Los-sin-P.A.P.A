@@ -115,28 +115,26 @@ class TareasService:
         
         es_recurrente = datos.get("es_recurrente") == "on"
         recurrencia = datos.get("recurrencia", "") if es_recurrente else None
-        estado = datos.get("estado_tarea")
+        estado_default = "Por realizar"
+        estado = estado_default
         
+        if datos.get("id_materia"):
+            id_materia = self.db.get_materia_by_id(datos.get("id_materia"))
+        else:
+            id_materia = None
+
         validation_errors = validar_datos_tarea(self.usuario, nombre, descripcion, prioridad, 
                             fecha_vencimiento, es_recurrente, recurrencia, estado)
         errors.update(validation_errors)
 
-        materia_ref = None
-        nombre_materia = datos.get("nombre_materia")
-        if nombre_materia:
-            try:
-                materia_ref = self.db.get_materia_by_nombre_materia(nombre_materia)
-                if not materia_ref:
-                    errors['nombre_materia'] = f"Materia '{nombre_materia}' no encontrada."
-            except Exception as e:
-                errors['nombre_materia'] = f"Error al buscar materia: {str(e)}"
-        
+
+
         if errors:
             return False, errors
 
         self.db.create_tarea(
             id_usuario=self.usuario,
-            id_materia=materia_ref,
+            id_materia=id_materia,
             nombre_tarea=nombre,
             descripcion_tarea=descripcion,
             prioridad=prioridad,
