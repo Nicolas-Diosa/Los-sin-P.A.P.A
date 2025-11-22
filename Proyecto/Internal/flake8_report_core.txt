@@ -1,0 +1,116 @@
+[1mcore/Negocio\actividad_service.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mF401[m 'os' imported but unused
+[1mcore/Negocio\actividad_service.py[m[36m:[m2[36m:[m1[36m:[m [1m[31mF401[m 'django.core.files.storage.default_storage' imported but unused
+[1mcore/Negocio\actividad_service.py[m[36m:[m3[36m:[m1[36m:[m [1m[31mF401[m 'django.core.files.base.ContentFile' imported but unused
+[1mcore/Negocio\actividad_service.py[m[36m:[m8[36m:[m1[36m:[m [1m[31mF811[m redefinition of unused 'datetime' from line 4
+[1mcore/Negocio\actividad_service.py[m[36m:[m9[36m:[m1[36m:[m [1m[31mF401[m 'core.models.Actividad' imported but unused
+[1mcore/Negocio\actividad_service.py[m[36m:[m9[36m:[m1[36m:[m [1m[31mF401[m 'core.models.Usuario' imported but unused
+[1mcore/Negocio\actividad_service.py[m[36m:[m11[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/Negocio\actividad_service.py[m[36m:[m16[36m:[m25[36m:[m [1m[31mE201[m whitespace after '('
+[1mcore/Negocio\actividades.py[m[36m:[m13[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/Negocio\auth.py[m[36m:[m5[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/Negocio\auth.py[m[36m:[m6[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Negocio\auth.py[m[36m:[m8[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
+[1mcore/Negocio\auth.py[m[36m:[m27[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Negocio\auth.py[m[36m:[m34[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Negocio\auth.py[m[36m:[m40[36m:[m5[36m:[m [1m[31mE301[m expected 1 blank line, found 0
+[1mcore/Negocio\auth.py[m[36m:[m49[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Negocio\auth.py[m[36m:[m51[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
+[1mcore/Negocio\auth.py[m[36m:[m69[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Negocio\auth.py[m[36m:[m77[36m:[m101[36m:[m [1m[31mE501[m line too long (119 > 100 characters)
+[1mcore/Negocio\auth.py[m[36m:[m86[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Negocio\auth.py[m[36m:[m87[36m:[m30[36m:[m [1m[31mE231[m missing whitespace after ':'
+[1mcore/Negocio\auth.py[m[36m:[m107[36m:[m24[36m:[m [1m[31mW292[m no newline at end of file
+[1mcore/Persistencia\DB_manager.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mF403[m 'from core.models import *' used; unable to detect undefined names
+[1mcore/Persistencia\DB_manager.py[m[36m:[m4[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/Persistencia\DB_manager.py[m[36m:[m6[36m:[m5[36m:[m [1m[31mE301[m expected 1 blank line, found 0
+[1mcore/Persistencia\DB_manager.py[m[36m:[m8[36m:[m49[36m:[m [1m[31mE261[m at least two spaces before inline comment
+[1mcore/Persistencia\DB_manager.py[m[36m:[m8[36m:[m50[36m:[m [1m[31mE262[m inline comment should start with '# '
+[1mcore/Persistencia\DB_manager.py[m[36m:[m8[36m:[m101[36m:[m [1m[31mE501[m line too long (148 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m10[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Persistencia\DB_manager.py[m[36m:[m14[36m:[m9[36m:[m [1m[31mF405[m 'Usuario' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m14[36m:[m32[36m:[m [1m[31mE201[m whitespace after '('
+[1mcore/Persistencia\DB_manager.py[m[36m:[m14[36m:[m101[36m:[m [1m[31mE501[m line too long (147 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m15[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Persistencia\DB_manager.py[m[36m:[m16[36m:[m101[36m:[m [1m[31mE501[m line too long (218 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m17[36m:[m9[36m:[m [1m[31mF405[m 'Actividad' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m17[36m:[m34[36m:[m [1m[31mE201[m whitespace after '('
+[1mcore/Persistencia\DB_manager.py[m[36m:[m17[36m:[m101[36m:[m [1m[31mE501[m line too long (395 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m19[36m:[m101[36m:[m [1m[31mE501[m line too long (109 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m20[36m:[m9[36m:[m [1m[31mF405[m 'ParticipanteActividad' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m20[36m:[m58[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1mcore/Persistencia\DB_manager.py[m[36m:[m20[36m:[m60[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1mcore/Persistencia\DB_manager.py[m[36m:[m20[36m:[m73[36m:[m [1m[31mE203[m whitespace before ','
+[1mcore/Persistencia\DB_manager.py[m[36m:[m20[36m:[m86[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1mcore/Persistencia\DB_manager.py[m[36m:[m20[36m:[m88[36m:[m [1m[31mE251[m unexpected spaces around keyword / parameter equals
+[1mcore/Persistencia\DB_manager.py[m[36m:[m20[36m:[m101[36m:[m [1m[31mE501[m line too long (192 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m22[36m:[m101[36m:[m [1m[31mE501[m line too long (110 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m23[36m:[m9[36m:[m [1m[31mF405[m 'Materia' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m23[36m:[m32[36m:[m [1m[31mE201[m whitespace after '('
+[1mcore/Persistencia\DB_manager.py[m[36m:[m23[36m:[m101[36m:[m [1m[31mE501[m line too long (189 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m25[36m:[m101[36m:[m [1m[31mE501[m line too long (123 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m26[36m:[m9[36m:[m [1m[31mF405[m 'EventoCalendario' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m26[36m:[m41[36m:[m [1m[31mE201[m whitespace after '('
+[1mcore/Persistencia\DB_manager.py[m[36m:[m26[36m:[m101[36m:[m [1m[31mE501[m line too long (204 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m28[36m:[m101[36m:[m [1m[31mE501[m line too long (186 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m29[36m:[m9[36m:[m [1m[31mF405[m 'Tarea' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m29[36m:[m30[36m:[m [1m[31mE201[m whitespace after '('
+[1mcore/Persistencia\DB_manager.py[m[36m:[m29[36m:[m101[36m:[m [1m[31mE501[m line too long (338 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m32[36m:[m9[36m:[m [1m[31mF405[m 'Chat' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m32[36m:[m29[36m:[m [1m[31mE201[m whitespace after '('
+[1mcore/Persistencia\DB_manager.py[m[36m:[m32[36m:[m101[36m:[m [1m[31mE501[m line too long (126 > 100 characters)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m42[36m:[m16[36m:[m [1m[31mF405[m 'Usuario' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m43[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Persistencia\DB_manager.py[m[36m:[m45[36m:[m16[36m:[m [1m[31mF405[m 'Usuario' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m48[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m50[36m:[m5[36m:[m [1m[31mE301[m expected 1 blank line, found 0
+[1mcore/Persistencia\DB_manager.py[m[36m:[m51[36m:[m16[36m:[m [1m[31mF405[m 'Actividad' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m54[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m56[36m:[m5[36m:[m [1m[31mE301[m expected 1 blank line, found 0
+[1mcore/Persistencia\DB_manager.py[m[36m:[m57[36m:[m16[36m:[m [1m[31mF405[m 'ParticipanteActividad' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m60[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m62[36m:[m5[36m:[m [1m[31mE301[m expected 1 blank line, found 0
+[1mcore/Persistencia\DB_manager.py[m[36m:[m63[36m:[m16[36m:[m [1m[31mF405[m 'Materia' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m66[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m68[36m:[m5[36m:[m [1m[31mE301[m expected 1 blank line, found 0
+[1mcore/Persistencia\DB_manager.py[m[36m:[m69[36m:[m16[36m:[m [1m[31mF405[m 'EventoCalendario' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m72[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m74[36m:[m5[36m:[m [1m[31mE301[m expected 1 blank line, found 0
+[1mcore/Persistencia\DB_manager.py[m[36m:[m75[36m:[m16[36m:[m [1m[31mF405[m 'Tarea' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m78[36m:[m5[36m:[m [1m[31mE303[m too many blank lines (2)
+[1mcore/Persistencia\DB_manager.py[m[36m:[m79[36m:[m5[36m:[m [1m[31mE301[m expected 1 blank line, found 0
+[1mcore/Persistencia\DB_manager.py[m[36m:[m80[36m:[m16[36m:[m [1m[31mF405[m 'Chat' may be undefined, or defined from star imports: core.models
+[1mcore/Persistencia\DB_manager.py[m[36m:[m81[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/Persistencia\DB_manager.py[m[36m:[m90[36m:[m56[36m:[m [1m[31mW292[m no newline at end of file
+[1mcore/admin.py[m[36m:[m4[36m:[m1[36m:[m [1m[31mE265[m block comment should start with '# '
+[1mcore/forms.py[m[36m:[m9[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/forms.py[m[36m:[m14[36m:[m23[36m:[m [1m[31mE261[m at least two spaces before inline comment
+[1mcore/forms.py[m[36m:[m21[36m:[m74[36m:[m [1m[31mW292[m no newline at end of file
+[1mcore/models.py[m[36m:[m7[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/models.py[m[36m:[m50[36m:[m101[36m:[m [1m[31mE501[m line too long (101 > 100 characters)
+[1mcore/models.py[m[36m:[m85[36m:[m101[36m:[m [1m[31mE501[m line too long (119 > 100 characters)
+[1mcore/models.py[m[36m:[m102[36m:[m101[36m:[m [1m[31mE501[m line too long (119 > 100 characters)
+[1mcore/models.py[m[36m:[m123[36m:[m101[36m:[m [1m[31mE501[m line too long (114 > 100 characters)
+[1mcore/tests.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mF401[m 'django.test.TestCase' imported but unused
+[1mcore/views.py[m[36m:[m1[36m:[m1[36m:[m [1m[31mF401[m 'django.shortcuts.get_object_or_404' imported but unused
+[1mcore/views.py[m[36m:[m2[36m:[m1[36m:[m [1m[31mF403[m 'from core.Negocio.auth import *' used; unable to detect undefined names
+[1mcore/views.py[m[36m:[m4[36m:[m1[36m:[m [1m[31mF401[m 'django.db.models.Count' imported but unused
+[1mcore/views.py[m[36m:[m8[36m:[m1[36m:[m [1m[31mF401[m 'django.utils.timezone' imported but unused
+[1mcore/views.py[m[36m:[m9[36m:[m1[36m:[m [1m[31mF401[m 'core.models.Usuario' imported but unused
+[1mcore/views.py[m[36m:[m11[36m:[m1[36m:[m [1m[31mF401[m '.forms.CustomUserCreationForm' imported but unused
+[1mcore/views.py[m[36m:[m12[36m:[m1[36m:[m [1m[31mF401[m 'django.http.HttpResponse' imported but unused
+[1mcore/views.py[m[36m:[m16[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/views.py[m[36m:[m19[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/views.py[m[36m:[m24[36m:[m24[36m:[m [1m[31mF405[m 'Auth' may be undefined, or defined from star imports: core.Negocio.auth
+[1mcore/views.py[m[36m:[m30[36m:[m53[36m:[m [1m[31mE231[m missing whitespace after ','
+[1mcore/views.py[m[36m:[m30[36m:[m63[36m:[m [1m[31mE231[m missing whitespace after ':'
+[1mcore/views.py[m[36m:[m31[36m:[m1[36m:[m [1m[31mW293[m blank line contains whitespace
+[1mcore/views.py[m[36m:[m32[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/views.py[m[36m:[m37[36m:[m24[36m:[m [1m[31mF405[m 'Auth' may be undefined, or defined from star imports: core.Negocio.auth
+[1mcore/views.py[m[36m:[m45[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/views.py[m[36m:[m54[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/views.py[m[36m:[m63[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/views.py[m[36m:[m66[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 0
+[1mcore/views.py[m[36m:[m74[36m:[m101[36m:[m [1m[31mE501[m line too long (106 > 100 characters)
+[1mcore/views.py[m[36m:[m77[36m:[m1[36m:[m [1m[31mE302[m expected 2 blank lines, found 1
+[1mcore/views.py[m[36m:[m103[36m:[m1[36m:[m [1m[31mE303[m too many blank lines (3)
+[1mcore/views.py[m[36m:[m104[36m:[m57[36m:[m [1m[31mW292[m no newline at end of file

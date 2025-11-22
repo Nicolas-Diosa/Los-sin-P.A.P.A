@@ -24,6 +24,25 @@ IF NOT EXIST ".env" (
     echo Ya existe un archivo .env, no se realizaron cambios.
 )
 
+:: Cargar variables desde .env
+echo Cargando variables desde .env...
+for /f "usebackq tokens=1* delims==" %%A in (".env") do (
+    REM saltar líneas vacías
+    if not "%%A"=="" (
+        REM ignorar comentarios que comienzan con #
+        echo %%A | findstr /b "#" >nul
+        if errorlevel 1 (
+            REM usar %%~B para quitar comillas envolventes si existen
+            call set "%%A=%%~B"
+        )
+    )
+)
+
+:: Mapear a las variables que usa el script
+IF DEFINED POSTGRES_USER set "DB_USER=%POSTGRES_USER%"
+IF DEFINED POSTGRES_DB set "DB_NAME=%POSTGRES_DB%"
+IF DEFINED POSTGRES_CONTAINER_NAME set "CONTAINER_NAME=%POSTGRES_CONTAINER_NAME%"
+
 
 
 :: Levantamiento de la Base de Datos con Docker Compose
@@ -41,10 +60,6 @@ echo Cargando...
 timeout /t 5 /nobreak > NUL
 
 :: Ejecutar el script SQL de inicialización
-:: Asegurarse de que estas variables coincidan con el .env 
-set DB_USER=usuario
-set DB_NAME=parchate
-set CONTAINER_NAME=postgres_server
 
 IF EXIST "Proyecto\Backend\cmd\bd\init.sql" (
     echo Ejecutando script SQL de inicialización...
@@ -73,7 +88,7 @@ IF EXIST "Proyecto\Backend\cmd\bd\init.sql" (
 
         echo Activando entorno virtual...
         call venv\Scripts\activate
-        call pip install django psycopg2-binary python-dotenv
+        call pip install django psycopg2-binary python-dotenv pytest pytest-django flake8
 
         popd
 

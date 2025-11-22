@@ -2,11 +2,11 @@ from core.Persistencia.DB_manager import DB_Manager
 from django.core.exceptions import ObjectDoesNotExist
 import re
 
-class UserValidator:
-    
 
-    def __init__(self, db_manager: DB_Manager):
-        self.db = db_manager
+class UserValidator:
+
+    def __init__(self):
+        self.db = DB_Manager()
 
     def passwords_match(self, pass1, pass2):
         return pass1 == pass2
@@ -24,20 +24,24 @@ class UserValidator:
             return False
         except ObjectDoesNotExist:
             return True
-        
+
     def is_valid_email(self, email):
-        return (
-            re.search(r'@', email)
-        )
+        patron_email = r'^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$'
+        if re.fullmatch(patron_email, email):
+            return True
+        else:
+            return False
 
     def is_valid_password_policy(self, password):
-        
+
         return (
             len(password) >= 8
-            and re.search(r'\d', password)
-            and re.search(r'[^A-Za-z0-9]', password)
+            and bool(re.search(r'\d', password))
+            and bool(re.search(r'[^A-Za-z0-9]', password))
         )
+
     def incorrect_password(self, username, password):
+
         try:
             usuario = self.db.get_usuario_by_nombre_usuario(username)
             return usuario.contrasena != password
@@ -46,11 +50,10 @@ class UserValidator:
 
 
 class Auth:
-    
 
-    def __init__(self, db_manager: DB_Manager):
-        self.db = db_manager
-        self.validator = UserValidator(db_manager)
+    def __init__(self):
+        self.db = DB_Manager()
+        self.validator = UserValidator()
 
     def register_user(self, data: dict, request):
         username = data.get('user')
@@ -66,7 +69,7 @@ class Auth:
 
         if not self.validator.email_available(email):
             errors['email'] = "El correo electrónico ya está registrado."
-        
+
         if not self.validator.is_valid_email(email):
             errors['email_validity'] = "El correo electrónico no es valido."
 
@@ -80,11 +83,12 @@ class Auth:
             return False, errors
 
         self.db.create_usuario(username, email, pass1, None, None, None)
-        request.session['inicio_sesion'] = True
-        request.session['username'] = request.POST.get('user')
+
+        self.login_user({'user': username, 'password': pass1}, request)
+
         return True, {}
-    
-    def login_user(self, data:dict, request):
+
+    def login_user(self, data: dict, request):
 
         request.session.flush()
         username = data.get('user')
@@ -101,7 +105,16 @@ class Auth:
         if errors:
             return False, errors
 
+        usuario = self.db.get_usuario_by_nombre_usuario(username)
         request.session['inicio_sesion'] = True
-        request.session['username'] = data.get('user')
+        request.session['username'] = usuario.nombre_usuario
+        request.session['id_usuario'] = str(usuario.id)
 
         return True, {}
+
+    def obtener_usuario_desde_sesion(request):
+        usuario_id = request.session.get('id_usuario')
+        if usuario_id:
+            db = DB_Manager()
+            return db.get_usuario_by_id(usuario_id)
+        return None

@@ -1,0 +1,19 @@
+[1mInternal/settings.py[m[36m:[m20[36m:[m80[36m:[m [1m[31mE501[m line too long (90 > 79 characters)
+[1mInternal/settings.py[m[36m:[m34[36m:[m80[36m:[m [1m[31mE501[m line too long (93 > 79 characters)
+[1mInternal/settings.py[m[36m:[m41[36m:[m80[36m:[m [1m[31mE501[m line too long (81 > 79 characters)
+[1mInternal/settings.py[m[36m:[m58[36m:[m11[36m:[m [1m[31mE261[m at least two spaces before inline comment
+[1mInternal/settings.py[m[36m:[m58[36m:[m12[36m:[m [1m[31mE262[m inline comment should start with '# '
+[1mInternal/settings.py[m[36m:[m107[36m:[m1[36m:[m [1m[31mE303[m too many blank lines (3)
+[1mInternal/settings.py[m[36m:[m112[36m:[m80[36m:[m [1m[31mE501[m line too long (91 > 79 characters)
+[1mInternal/settings.py[m[36m:[m115[36m:[m80[36m:[m [1m[31mE501[m line too long (81 > 79 characters)
+[1mInternal/settings.py[m[36m:[m118[36m:[m80[36m:[m [1m[31mE501[m line too long (82 > 79 characters)
+[1mInternal/settings.py[m[36m:[m121[36m:[m80[36m:[m [1m[31mE501[m line too long (83 > 79 characters)
+[1mInternal/urls.py[m[36m:[m8[36m:[m9[36m:[m [1m[31mE211[m whitespace before '('
+[1mInternal/urls.py[m[36m:[m9[36m:[m9[36m:[m [1m[31mE211[m whitespace before '('
+[1mInternal/urls.py[m[36m:[m10[36m:[m9[36m:[m [1m[31mE211[m whitespace before '('
+[1mInternal/urls.py[m[36m:[m11[36m:[m9[36m:[m [1m[31mE211[m whitespace before '('
+[1mInternal/urls.py[m[36m:[m12[36m:[m9[36m:[m [1m[31mE211[m whitespace before '('
+[1mInternal/urls.py[m[36m:[m13[36m:[m9[36m:[m [1m[31mE211[m whitespace before '('
+[1mInternal/urls.py[m[36m:[m16[36m:[m9[36m:[m [1m[31mE211[m whitespace before '('
+[1mInternal/urls.py[m[36m:[m16[36m:[m80[36m:[m [1m[31mE501[m line too long (88 > 79 characters)
+[1mInternal/urls.py[m[36m:[m17[36m:[m2[36m:[m [1m[31mW292[m no newline at end of file
