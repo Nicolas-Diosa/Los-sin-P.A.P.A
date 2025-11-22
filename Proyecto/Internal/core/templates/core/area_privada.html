@@ -224,13 +224,13 @@
                 </div>
                 <div class="meta">Fecha límite: {{ tarea.fecha_vencimiento }}</div>
                 <div class="actions">
-                  <a class="act" href="/tarea/{{ tarea.id }}/">Ver</a>
+                  <a class="act" href="#">Ver</a>
                   <form action="/marcar_realizada/" method="POST" style="display:inline;" class="marcar-tarea-form">
                       {% csrf_token %}
                       <input type="hidden" name="nombre_tarea" value="{{ tarea.nombre_tarea }}">
                       <button class="act" type="submit">Marcar como realizada</button>
                   </form>
-                  <a class="act danger" href="/tarea/{{ tarea.id }}/eliminar/">Eliminar</a>
+                  <a class="act danger" href="#">Eliminar</a>
                 </div>
               </article>
               {% endfor %}
@@ -279,7 +279,7 @@
     'Jueves': 3, 'Viernes': 4, 'Sábado': 5, 'Domingo': 6
   };
 
-  // Construir filas 08:00–20:00
+  // Construir filas 07:00–20:00
   for(let h=7; h<=20; h++){
     const timeCell = document.createElement('div');
     timeCell.className='time';
@@ -443,18 +443,6 @@ document.querySelectorAll('.event').forEach(ev => {
         if (top < 0) {
             top = rect.bottom + 8;
         }
-
-        // Si se sale por la izquierda
-        if (left < 0) {
-            left = 4;
-        }
-
-        // Si se sale por la derecha
-        const maxRight = window.innerWidth - tt.width - 4;
-        if (left > maxRight) {
-            left = maxRight;
-        }
-
         tooltip.style.top = top + "px";
         tooltip.style.left = left + "px";
     });

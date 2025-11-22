@@ -27,6 +27,7 @@
   .req::after{content:" *";color:var(--error)}
   .input,.select{width:100%;min-height:var(--touch);padding:12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0)}
   .input:focus,.select:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+  .input.error,.select.error{border-color:var(--error)}
   .err{color:var(--error);font-size:.9rem;margin-top:6px}
   .btn{min-height:var(--touch);padding:12px 18px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer}
   .btn-primary{background:var(--primary);color:#111}
@@ -56,14 +57,16 @@
       {% csrf_token %}
       <div>
         <label class="label req" for="name">Nombre de la materia</label>
-        <input id="name" name="nombre_materia" class="input" type="text" placeholder="Ej: Clase Cálculo" aria-required="true"/>
-        <div id="err-name" class="err" role="alert" aria-live="polite"></div>
+        <input class="input {% if errors.nombre_materia %}error{% endif %}"id="name" name="nombre_materia" class="input" type="text" placeholder="Ej: Clase Cálculo" aria-required="true"/>
+        <div id="err-name" class="err" role="alert">
+          {{ errors.nombre_materia }}
+        </div>
       </div>
 
       <div>
         <label class="label req" for="semestre">Semestre</label>
-        <select id="semestre" name="semestre" class="select" required>
-          <option value="">Selecciona</option>
+        <select id="semestre" name="semestre" class="select {% if errors.semestre %}error{% endif %}" required aria-required="true">
+          <option value="">Selecciona su semestre</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -75,38 +78,48 @@
           <option value="9">9</option>
           <option value="10">10</option>
         </select>
+        <div id="err-semestre" class="err" role="alert">
+          {{ errors.semestre }}
+        </div>
       </div>
 
       <div>
         <label class="label req" for="day">Día</label>
-        <select id="day" name="day" class="select" aria-required="true">
-          <option value="">Selecciona día</option>
+        <select id="day" name="day" class="select {% if errors.day %}error{% endif %}" aria-required="true">
+          <option value="">Selecciona el día</option>
           <option value="Lunes">Lunes</option><option value="Martes">Martes</option><option value="Miércoles">Miércoles</option>
           <option value="Jueves">Jueves</option><option value="Viernes">Viernes</option><option value="Sábado">Sábado</option><option value="Domingo">Domingo</option>
         </select>
-        <div id="err-day" class="err" role="alert" aria-live="polite"></div>
+        <div id="err-day" class="err" role="alert">
+          {{ errors.day }}
+        </div>
       </div>
 
       <div>
         <label class="label req" for="start">Hora de inicio</label>
-        <input id="start" name="start" class="input" type="time" aria-required="true"/>
-        <div id="err-start" class="err" role="alert" aria-live="polite"></div>
+        <input id="start" name="start" class="input {% if errors.time %}error{% endif %}" type="time" aria-required="true"/>
+        <div id="err-start" class="err" role="alert">
+          {% if errors.time %}{{ errors.time }}{% endif %}
+        </div>
       </div>
 
       <div>
         <label class="label req" for="end">Hora de fin</label>
         <input id="end" name="end" class="input" type="time" aria-required="true"/>
-        <div id="err-end" class="err" role="alert" aria-live="polite"></div>
+        <div id="err-end" class="err" role="alert"></div>
       </div>
 
       <div>
         <label class="label req" for="priority">Prioridad</label>
-        <select id="priority" name="prioridad" class="select" required>
+        <select id="priority" name="prioridad" class="select {% if errors.prioridad %}error{% endif %}" required aria-required="true">
           <option value="">Selecciona</option>
           <option value="3">Alta</option>
           <option value="2">Media</option>
           <option value="1">Baja</option>
         </select>
+        <div id="err-prioridad" class="err" role="alert">
+          {{ errors.prioridad }}
+        </div>
       </div>
 
       <div style="grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end">
