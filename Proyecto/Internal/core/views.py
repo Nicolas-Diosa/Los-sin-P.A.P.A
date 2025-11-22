@@ -4,6 +4,7 @@ from core.Negocio.actividades import listar_actividades_conteo
 from django.db.models import Count
 from core.Negocio.actividades import obtener_detalle_actividad
 from core.Negocio.perfil_service import PerfilService
+from core.Negocio.asistencia_service import AsistenciaService
 from django.contrib import messages
 from django.http import Http404
 from django.utils import timezone
@@ -68,6 +69,7 @@ def ver_area_priv(request):
         return redirect('login')
 
     usuario = Auth.obtener_usuario_desde_sesion(request)
+    tareas = TareasService(usuario).obtener_tareas_ordenadas_por_realizar()
     service = AreaPrivada(usuario)
 
     data = service.get_calendar_data(usuario)
@@ -77,6 +79,7 @@ def ver_area_priv(request):
     return render(request, 'core/area_privada.html', {
         'materias_json': json.dumps(materias_data),
         'eventos_json': json.dumps(eventos_data),
+        "tareas": tareas,
     })
 
 
@@ -140,64 +143,35 @@ def registrar_asistencia(request, actividad_id):
     if not request.session.get('inicio_sesion'):
         return redirect('login')
 
-    db = DB_Manager()
-    actividad = Actividad.objects.get(id=actividad_id)
-    usuario = db.get_usuario_by_nombre_usuario(request.session['username'])
+    service = AsistenciaService()
+    username = request.session.get('username')
+
+    try:
+        actividad = Actividad.objects.get(id=actividad_id)
+    except Actividad.DoesNotExist:
+        raise Http404("Actividad no encontrada.")
 
     if request.method == 'POST':
         hora_llegada = request.POST.get('hora_llegada')
         hora_salida = request.POST.get('hora_salida')
 
-        if not hora_llegada or not hora_salida:
-            return render(request, 'core/registrar_asistencia.html', {
-                'actividad': actividad,
-                'error': 'Debe ingresar ambas horas (llegada y salida).'
-            })
-
         try:
-
-            fecha_base = actividad.fecha_hora_inicio.date()
-            hora_llegada_dt = timezone.make_aware(
-                datetime.combine(fecha_base, datetime.strptime(hora_llegada, '%H:%M').time()),
-                timezone.get_current_timezone()
+            actividad_registrada = service.registrar_asistencia(
+                username=username,
+                actividad_id=actividad_id,
+                hora_llegada_raw=hora_llegada,
+                hora_salida_raw=hora_salida
             )
-            hora_salida_dt = timezone.make_aware(
-                datetime.combine(fecha_base, datetime.strptime(hora_salida, '%H:%M').time()),
-                timezone.get_current_timezone()
-            )
-        except ValueError:
+
+            return redirect('asistencia_registrada', actividad_id=actividad_registrada.id)
+
+        except ValueError as e:
             return render(request, 'core/registrar_asistencia.html', {
                 'actividad': actividad,
-                'error': 'Formato de hora inválido. Use HH:MM.'
+                'error': str(e),
+                'hora_llegada_default': hora_llegada,
+                'hora_salida_default': hora_salida
             })
-
-        if hora_llegada_dt >= hora_salida_dt:
-            return render(request, 'core/registrar_asistencia.html', {
-                'actividad': actividad,
-                'error': 'La hora de salida debe ser posterior a la hora de llegada.'
-            })
-
-        inicio_actividad = actividad.fecha_hora_inicio
-        fin_actividad = actividad.fecha_hora_fin or actividad.fecha_hora_inicio.replace(hour=23, minute=59)
-
-        inicio_actividad = timezone.make_aware(inicio_actividad, timezone.get_current_timezone()) if timezone.is_naive(inicio_actividad) else inicio_actividad
-        fin_actividad = timezone.make_aware(fin_actividad, timezone.get_current_timezone()) if timezone.is_naive(fin_actividad) else fin_actividad
-
-        if not (inicio_actividad <= hora_llegada_dt <= fin_actividad and inicio_actividad <= hora_salida_dt <= fin_actividad):
-            return render(request, 'core/registrar_asistencia.html', {
-                'actividad': actividad,
-                'error': f'El rango permitido es entre {inicio_actividad.strftime("%H:%M")} y {fin_actividad.strftime("%H:%M")}.'
-            })
-
-        db.create_part_actividad(
-            id_actividad=actividad,
-            id_usuario=usuario,
-            hora_llegada=hora_llegada_dt,
-            hora_salida=hora_salida_dt,
-            estado_participante="Registrado"
-        )
-
-        return render(request, 'core/asistencia_registrada.html', {'actividad': actividad})
 
     return render(request, 'core/registrar_asistencia.html', {'actividad': actividad})
 
@@ -332,3 +306,21 @@ def crear_tarea(request):
     return render(request, 'core/crear_tarea.html', {
         'materias': materias
     })
+
+def tareas_realizadas(request):
+    return render(request, 'core/tarea_realizada.html')
+
+def calendario(request):
+    return render(request, 'core/calendario.html')
+
+def marcar_tarea(request):
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+
+    if request.method == "POST":
+        nombre_tarea = request.POST.get('nombre_tarea')
+        success = TareasService(usuario).marcar_tarea_como_realizada(nombre_tarea)
+        
+        if success:
+            return redirect('/area_privada/')
+
+    return redirect('area_privada')

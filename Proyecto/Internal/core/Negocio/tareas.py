@@ -16,7 +16,7 @@ def fecha_valida(fecha):
     """Valida que la fecha sea futura."""
     if isinstance(fecha, datetime):
         return fecha > datetime.now()
-    
+
     return False
 
 
@@ -27,10 +27,10 @@ def icalendar_valido(texto):
     """
     if not texto:
         return False
-    
+
     # Patrón básico: debe empezar con FREQ= seguido de valores válidos
     patron = r'^FREQ=(DAILY|WEEKLY|MONTHLY|YEARLY)(;[A-Z]+=[A-Z0-9,]+)*$'
-    
+
     return bool(re.match(patron, texto))
 
 
@@ -145,6 +145,29 @@ class TareasService:
             creacion_tarea=datetime.now(),
             completada_en=None
         )
-        
+       
         return True, {}
     
+    def obtener_tareas_ordenadas_por_realizar(self):
+
+        return self.db.get_tareas_by_usuario(
+            usuario=self.usuario,
+            estado= "Por realizar",
+            order_by=["fecha_vencimiento", "-prioridad"]
+        )
+    
+    def marcar_tarea_como_realizada(self, nombre_tarea):
+
+        try:
+            tarea = self.db.get_tarea_by_nombre_tarea(self.usuario, nombre_tarea)
+            if tarea.id_usuario != self.usuario:
+                return False
+            
+            tarea.estado_tarea = "Realizada"
+            tarea.completada_en = datetime.now()
+            tarea.save()
+            return True
+
+        except Exception as e:
+            print(f"Error al marcar tarea: {e}")
+            return False

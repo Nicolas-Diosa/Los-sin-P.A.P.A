@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parchate · Tareas realizadas</title>
+  <style>
+    @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+    :root{
+      --secondary:#7795FC; --primary:#FCAF56;
+      --g0:#fff; --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g400:#9ca3af; --g600:#4b5563; --g900:#111827;
+      --ring:0 0 0 3px rgba(119,149,252,.35); --shadow:0 10px 24px rgba(0,0,0,.12); --touch:44px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .app{min-height:100dvh;display:grid;grid-template-rows:auto 1fr}
+    header{position:sticky;top:0;z-index:10;background:var(--g0);border-bottom:1px solid var(--g200)}
+    .head{max-width:1000px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:12px;height:64px}
+    .title{font-weight:900;color:var(--secondary)}
+    .container{max-width:1000px;margin:auto;padding:16px}
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+    .input,.select{min-height:var(--touch);padding:10px 12px;border-radius:12px;border:1px solid var(--g300);background:var(--g0)}
+    .input:focus,.select:focus{outline:none;border-color:var(--secondary);box-shadow:var(--ring)}
+    .list{display:grid;gap:10px}
+    .item{background:var(--g0);border:1px solid var(--g200);border-radius:16px;padding:12px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .meta{color:var(--g600)}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid rgba(119,149,252,.35);background:rgba(119,149,252,.12);font-weight:700;color:#1f2a6a}
+    .link{color:var(--secondary);font-weight:800;text-decoration:none;padding:8px;border-radius:10px}
+    .link:focus-visible{outline:none;box-shadow:var(--ring)}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header role="banner">
+      <div class="head">
+        <div class="title">Tareas realizadas</div>
+      </div>
+    </header>
+
+    <main class="container" role="main">
+      <section class="toolbar" aria-label="Filtros">
+        <input id="q" class="input" type="search" placeholder="Buscar por nombre" aria-label="Buscar tareas realizadas"/>
+        <select id="cat" class="select" aria-label="Filtrar por categoría">
+          <option value="">Todas las categorías</option>
+          <option>Personal</option>
+          <option>Deporte</option>
+          <option>Estudio</option>
+          <option>General</option>
+        </select>
+        <select id="date" class="select" aria-label="Filtrar por fecha">
+          <option value="">Cualquier fecha</option>
+          <option value="today">Hoy</option>
+          <option value="week">Últimos 7 días</option>
+          <option value="month">Últimos 30 días</option>
+        </select>
+        <a class="link" href="/area_privada/" aria-label="Volver a gestión de tareas">Volver</a>
+      </section>
+
+      <section aria-labelledby="list-title">
+        <h2 id="list-title" style="margin:0 0 8px">Historial</h2>
+        <div id="list" class="list" role="list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const KEY='parchate_tasks';
+    const $=s=>document.querySelector(s);
+    const list=$('#list'), q=$('#q'), cat=$('#cat'), date=$('#date');
+
+    function get(){ try{ return JSON.parse(localStorage.getItem(KEY))||[] }catch{ return [] } }
+    function withinRange(dateStr, range){
+      if(!range||!dateStr) return true;
+      const d=new Date(dateStr); const now=new Date();
+      const ms=24*60*60*1000;
+      if(range==='today'){ const diff=Math.floor((now-d)/ms); return diff===0; }
+      if(range==='week'){ return (now-d)<=7*ms; }
+      if(range==='month'){ return (now-d)<=30*ms; }
+      return true;
+    }
+    function render(items){
+      list.innerHTML='';
+      if(!items.length){
+        list.innerHTML='<div class="item" role="listitem"><strong>No hay tareas realizadas con estos filtros.</strong></div>';
+        return;
+      }
+      items.forEach(t=>{
+        const el=document.createElement('article');
+        el.className='item'; el.setAttribute('role','listitem');
+        el.innerHTML=`
+          <div class="row">
+            <strong>${t.name}</strong>
+            <span class="chip">${t.cat||'General'}</span>
+          </div>
+          <div class="meta">Realizada el: ${t.doneAt||'—'}</div>
+        `;
+        list.appendChild(el);
+      });
+    }
+    function apply(){
+      const term=q.value.trim().toLowerCase(); const c=cat.value; const r=date.value;
+      let items=get().filter(t=>t.done);
+      if(term){ items=items.filter(t=>t.name.toLowerCase().includes(term)); }
+      if(c){ items=items.filter(t=>(t.cat||'General')===c); }
+      if(r){ items=items.filter(t=>withinRange(t.doneAt, r)); }
+      render(items);
+    }
+    q.addEventListener('input', apply);
+    cat.addEventListener('change', apply);
+    date.addEventListener('change', apply);
+    apply();
+  </script>
+</body>
+</html>
