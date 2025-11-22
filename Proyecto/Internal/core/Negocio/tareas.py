@@ -16,7 +16,7 @@ def fecha_valida(fecha):
     """Valida que la fecha sea futura."""
     if isinstance(fecha, datetime):
         return fecha > datetime.now()
-    
+
     return False
 
 
@@ -27,10 +27,10 @@ def icalendar_valido(texto):
     """
     if not texto:
         return False
-    
+
     # Patrón básico: debe empezar con FREQ= seguido de valores válidos
     patron = r'^FREQ=(DAILY|WEEKLY|MONTHLY|YEARLY)(;[A-Z]+=[A-Z0-9,]+)*$'
-    
+
     return bool(re.match(patron, texto))
 
 
@@ -147,6 +147,5 @@ class TareasService:
             creacion_tarea=datetime.now(),
             completada_en=None
         )
-        
+       
         return True, {}
-    
