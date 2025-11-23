@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.serializers.json import DjangoJSONEncoder
 from core.Negocio.auth import *
 from core.Negocio.actividades import listar_actividades_conteo
 from django.db.models import Count
@@ -319,7 +320,13 @@ def crear_tarea(request):
     })
 
 def tareas_realizadas(request):
-    return render(request, 'core/tarea_realizada.html')
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    tareas_realizadas = TareasService(usuario).obtener_tareas_ordenadas_realizadas().values('nombre_tarea','prioridad','completada_en')
+    print(tareas_realizadas)
+    return render(request, 'core/tarea_realizada.html', {
+        "tareas_realizadas": json.dumps(list(tareas_realizadas),cls=DjangoJSONEncoder),
+    })
+
 
 def calendario(request):
     return render(request, 'core/calendario.html')
@@ -328,8 +335,9 @@ def marcar_tarea(request):
     usuario = Auth.obtener_usuario_desde_sesion(request)
 
     if request.method == "POST":
-        nombre_tarea = request.POST.get('nombre_tarea')
-        success = TareasService(usuario).marcar_tarea_como_realizada(nombre_tarea)
+        idtarea = request.POST.get('id_tarea')
+        print(idtarea)
+        success = TareasService(usuario).marcar_tarea_como_realizada(idtarea)
         
         if success:
             return redirect('/area_privada/')
