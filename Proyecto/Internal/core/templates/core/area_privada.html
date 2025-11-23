@@ -227,7 +227,7 @@
                   <a class="act" href="#">Ver</a>
                   <form action="/marcar_realizada/" method="POST" style="display:inline;" class="marcar-tarea-form">
                       {% csrf_token %}
-                      <input type="hidden" name="nombre_tarea" value="{{ tarea.nombre_tarea }}">
+                      <input type="hidden" name="id_tarea" value="{{ tarea.id }}">
                       <button class="act" type="submit">Marcar como realizada</button>
                   </form>
                   <a class="act danger" href="#">Eliminar</a>
@@ -376,6 +376,7 @@
       e.preventDefault();
       
       const formData = new FormData(form);
+      const idTarea = formData.get('id_tarea');
       const nombreTarea = formData.get('nombre_tarea');
       const csrfToken = formData.get('csrfmiddlewaretoken');
       
@@ -387,7 +388,7 @@
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: new URLSearchParams({
-            nombre_tarea: nombreTarea,
+            id_tarea: idTarea,
             csrfmiddlewaretoken: csrfToken
           })
         });

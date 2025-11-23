@@ -41,12 +41,11 @@
     <main class="container" role="main">
       <section class="toolbar" aria-label="Filtros">
         <input id="q" class="input" type="search" placeholder="Buscar por nombre" aria-label="Buscar tareas realizadas"/>
-        <select id="cat" class="select" aria-label="Filtrar por categoría">
-          <option value="">Todas las categorías</option>
-          <option>Personal</option>
-          <option>Deporte</option>
-          <option>Estudio</option>
-          <option>General</option>
+        <select id="prio" class="select" aria-label="Filtrar por categoría">
+          <option value="">Todas las prioridades</option>
+          <option>Alta</option>
+          <option>Media</option>
+          <option>Baja</option>
         </select>
         <select id="date" class="select" aria-label="Filtrar por fecha">
           <option value="">Cualquier fecha</option>
@@ -65,11 +64,12 @@
   </div>
 
   <script>
-    const KEY='parchate_tasks';
+    const KEY='tareas_realizadas';
     const $=s=>document.querySelector(s);
-    const list=$('#list'), q=$('#q'), cat=$('#cat'), date=$('#date');
-
-    function get(){ try{ return JSON.parse(localStorage.getItem(KEY))||[] }catch{ return [] } }
+    const prioridadNombres = {1: 'Baja', 2: 'Media', 3: 'Alta'};
+    const list=$('#list'), q=$('#q'), prio=$('#prio'), date=$('#date');
+    const tareasrealizadasDB_json = '{{ tareas_realizadas|escapejs }}';
+    function get(){ try{ return JSON.parse(tareasrealizadasDB_json)||[] }catch{ return [] } }
     function withinRange(dateStr, range){
       if(!range||!dateStr) return true;
       const d=new Date(dateStr); const now=new Date();
@@ -90,24 +90,24 @@
         el.className='item'; el.setAttribute('role','listitem');
         el.innerHTML=`
           <div class="row">
-            <strong>${t.name}</strong>
-            <span class="chip">${t.cat||'General'}</span>
+            <strong>${t.nombre_tarea}</strong>
+            <span class="chip">${prioridadNombres[t.prioridad]}</span>
           </div>
-          <div class="meta">Realizada el: ${t.doneAt||'—'}</div>
+          <div class="meta">Realizada el: ${t.completada_en.substring(0,10)||'—'}</div>
         `;
         list.appendChild(el);
       });
     }
     function apply(){
-      const term=q.value.trim().toLowerCase(); const c=cat.value; const r=date.value;
-      let items=get().filter(t=>t.done);
-      if(term){ items=items.filter(t=>t.name.toLowerCase().includes(term)); }
-      if(c){ items=items.filter(t=>(t.cat||'General')===c); }
-      if(r){ items=items.filter(t=>withinRange(t.doneAt, r)); }
+      const term=q.value.trim().toLowerCase(); const c=prio.value; const r=date.value;
+      let items=get();
+      if(term){ items=items.filter(t=>t.nombre_tarea.toLowerCase().includes(term)); }
+      if(c){ items=items.filter(t=>(prioridadNombres[t.prioridad])===c); }
+      if(r){ items=items.filter(t=>withinRange(t.completada_en, r)); }
       render(items);
     }
     q.addEventListener('input', apply);
-    cat.addEventListener('change', apply);
+    prio.addEventListener('change', apply);
     date.addEventListener('change', apply);
     apply();
   </script>

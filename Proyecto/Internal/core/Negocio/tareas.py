@@ -156,10 +156,19 @@ class TareasService:
             order_by=["fecha_vencimiento", "-prioridad"]
         )
     
-    def marcar_tarea_como_realizada(self, nombre_tarea):
+    def obtener_tareas_ordenadas_realizadas(self):
 
+        return self.db.get_tareas_by_usuario(
+            usuario=self.usuario,
+            estado= "Realizada",
+            order_by=["-completada_en"]
+        )
+    
+    
+    def marcar_tarea_como_realizada(self, idtarea):
+        print(idtarea)
         try:
-            tarea = self.db.get_tarea_by_nombre_tarea(self.usuario, nombre_tarea)
+            tarea = self.db.get_tarea_by_id(self.usuario, idtarea)
             if tarea.id_usuario != self.usuario:
                 return False
             
