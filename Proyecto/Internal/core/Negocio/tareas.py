@@ -1,5 +1,6 @@
 from core.Persistencia.DB_manager import DB_Manager
 from datetime import datetime
+from core import models
 import re
 
 
@@ -180,3 +181,11 @@ class TareasService:
         except Exception as e:
             print(f"Error al marcar tarea: {e}")
             return False
+        
+    def eliminar_tareas_asociadas(self, idmateria,tipoelemento):
+        if tipoelemento == "materia":
+            while (True):
+                try:
+                    self.db.delete(models.Tarea,"id",self.db.get_tarea_by_id_materia(self.usuario, idmateria).id)
+                except models.Tarea.DoesNotExist:
+                    break

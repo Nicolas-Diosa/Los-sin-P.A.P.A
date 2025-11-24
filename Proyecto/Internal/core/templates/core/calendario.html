@@ -42,12 +42,12 @@
 
   /* Contenido */
   .container{
-    max-width:1100px;margin:auto;padding:16px;
+    max-width:100%;padding:16px 0;
     display:flex;flex-direction:column;
     height:calc(100dvh - var(--h-header) - var(--h-footer)); /* ocupa el alto disponible sin scroll */
     min-height:0;
   }
-  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;padding: 0 16px;}
   .legend{display:flex;gap:8px;flex-wrap:wrap}
   .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--g0);border:1px solid var(--g200);font-weight:800}
   .dot{width:10px;height:10px;border-radius:999px;display:inline-block}
@@ -67,7 +67,7 @@
     grid-auto-rows:1fr;           /* 13 filas de igual altura -> todo cabe sin scroll */
     border:1px solid var(--g200);
     border-bottom-left-radius:12px;border-bottom-right-radius:12px;
-    background:var(--g0);overflow:hidden; /* sin scroll vertical */
+    background:var(--g0);overflow-y:scroll;overflow-x:hidden;
   }
   .time{
     padding:8px;border-right:1px solid var(--g200);text-align:right;color:var(--g600);
@@ -99,6 +99,71 @@
   .nav a:focus-visible{outline:none;box-shadow:var(--ring)}
 
   .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0}
+
+  /* ====== RESPONSIVE SIDEBAR ====== */
+  .overlay{display:none}
+  @media (max-width:960px){
+    .page{grid-template-columns:1fr}
+    aside{position:fixed; inset:0 auto 0 0; width:280px; transform:translateX(-100%); transition:transform .2s ease; z-index:20}
+    aside.open{transform:none; box-shadow:var(--shadow)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .hamb{min-height:var(--touch); padding:8px 12px; border-radius:12px; border:1px solid var(--g300); background:var(--g0); cursor:pointer; font-weight:800}
+    .overlay{position:fixed; inset:0; background:rgba(0,0,0,.35)}
+    .overlay.show{display:block}
+  }
+  .event.materia {
+    border-left: 10px solid #2563eb; /* azul */
+  }
+  .event.evento {
+    border-left: 10px solid #059669; /* verde */
+  }
+  .event {
+    color: #1f2937;
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+  }
+  .event.materia::before {
+    content: "📘";
+    margin-right: 4px;
+    font-size: 12px;
+  }
+  .event.evento::before {
+    content: "📅";
+    margin-right: 4px;
+    font-size: 12px;
+  }
+  .event {
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .event:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  }
+  .priority-alta {
+    background: var(--p-alta);
+  }
+  .priority-media {
+    background: var(--p-media);
+  }
+  .priority-baja {
+    background: var(--p-baja);
+  }
+  .event {
+    position: relative;
+  }
+  .grid-head {
+  background: linear-gradient(to bottom, #FCAF56, #7795FC);
+  }
+  .event {
+  overflow: visible !important;
+  position: relative !important;
+  }
 </style>
 </head>
 <body>
@@ -121,42 +186,45 @@
         </div>
       </section>
 
-      <section class="calendar-wrap" aria-labelledby="cal-title">
-        <h2 id="cal-title" class="sr-only">Vista semanal</h2>
+      <!-- Calendario -->
 
-        <!-- Cabecera de columnas -->
+      <section class="calendar-wrap" aria-labelledby="cal-title"> 
         <div class="grid-head" role="row">
           <div class="colhead">Hora</div>
-          <div class="colhead">Lunes</div><div class="colhead">Martes</div><div class="colhead">Miércoles</div>
-          <div class="colhead">Jueves</div><div class="colhead">Viernes</div><div class="colhead">Sábado</div><div class="colhead">Domingo</div>
+          <div class="colhead">Lun</div><div class="colhead">Mar</div><div class="colhead">Mié</div>
+          <div class="colhead">Jue</div><div class="colhead">Vie</div><div class="colhead">Sáb</div><div class="colhead">Dom</div>
         </div>
-
-        <!-- Cuerpo (13 filas = 08:00…20:00) -->
-        <div id="grid" class="grid-body" role="grid" aria-label="Calendario semanal"></div>
+        <div id="grid" class="grid-body" role="grid" aria-label="Calendario semanal (compacto)"></div>
       </section>
     </main>
 
     <footer role="contentinfo">
       <nav class="nav" aria-label="Navegación principal">
+        <a class="btn btn-primary" href="/area_privada/">Volver</a>
         <a href="/actividades/">Inicio</a>
+        <a href="/materias_y_eventos/">Materias y eventos</a>
         <a href="08_tasks_list.html">Tareas</a>
-        <a class="primary" href="13_calendar.html" aria-current="page">Calendario</a>
+        <a class="primary" href="/calendario/" aria-current="page">Calendario</a>
       </nav>
     </footer>
   </div>
 
 <script>
-  const KEY='parchate_calendar';
-  const $=s=>document.querySelector(s);
+  /* ---------- Calendario (cabecera + cuerpo con alturas iguales) ---------- */
+  const grid = document.getElementById('grid');
 
-  // Construye 13 filas (08:00 a 20:00) dentro de .grid-body, repartidas a la misma altura
-  const grid = $('#grid');
-  for(let h=8; h<=20; h++){
+  // Mapeo de días español a índice (0-6)
+  const daysMap = {
+    'Lunes': 0, 'Martes': 1, 'Miércoles': 2,
+    'Jueves': 3, 'Viernes': 4, 'Sábado': 5, 'Domingo': 6
+  };
+
+  // Construir filas 07:00–20:00
+  for(let h=7; h<=20; h++){
     const timeCell = document.createElement('div');
     timeCell.className='time';
     timeCell.textContent = String(h).padStart(2,'0') + ':00';
     grid.appendChild(timeCell);
-
     for(let day=0; day<7; day++){
       const slot = document.createElement('div');
       slot.className='slot';
@@ -166,55 +234,132 @@
     }
   }
 
-  function getEvents(){
-    try{ return JSON.parse(localStorage.getItem(KEY))||[] }catch{ return [] }
-  }
-  function setEvents(v){ localStorage.setItem(KEY, JSON.stringify(v)); }
+  // Obtener datos desde el backend
+  const materias = JSON.parse('{{ materias_json|escapejs }}');
+  const eventos = JSON.parse('{{ eventos_json|escapejs }}');
 
-  function placeEvent(ev){
-    const target = document.querySelector(`.slot[data-day="${ev.dayIndex}"][data-hr="${parseInt(ev.start,10)}"]`);
+  // Renderizar materias
+  function placeMateriaEvent(mat){
+    // Parsear horario
+    const parts = mat.horario.split(' ');
+    if(parts.length < 2) return;
+    
+    const dia = parts[0];
+    const horas = parts[1].split('-');
+    const dayIndex = daysMap[dia];
+    const startHour = parseInt(horas[0].split(':')[0], 10);
+    
+    if(dayIndex === undefined) return;
+
+    const target = document.querySelector(`.slot[data-day="${dayIndex}"][data-hr="${startHour}"]`);
     if(!target) return;
-    const el = document.createElement('div');
-    el.className = `event ${ev.priority}`;
-    el.innerHTML = `
-      <h4>${ev.name}</h4>
-      <div class="meta">${ev.start}–${ev.end}</div>
-      <div class="ev-actions" aria-label="Acciones de evento">
-        <button class="ev-btn" data-act="edit" data-id="${ev.id}" aria-label="Editar ${ev.name}">Editar</button>
-        <button class="ev-btn" data-act="del" data-id="${ev.id}" aria-label="Eliminar ${ev.name}">Eliminar</button>
-      </div>
-    `;
-    target.appendChild(el);
-  }
-
-  function render(){
-    document.querySelectorAll('.slot').forEach(s=>s.innerHTML='');
-    getEvents().forEach(placeEvent);
-  }
-
-  document.addEventListener('click',(e)=>{
-    const btn = e.target.closest('.ev-btn'); if(!btn) return;
-    const id = btn.dataset.id; const act = btn.dataset.act;
-    const evs = getEvents();
-    const ix = evs.findIndex(x=>x.id===id); if(ix<0) return;
-    if(act==='edit'){
-      const name = prompt('Editar nombre del evento:', evs[ix].name);
-      if(name){ evs[ix].name = name.trim(); setEvents(evs); render(); }
-    }else if(act==='del'){
-      if(confirm('¿Eliminar este evento?')){ evs.splice(ix,1); setEvents(evs); render(); }
+    // 1. Crear el elemento de nombre (Título <h4>)
+    const nameEl = document.createElement("h4");
+    nameEl.textContent = mat.name; 
+    
+    // 2. Crear el elemento meta (Hora o duración)
+    const metaEl = document.createElement("div");
+    metaEl.className = "meta";
+    // Muestra solo el rango de horas (ej: 08:00-09:30)
+    const horarioRange = mat.horario.split(' ')[1];
+    if (horarioRange) {
+        metaEl.textContent = horarioRange; 
     }
-  });
+    const el = document.createElement("div");
+    const prioridadNombres = {1: 'Baja', 2: 'Media', 3: 'Alta'};
+    const prioridadClases  = {1: 'priority-baja', 2: 'priority-media', 3: 'priority-alta'};
 
-  // Semilla mínima si no hay eventos
-  if(!localStorage.getItem(KEY)){
-    const seed=[
-      {id:'e1', name:'Clase Cálculo', priority:'media', dayIndex:0, start:'09:00', end:'10:00'},
-      {id:'e2', name:'Entrenamiento fútbol', priority:'alta', dayIndex:2, start:'18:00', end:'19:00'},
-      {id:'e3', name:'Lectura libre', priority:'baja', dayIndex:4, start:'11:00', end:'12:00'}
-    ];
-    setEvents(seed);
-  }
-  render();
+    const priorityClass = prioridadClases[mat.prioridad];
+
+    el.appendChild(nameEl);
+    el.appendChild(metaEl);
+
+    el.className = `event materia ${priorityClass}`;
+
+    target.appendChild(el);
+}
+
+  // Renderizar eventos
+  function placeEventoCalendario(evt){
+
+    function parseLocalDatetime(dtString) {
+      const [datePart, timePart] = dtString.split('T');
+      const [y, m, d] = datePart.split('-').map(Number);
+      const [h, min] = timePart.split(':').map(Number);
+      return new Date(y, m - 1, d, h, min);
+    }
+
+    const start = parseLocalDatetime(evt.start);
+    const end   = parseLocalDatetime(evt.end);
+
+    // Convertir correctamente: getDay() 0=Dom, 1=Lun... → dayIndex 0=Lun, 6=Dom
+    let dayIndex = start.getDay() - 1;
+    if(dayIndex === -1) dayIndex = 6; // Si es domingo (0), pasar a 6
+    
+    const startHour = start.getHours();
+    
+    const target = document.querySelector(`.slot[data-day="${dayIndex}"][data-hr="${startHour}"]`);
+    if(!target) {
+      console.warn(`No se encontró slot para evento: ${evt.name}, día ${dayIndex}, hora ${startHour}`);
+      return;
+    }
+    // 1. Crear el elemento de nombre (Título <h4>)
+    const nameEl = document.createElement("h4");
+    nameEl.textContent = evt.name; // <--- Usando evt.name
+    
+    // 2. Crear el elemento meta (Hora)
+    const metaEl = document.createElement("div");
+    metaEl.className = "meta";
+    // Formatear la hora de inicio
+    metaEl.textContent = `Inicia: ${evt.start.substring(11,16)}`;
+    const el = document.createElement("div");
+    const prioridadNombres = {1: 'Baja', 2: 'Media', 3: 'Alta'};
+    const prioridadClases  = {1: 'priority-baja', 2: 'priority-media', 3: 'priority-alta'};
+    const priorityClass = prioridadClases[evt.prioridad];
+    el.appendChild(nameEl);
+    el.appendChild(metaEl);
+    el.className = `event evento ${priorityClass}`;
+
+    target.appendChild(el);
+}
+
+  // Renderizar todos
+  materias.forEach(placeMateriaEvent);
+  eventos.forEach(placeEventoCalendario);
+
+  
+  const today = new Date().getDay() - 1;
+  if (today === -1) today = 6;
+
+  document.querySelectorAll(`.slot[data-day="${today}"]`)
+    .forEach(s => s.style.background = "rgba(34, 197, 94, 0.1)"); // Marcar el dia actual con verde
+
+  /* ===== TOOLTIP INTELIGENTE ===== */
+
+const tooltip = document.getElementById("tooltip");
+
+document.querySelectorAll('.event').forEach(ev => {
+    ev.addEventListener('mouseenter', e => {
+
+        const rect = ev.getBoundingClientRect();
+        const tt = tooltip.getBoundingClientRect();
+
+        // Posición por defecto (arriba)
+        let top = rect.top - tt.height - 8;
+        let left = rect.left + rect.width / 2 - tt.width / 2;
+
+        // Si se sale por arriba → mostrar abajo
+        if (top < 0) {
+            top = rect.bottom + 8;
+        }
+        tooltip.style.top = top + "px";
+        tooltip.style.left = left + "px";
+    });
+
+    ev.addEventListener('mouseleave', () => {
+        tooltip.style.display = "none";
+    });
+});
 </script>
 </body>
 </html>

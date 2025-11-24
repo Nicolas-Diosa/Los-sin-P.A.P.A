@@ -87,6 +87,9 @@ class DB_Manager:
     def get_tarea_by_id(cls, usuario ,idtarea):
         return Tarea.objects.get(id_usuario=usuario, id=idtarea)
     
+    def get_tarea_by_id_materia(self, usuario ,idmateria):
+        return Tarea.objects.get(id_usuario=usuario, id_materia=idmateria)
+    
     def get_tareas_by_usuario(self, usuario, estado=None, order_by=None):
         qs = Tarea.objects.filter(id_usuario=usuario)
 

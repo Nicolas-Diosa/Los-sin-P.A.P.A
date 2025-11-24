@@ -101,7 +101,10 @@
       <div>
         <label class="label" for="materia">Materia (opcional)</label>
         <select id="materia" name="id_materia" class="select">
-          <option value="">Sin materia</option>
+          {% if tipo_elemento_add == materia%}
+          <option value="{{ id_elemento }}">{{ id_elemento.nombre_materia }}</option>
+
+          {% endif %}
           {% for materia in materias %}
           <option value="{{ materia.id }}">{{ materia.nombre_materia }}</option>
           {% endfor %}
