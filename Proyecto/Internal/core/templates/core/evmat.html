@@ -58,7 +58,7 @@
           <h2 id="list-title" style="margin-top:0">Eventos y materias</h2>
           <div id="list" class="list" role="list"></div>
           <p class="meta" style="margin-top:10px">
-            Selecciona uno para habilitar <b>“Agregar tarea/meta”</b>.
+            Selecciona uno para habilitar <b>“Eliminar Materia o evento”</b>.
           </p>
         </section>
 
@@ -72,7 +72,7 @@
                     {% csrf_token %}
                     <input type="hidden" id="elemento_a_eliminar" name="elemento_a_eliminar" value="">
                     <input type="hidden" id="tipo_elemento" name="tipo_elemento" value="">
-                    <button id="EliminarElemento" class="btn btn-primary" type="submit">Eliminar Materia o Evento</button>
+                    <button id="EliminarElemento" class="btn btn-primary" type="submit" disabled aria-disabled="true">Eliminar Materia o Evento</button>
                 </form>
             </div>
             <a class="btn btn-secondary" href="/calendario/" aria-label="Volver al calendario">Volver al calendario</a>
@@ -141,13 +141,10 @@
         <div class="meta">${prDot(ev.priority)}${prLabel(ev.priority)} · ${ev.type} · ${ev.horario}</div>
         `;
     }
-    addBtn.href = `18_goal_add.html?eventId=${encodeURIComponent(ev.id)}`;
-    addBtn.removeAttribute('aria-disabled');
-    addBtn.removeAttribute('tabindex');
-
     elemento_a_eliminar.value = ev.id;
     tipo_elemento.value = ev.type
-
+    EliminarElemento.removeAttribute('aria-disabled');
+    EliminarElemento.removeAttribute('disabled');
   }
 
 
