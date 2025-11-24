@@ -119,3 +119,8 @@ class DB_Manager:
 
     def delete(cls, tabla: Model, campo, valor):
         tabla.objects.filter(**{campo: valor}).delete()
+
+    def delete_tarea(self, idtarea):
+        Tarea.objects.filter(id=idtarea).delete()
+    
+    
