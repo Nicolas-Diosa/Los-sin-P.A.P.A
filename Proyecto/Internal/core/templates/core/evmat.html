@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Parchate · Elegir materia o evento</title>
+<title>Parchate · Materias y eventos</title>
 <style>
   @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
   :root{
@@ -67,7 +67,6 @@
           <h2 id="sel-title" style="margin-top:0">Seleccionado</h2>
           <div id="summary" class="meta">Ninguno</div>
           <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
-            <a id="addBtn" class="btn btn-primary" href="#" aria-disabled="true" aria-label="Agregar tarea o meta" tabindex="-1">Agregar tarea/meta</a>
             <div class="actions">
                 <form action="/materias_y_eventos/" method="POST" style="display:inline;" class="eliminar-mat-form">
                     {% csrf_token %}

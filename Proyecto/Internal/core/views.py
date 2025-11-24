@@ -313,7 +313,7 @@ def crear_tarea(request):
                 'materias': materias,
                 'errors': errors
             })
-
+    print(request.GET.get('id_elemento'))
     materias = TareasService(usuario).obtener_materias_usuario()
     return render(request, 'core/crear_tarea.html', {
         'materias': materias
