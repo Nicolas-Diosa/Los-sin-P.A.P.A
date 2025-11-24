@@ -25,5 +25,6 @@ urlpatterns = [
     path('tareas_realizadas/', views.tareas_realizadas, name='tareas_realizadas'),
     path('calendario/', views.calendario, name='calendario'),
     path('crear_tarea/', views.crear_tarea, name='crear_tarea'),
+    path('materias_y_eventos/', views.eventos_y_materias, name='materias_y_eventos'),
     path('marcar_realizada/', views.marcar_tarea, name='marcar_realizada'),
 ]

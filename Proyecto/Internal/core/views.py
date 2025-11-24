@@ -329,17 +329,43 @@ def tareas_realizadas(request):
 
 
 def calendario(request):
-    return render(request, 'core/calendario.html')
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = AreaPrivada(usuario)
+    data = service.get_calendar_data(usuario)
+    materias_data = data['materias']
+    eventos_data = data['eventos']
+    return render(request, 'core/calendario.html', {
+        'materias_json': json.dumps(materias_data),
+        'eventos_json': json.dumps(eventos_data),
+    })
 
 def marcar_tarea(request):
     usuario = Auth.obtener_usuario_desde_sesion(request)
 
     if request.method == "POST":
         idtarea = request.POST.get('id_tarea')
-        print(idtarea)
         success = TareasService(usuario).marcar_tarea_como_realizada(idtarea)
         
         if success:
             return redirect('/area_privada/')
 
     return redirect('area_privada')
+
+
+
+def eventos_y_materias(request):
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = AreaPrivada(usuario)
+    data = service.get_calendar_data(usuario)
+    materias_data = data['materias']
+    eventos_data = data['eventos']
+    elementos = materias_data+eventos_data
+    if request.method == "POST":
+        idelemento = str(request.POST.get('elemento_a_eliminar'))
+        tipoelemento = str(request.POST.get('tipo_elemento'))
+        TareasService(usuario).eliminar_tareas_asociadas(idelemento,tipoelemento)
+        service.eliminar_elementos(idelemento, tipoelemento)
+        return redirect('/materias_y_eventos/')
+    return render(request, 'core/evmat.html', {
+        'elementos_json': json.dumps(elementos),
+    })
