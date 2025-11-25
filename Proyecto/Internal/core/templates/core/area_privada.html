@@ -211,7 +211,7 @@
             <h2 id="tasks-title" class="title" style="margin:0">Tus Tareas Por Realizar</h2>
             <div>
               <a class="link" href="/tareas_realizadas/">Ver realizadas</a>
-              <a class="link" href="{% url 'crear_tarea' %}">Agregar Tarea</a>
+              <a class="link" href="{% url 'crear_tarea' %}">Agregar </a>
             </div>
           </div>
           <div id="taskList" class="list" role="list">
@@ -230,7 +230,11 @@
                       <input type="hidden" name="id_tarea" value="{{ tarea.id }}">
                       <button class="act" type="submit">Marcar como realizada</button>
                   </form>
-                  <a class="act danger" href="#">Eliminar</a>
+                   <form action="/eliminar_tarea/" method="POST" style="display:inline;" class="eliminar-tarea-form">
+                       {% csrf_token %}
+                       <input type="hidden" name="id_tarea" value="{{ tarea.id }}">
+                       <button class="act danger" type="submit">Eliminar</button>
+                   </form>
                 </div>
               </article>
               {% endfor %}
@@ -414,6 +418,55 @@
         }
       } catch (error) {
         console.error('Error:', error);
+      }
+    });
+  });
+
+  // Manejar formularios de eliminación con confirmación y AJAX
+  document.querySelectorAll('.eliminar-tarea-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Confirmación simple
+      const confirmed = window.confirm('¿Estás seguro de que deseas eliminar esta tarea? Esta acción no se puede deshacer.');
+      if (!confirmed) return;
+
+      const formData = new FormData(form);
+      const idTarea = formData.get('id_tarea');
+      const csrfToken = formData.get('csrfmiddlewaretoken');
+
+      try {
+        const response = await fetch('/eliminar_tarea/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ id_tarea: idTarea, csrfmiddlewaretoken: csrfToken })
+        });
+
+        if (response.ok) {
+          // Remover el item del DOM con animación
+          const item = form.closest('.item');
+          if (item) {
+            item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(20px)';
+            setTimeout(() => {
+              item.remove();
+              const taskList = document.getElementById('taskList');
+              if (taskList.children.length === 0) {
+                taskList.innerHTML = '<div style="text-align: center; color: var(--g600); padding: 20px;">¡No tienes tareas pendientes! 🎉</div>';
+              }
+            }, 300);
+          }
+        } else {
+          console.error('Error al eliminar tarea');
+          alert('Ocurrió un error al eliminar la tarea. Intenta de nuevo.');
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        alert('Ocurrió un error de red al eliminar la tarea.');
       }
     });
   });

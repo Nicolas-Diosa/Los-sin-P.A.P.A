@@ -369,3 +369,16 @@ def eventos_y_materias(request):
     return render(request, 'core/evmat.html', {
         'elementos_json': json.dumps(elementos),
     })
+
+def eliminar_tarea(request):
+    """Eliminar tarea."""
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+
+    if request.method == 'POST':
+        idtarea = request.POST.get('id_tarea')
+        TareasService(usuario).eliminar_tarea(idtarea)
+        return redirect('/area_privada/')
+
