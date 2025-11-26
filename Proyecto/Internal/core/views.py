@@ -382,3 +382,31 @@ def eliminar_tarea(request):
         TareasService(usuario).eliminar_tarea(idtarea)
         return redirect('/area_privada/')
 
+
+def ver_detalle_tarea(request, id_tarea):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = TareasService(usuario)
+
+    tarea = service.obtener_tarea_por_id(id_tarea)
+
+    if not tarea:
+        return redirect('area_privada')
+
+    texto_recurrencia = "No es recurrente"
+    if tarea.es_recurrente and tarea.recurrencia:
+        mapa = {
+            'FREQ=DAILY': 'Diariamente',
+            'FREQ=WEEKLY': 'Semanalmente',
+            'FREQ=MONTHLY': 'Mensualmente',
+            'FREQ=YEARLY': 'Anualmente'
+        }
+        clave = tarea.recurrencia.split(';')[0]
+        texto_recurrencia = mapa.get(clave, tarea.recurrencia)
+
+    return render(request, 'core/detalle_tarea.html', {
+        'tarea': tarea,
+        'texto_recurrencia': texto_recurrencia
+    })

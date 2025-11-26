@@ -224,7 +224,9 @@
                 </div>
                 <div class="meta">Fecha límite: {{ tarea.fecha_vencimiento }}</div>
                 <div class="actions">
-                  <a class="act" href="#">Ver</a>
+                  <a href="{% url 'detalle_tarea' tarea.id %}" class="act" style="display:inline-flex; align-items:center; text-decoration:none; color:inherit;">
+                    Ver
+                  </a>
                   <form action="/marcar_realizada/" method="POST" style="display:inline;" class="marcar-tarea-form">
                       {% csrf_token %}
                       <input type="hidden" name="id_tarea" value="{{ tarea.id }}">

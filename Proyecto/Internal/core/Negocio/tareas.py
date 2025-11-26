@@ -193,4 +193,14 @@ class TareasService:
     def eliminar_tarea(self, idtarea):
         """Elimina una tarea usando DB_Manager.delete después de verificar propiedad."""
         self.db.delete_tarea(idtarea)
-            
+
+    def obtener_tarea_por_id(self, id_tarea):
+        """Obtiene una tarea específica validando que pertenezca al usuario."""
+        try:
+            # Asumiendo que usas el ORM directamente o tienes un método en DB_Manager
+            # Si tienes un método en DB_Manager úsalo, si no, usa el modelo directamente aquí
+            # para no complicar DB_Manager innecesariamente con gets específicos.
+            tarea = models.Tarea.objects.get(id=id_tarea, id_usuario=self.usuario)
+            return tarea
+        except models.Tarea.DoesNotExist:
+            return None

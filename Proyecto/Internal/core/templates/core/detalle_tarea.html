@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parchate · Detalle de Tarea</title>
+<style>
+  @font-face{font-family:"Tokyo";src:url("Tokyo.ttf") format("truetype");font-display:swap}
+  :root{
+    --primary:#FCAF56; --secondary:#7795FC;
+    --g0:#fff; --g50:#f9fafb; --g200:#e5e7eb; --g300:#d1d5db; --g600:#4b5563; --g900:#111827;
+    --radius:18px; --touch:44px;
+    --p-alta:#FCA5A5; --p-media:#FCD34D; --p-baja:#A7F3D0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--g50);color:var(--g900);font:16px/1.5 "Tokyo",system-ui,sans-serif}
+  
+  .wrap{max-width:600px;margin:40px auto;padding:16px}
+  .card{background:var(--g0);border:1px solid var(--g200);border-radius:var(--radius);padding:24px;box-shadow:0 10px 24px rgba(0,0,0,.08)}
+  
+  h1{margin:0 0 4px; font-size:1.5rem; color:var(--secondary)}
+  .status-badge{display:inline-block; padding:4px 10px; border-radius:20px; font-size:0.85rem; font-weight:800; background:var(--g200);}
+  
+  .section{margin-top:20px}
+  .label{display:block; font-weight:900; color:var(--g600); font-size:0.9rem; margin-bottom:4px}
+  .value{font-size:1.1rem; line-height:1.6}
+  .box{background:var(--g50); border:1px solid var(--g200); padding:12px; border-radius:12px}
+
+  .priority-chip{padding:4px 8px; border-radius:8px; font-weight:800; font-size:0.9rem}
+  .p-1{background:var(--p-baja); color:#064e3b}
+  .p-2{background:var(--p-media); color:#78350f}
+  .p-3{background:var(--p-alta); color:#7f1d1d}
+
+  .actions{display:flex; gap:10px; margin-top:30px; justify-content:flex-end}
+  .btn{text-decoration:none; padding:10px 20px; border-radius:12px; font-weight:800; display:inline-flex; align-items:center; cursor:pointer; border:none; font-family: inherit;}
+  .btn-back{background:var(--g0); border:1px solid var(--g300); color:var(--g900)}
+  .btn-done{background:var(--secondary); color:#fff}
+  .btn-done:hover{opacity: 0.9;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      
+      <div style="display:flex; justify-content:space-between; align-items:start">
+        <div>
+          <h1>{{ tarea.nombre_tarea }}</h1>
+          <span class="status-badge">{{ tarea.estado_tarea }}</span>
+        </div>
+        <span class="priority-chip p-{{ tarea.prioridad }}">
+            {% if tarea.prioridad == 3 %}Alta{% elif tarea.prioridad == 2 %}Media{% else %}Baja{% endif %}
+        </span>
+      </div>
+
+      <hr style="border:0; border-top:1px solid var(--g200); margin:20px 0">
+
+      <div class="section">
+        <span class="label">Descripción</span>
+        <div class="value box">
+            {{ tarea.descripcion_tarea|default:"Sin descripción."|linebreaksbr }}
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px">
+          <div>
+            <span class="label">Fecha de vencimiento</span>
+            <div class="value">{{ tarea.fecha_vencimiento|date:"d M Y, H:i" }}</div>
+          </div>
+          
+          {% if tarea.es_recurrente %}
+          <div>
+            <span class="label">Recurrencia</span>
+            <div class="value" style="color:var(--secondary); font-weight:800">
+                ↻ {{ texto_recurrencia }}
+            </div>
+          </div>
+          {% endif %}
+      </div>
+
+      {% if tarea.id_materia %}
+      <div class="section">
+          <span class="label">Materia asociada</span>
+          <div class="value" style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.2rem;">📘</span> 
+            {{ tarea.id_materia.nombre_materia }}
+          </div>
+      </div>
+      {% endif %}
+
+      <div class="actions">
+        <a href="{% url 'area_privada' %}" class="btn btn-back">← Volver</a>
+        
+        {% if tarea.estado_tarea != "Realizada" %}
+        <form action="/marcar_realizada/" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="id_tarea" value="{{ tarea.id }}">
+            <button type="submit" class="btn btn-done">Marcar como realizada</button>
+        </form>
+        {% endif %}
+      </div>
+
+    </section>
+  </div>
+</body>
+</html>
