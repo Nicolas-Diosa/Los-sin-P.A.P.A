@@ -1,5 +1,6 @@
 from core.Persistencia.DB_manager import DB_Manager
 from datetime import datetime
+from core import models
 import re
 
 
@@ -115,28 +116,26 @@ class TareasService:
         
         es_recurrente = datos.get("es_recurrente") == "on"
         recurrencia = datos.get("recurrencia", "") if es_recurrente else None
-        estado = datos.get("estado_tarea")
+        estado_default = "Por realizar"
+        estado = estado_default
         
+        if datos.get("id_materia"):
+            id_materia = self.db.get_materia_by_id(datos.get("id_materia"))
+        else:
+            id_materia = None
+
         validation_errors = validar_datos_tarea(self.usuario, nombre, descripcion, prioridad, 
                             fecha_vencimiento, es_recurrente, recurrencia, estado)
         errors.update(validation_errors)
 
-        materia_ref = None
-        nombre_materia = datos.get("nombre_materia")
-        if nombre_materia:
-            try:
-                materia_ref = self.db.get_materia_by_nombre_materia(nombre_materia)
-                if not materia_ref:
-                    errors['nombre_materia'] = f"Materia '{nombre_materia}' no encontrada."
-            except Exception as e:
-                errors['nombre_materia'] = f"Error al buscar materia: {str(e)}"
-        
+
+
         if errors:
             return False, errors
 
         self.db.create_tarea(
             id_usuario=self.usuario,
-            id_materia=materia_ref,
+            id_materia=id_materia,
             nombre_tarea=nombre,
             descripcion_tarea=descripcion,
             prioridad=prioridad,
@@ -158,10 +157,19 @@ class TareasService:
             order_by=["fecha_vencimiento", "-prioridad"]
         )
     
-    def marcar_tarea_como_realizada(self, nombre_tarea):
+    def obtener_tareas_ordenadas_realizadas(self):
 
+        return self.db.get_tareas_by_usuario(
+            usuario=self.usuario,
+            estado= "Realizada",
+            order_by=["-completada_en"]
+        )
+    
+    
+    def marcar_tarea_como_realizada(self, idtarea):
+        print(idtarea)
         try:
-            tarea = self.db.get_tarea_by_nombre_tarea(self.usuario, nombre_tarea)
+            tarea = self.db.get_tarea_by_id(self.usuario, idtarea)
             if tarea.id_usuario != self.usuario:
                 return False
             
@@ -173,3 +181,26 @@ class TareasService:
         except Exception as e:
             print(f"Error al marcar tarea: {e}")
             return False
+
+    def eliminar_tareas_asociadas(self, idmateria,tipoelemento):
+        if tipoelemento == "materia":
+            while (True):
+                try:
+                    self.db.delete(models.Tarea,"id",self.db.get_tarea_by_id_materia(self.usuario, idmateria).id)
+                except models.Tarea.DoesNotExist:
+                    break
+
+    def eliminar_tarea(self, idtarea):
+        """Elimina una tarea usando DB_Manager.delete después de verificar propiedad."""
+        self.db.delete_tarea(idtarea)
+
+    def obtener_tarea_por_id(self, id_tarea):
+        """Obtiene una tarea específica validando que pertenezca al usuario."""
+        try:
+            # Asumiendo que usas el ORM directamente o tienes un método en DB_Manager
+            # Si tienes un método en DB_Manager úsalo, si no, usa el modelo directamente aquí
+            # para no complicar DB_Manager innecesariamente con gets específicos.
+            tarea = models.Tarea.objects.get(id=id_tarea, id_usuario=self.usuario)
+            return tarea
+        except models.Tarea.DoesNotExist:
+            return None

@@ -99,25 +99,16 @@
       </div>
 
       <div>
-        <label class="label req" for="estado">Estado</label>
-        <select id="estado" name="estado_tarea" class="select" required>
-          <option value="">Selecciona</option>
-          <option value="Por realizar" selected>Por realizar</option>
-          <option value="Realizando">Realizando</option>
-          <option value="Realizada">Realizada</option>
-        </select>
-        <div id="err-estado" class="err" role="alert" aria-live="polite"></div>
-      </div>
-
-      <div>
         <label class="label" for="materia">Materia (opcional)</label>
-        <select id="materia" name="nombre_materia" class="select">
-          <option value="">Sin materia</option>
+        <select id="materia" name="id_materia" class="select">
+          {% if tipo_elemento_add == materia%}
+          <option value="{{ id_elemento }}">{{ id_elemento.nombre_materia }}</option>
+
+          {% endif %}
           {% for materia in materias %}
-          <option value="{{ materia.nombre_materia }}">{{ materia.nombre_materia }}</option>
+          <option value="{{ materia.id }}">{{ materia.nombre_materia }}</option>
           {% endfor %}
         </select>
-        <div class="hint">Vincular tarea a una materia existente</div>
       </div>
 
       <div style="grid-column:1/-1">
@@ -128,11 +119,19 @@
       </div>
 
       <div id="recurrencia-field" style="grid-column:1/-1;display:none">
-        <label class="label req" for="recurrencia">Patrón de recurrencia</label>
-        <input id="recurrencia" name="recurrencia" class="input" type="text" placeholder="Ej: FREQ=DAILY;INTERVAL=1 o FREQ=WEEKLY;BYDAY=MO,WE"/>
-        <div class="hint">Formato iCalendar RRULE (FREQ=DAILY|WEEKLY|MONTHLY|YEARLY)</div>
-        <div id="err-recurrencia" class="err" role="alert" aria-live="polite"></div>
-      </div>
+  <label class="label req" for="recurrencia">Frecuencia de repetición</label>
+  
+  <select id="recurrencia" name="recurrencia" class="select">
+    <option value="">Selecciona una frecuencia</option>
+    <option value="FREQ=DAILY">Diariamente</option>
+    <option value="FREQ=WEEKLY">Semanalmente</option>
+    <option value="FREQ=MONTHLY">Mensualmente</option>
+    <option value="FREQ=YEARLY">Anualmente</option>
+  </select>
+  
+  <div class="hint">La tarea se repetirá según la frecuencia seleccionada.</div>
+  <div id="err-recurrencia" class="err" role="alert" aria-live="polite"></div>
+</div>
 
       <div style="grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end">
         <button type="button" class="btn btn-secondary" id="cancel" aria-label="Cancelar">Cancelar</button>
@@ -170,16 +169,20 @@
   document.getElementById("btnBack").onclick = () => location.href = "/area_privada/";
   document.getElementById("cancel").onclick = () => location.href = "/area_privada/";
 
-  // Mostrar/ocultar campo de recurrencia
+// Mostrar/ocultar campo de recurrencia
   const recurrenteCheck = document.getElementById("recurrente");
   const recurrenciaField = document.getElementById("recurrencia-field");
+  const recurrenciaSelect = document.getElementById("recurrencia"); // Referencia al select
   
   recurrenteCheck.addEventListener("change", function() {
     if (this.checked) {
       recurrenciaField.style.display = "block";
+      // Opcional: Hacer el campo requerido si se marca el checkbox
+      recurrenciaSelect.setAttribute('required', 'true');
     } else {
       recurrenciaField.style.display = "none";
-      document.getElementById("recurrencia").value = "";
+      recurrenciaSelect.value = ""; // Resetea el select a la opción vacía
+      recurrenciaSelect.removeAttribute('required');
     }
   });
 

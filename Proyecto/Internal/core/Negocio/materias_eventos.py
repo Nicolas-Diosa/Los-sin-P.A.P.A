@@ -1,5 +1,6 @@
 from core.Persistencia.DB_manager import DB_Manager
 from datetime import datetime
+from core import models
 
 class MateriaEventoValidator:
 
@@ -152,3 +153,10 @@ class AreaPrivada:
             })
 
         return {'materias': materias, 'eventos': eventos}
+    
+    def eliminar_elementos(self,idelemento, tipoelemento):
+        if tipoelemento == "evento":
+            self.db.delete(models.EventoCalendario, "id", idelemento)
+        else:
+            self.db.delete(models.Materia, "id", idelemento)
+        

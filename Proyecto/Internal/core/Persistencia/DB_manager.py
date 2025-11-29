@@ -68,6 +68,9 @@ class DB_Manager:
 
     def get_materias_by_usuario(self, id_usuario):
         return Materia.objects.filter(id_usuario=id_usuario)
+    
+    def get_materia_by_id(self, id_materia):
+        return Materia.objects.get(id=id_materia)
 
 
     # -------------------- EVENTOS CALENDARIO --------------------
@@ -81,8 +84,11 @@ class DB_Manager:
 
     # -------------------- TAREAS --------------------
 
-    def get_tarea_by_nombre_tarea(cls, usuario ,nombre_tarea):
-        return Tarea.objects.get(id_usuario=usuario, nombre_tarea=nombre_tarea)
+    def get_tarea_by_id(cls, usuario ,idtarea):
+        return Tarea.objects.get(id_usuario=usuario, id=idtarea)
+    
+    def get_tarea_by_id_materia(self, usuario ,idmateria):
+        return Tarea.objects.get(id_usuario=usuario, id_materia=idmateria)
     
     def get_tareas_by_usuario(self, usuario, estado=None, order_by=None):
         qs = Tarea.objects.filter(id_usuario=usuario)
@@ -113,3 +119,8 @@ class DB_Manager:
 
     def delete(cls, tabla: Model, campo, valor):
         tabla.objects.filter(**{campo: valor}).delete()
+
+    def delete_tarea(self, idtarea):
+        Tarea.objects.filter(id=idtarea).delete()
+    
+    

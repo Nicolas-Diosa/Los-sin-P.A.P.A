@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.serializers.json import DjangoJSONEncoder
 from core.Negocio.auth import *
 from core.Negocio.actividades import listar_actividades_conteo
 from django.db.models import Count
@@ -312,26 +313,100 @@ def crear_tarea(request):
                 'materias': materias,
                 'errors': errors
             })
-
+    print(request.GET.get('id_elemento'))
     materias = TareasService(usuario).obtener_materias_usuario()
     return render(request, 'core/crear_tarea.html', {
         'materias': materias
     })
 
 def tareas_realizadas(request):
-    return render(request, 'core/tarea_realizada.html')
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    tareas_realizadas = TareasService(usuario).obtener_tareas_ordenadas_realizadas().values('nombre_tarea','prioridad','completada_en')
+    print(tareas_realizadas)
+    return render(request, 'core/tarea_realizada.html', {
+        "tareas_realizadas": json.dumps(list(tareas_realizadas),cls=DjangoJSONEncoder),
+    })
+
 
 def calendario(request):
-    return render(request, 'core/calendario.html')
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = AreaPrivada(usuario)
+    data = service.get_calendar_data(usuario)
+    materias_data = data['materias']
+    eventos_data = data['eventos']
+    return render(request, 'core/calendario.html', {
+        'materias_json': json.dumps(materias_data),
+        'eventos_json': json.dumps(eventos_data),
+    })
 
 def marcar_tarea(request):
     usuario = Auth.obtener_usuario_desde_sesion(request)
 
     if request.method == "POST":
-        nombre_tarea = request.POST.get('nombre_tarea')
-        success = TareasService(usuario).marcar_tarea_como_realizada(nombre_tarea)
+        idtarea = request.POST.get('id_tarea')
+        success = TareasService(usuario).marcar_tarea_como_realizada(idtarea)
         
         if success:
             return redirect('/area_privada/')
 
     return redirect('area_privada')
+
+
+
+def eventos_y_materias(request):
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = AreaPrivada(usuario)
+    data = service.get_calendar_data(usuario)
+    materias_data = data['materias']
+    eventos_data = data['eventos']
+    elementos = materias_data+eventos_data
+    if request.method == "POST":
+        idelemento = str(request.POST.get('elemento_a_eliminar'))
+        tipoelemento = str(request.POST.get('tipo_elemento'))
+        TareasService(usuario).eliminar_tareas_asociadas(idelemento,tipoelemento)
+        service.eliminar_elementos(idelemento, tipoelemento)
+        return redirect('/materias_y_eventos/')
+    return render(request, 'core/evmat.html', {
+        'elementos_json': json.dumps(elementos),
+    })
+
+def eliminar_tarea(request):
+    """Eliminar tarea."""
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+
+    if request.method == 'POST':
+        idtarea = request.POST.get('id_tarea')
+        TareasService(usuario).eliminar_tarea(idtarea)
+        return redirect('/area_privada/')
+
+
+def ver_detalle_tarea(request, id_tarea):
+    if not request.session.get('inicio_sesion'):
+        return redirect('login')
+
+    usuario = Auth.obtener_usuario_desde_sesion(request)
+    service = TareasService(usuario)
+
+    tarea = service.obtener_tarea_por_id(id_tarea)
+
+    if not tarea:
+        return redirect('area_privada')
+
+    texto_recurrencia = "No es recurrente"
+    if tarea.es_recurrente and tarea.recurrencia:
+        mapa = {
+            'FREQ=DAILY': 'Diariamente',
+            'FREQ=WEEKLY': 'Semanalmente',
+            'FREQ=MONTHLY': 'Mensualmente',
+            'FREQ=YEARLY': 'Anualmente'
+        }
+        clave = tarea.recurrencia.split(';')[0]
+        texto_recurrencia = mapa.get(clave, tarea.recurrencia)
+
+    return render(request, 'core/detalle_tarea.html', {
+        'tarea': tarea,
+        'texto_recurrencia': texto_recurrencia
+    })
